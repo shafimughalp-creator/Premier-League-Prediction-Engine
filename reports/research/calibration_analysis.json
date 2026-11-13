@@ -1,0 +1,967 @@
+{
+  "generated_at": "2026-11-13T08:22:05+00:00",
+  "selection_data": "2023/24 validation only",
+  "raw_validation_log_loss": 0.9093411834768015,
+  "temperature_validation_log_loss": 0.9057622474615572,
+  "vector_validation_log_loss": 0.9049108166336477,
+  "promotion_gate": {
+    "min_log_loss_gain": 0.002,
+    "max_ece_worsening": 0.002,
+    "vector_scaling_promoted": false
+  },
+  "selected_method": "temperature",
+  "candidates": {
+    "raw": {},
+    "temperature": {
+      "temperature": 0.8500000000000001
+    },
+    "vector_scaling": {
+      "theta": [
+        1.3225871344708207,
+        1.2654904359127517,
+        1.080684034862351,
+        0.06723456032513975,
+        0.10453813211525377,
+        -0.17177266129199834
+      ]
+    }
+  },
+  "metrics": {
+    "raw": {
+      "validation": {
+        "log_loss": 0.9093411834768015,
+        "brier": 0.5330962075251912,
+        "ece": 0.05385183575368686,
+        "accuracy": 0.5921052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5571683987986299,
+          "median_confidence": 0.5411388777599054,
+          "share_above_0_5": 0.5894736842105263,
+          "mean_entropy": 0.9506235282788361,
+          "normalised_entropy": 0.8652948251938032
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.005314624243115691,
+              "resolution": 0.05309947877497592,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.17112788785041122
+            },
+            "Draw": {
+              "reliability": 0.00046073641589047397,
+              "resolution": 0.0021314039146449124,
+              "uncertainty": 0.16922437673130195,
+              "brier": 0.1675537092325475
+            },
+            "Home win": {
+              "reliability": 0.00226880966409684,
+              "resolution": 0.05119717655382476,
+              "uncertainty": 0.24844182825484765,
+              "brier": 0.19951346136511972
+            }
+          },
+          "reliability": 0.008044170323103006,
+          "resolution": 0.10642805924344559,
+          "uncertainty": 0.636578947368421,
+          "brier_decomposed": 0.5381950584480785
+        }
+      },
+      "test": {
+        "log_loss": 0.9935309172293192,
+        "brier": 0.5947760458791215,
+        "ece": 0.0381210930274086,
+        "accuracy": 0.5184210526315789,
+        "sharpness": {
+          "mean_confidence": 0.5332424374720776,
+          "median_confidence": 0.5184437200840081,
+          "share_above_0_5": 0.5434210526315789,
+          "mean_entropy": 0.9808422737462249,
+          "normalised_entropy": 0.8928011126976724
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.0016323474695880867,
+              "resolution": 0.026452132887475936,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.1940929569643836
+            },
+            "Draw": {
+              "reliability": 0.0006530232345608032,
+              "resolution": 0.0013710071389038394,
+              "uncertainty": 0.19202042936288088,
+              "brier": 0.19130244545853786
+            },
+            "Home win": {
+              "reliability": 0.00275978327112755,
+              "resolution": 0.03429701840182526,
+              "uncertainty": 0.24312846260387813,
+              "brier": 0.21159122747318043
+            }
+          },
+          "reliability": 0.00504515397527644,
+          "resolution": 0.062120158428205036,
+          "uncertainty": 0.6540616343490304,
+          "brier_decomposed": 0.5969866298961019
+        }
+      },
+      "test_reliability": [
+        {
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 116,
+          "mean_confidence": 0.38025212211442666,
+          "observed_accuracy": 0.43103448275862066
+        },
+        {
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 231,
+          "mean_confidence": 0.44825117145275295,
+          "observed_accuracy": 0.4458874458874459
+        },
+        {
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 203,
+          "mean_confidence": 0.5512522837248804,
+          "observed_accuracy": 0.4827586206896552
+        },
+        {
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 128,
+          "mean_confidence": 0.6506270123700773,
+          "observed_accuracy": 0.625
+        },
+        {
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 64,
+          "mean_confidence": 0.7404320281984096,
+          "observed_accuracy": 0.703125
+        },
+        {
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 18,
+          "mean_confidence": 0.8353813735389292,
+          "observed_accuracy": 1.0
+        }
+      ],
+      "test_per_class_reliability": [
+        {
+          "class": "Away win",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 40,
+          "mean_probability": 0.07250286132696253,
+          "observed_rate": 0.075
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 173,
+          "mean_probability": 0.15148045069865168,
+          "observed_rate": 0.14450867052023122
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 173,
+          "mean_probability": 0.24945090403058687,
+          "observed_rate": 0.28901734104046245
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 153,
+          "mean_probability": 0.34798230088162796,
+          "observed_rate": 0.35947712418300654
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 98,
+          "mean_probability": 0.4473687055142179,
+          "observed_rate": 0.42857142857142855
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 77,
+          "mean_probability": 0.5511955630074459,
+          "observed_rate": 0.4675324675324675
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 32,
+          "mean_probability": 0.6464252832201924,
+          "observed_rate": 0.71875
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 13,
+          "mean_probability": 0.7321559528721555,
+          "observed_rate": 0.8461538461538461
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 1,
+          "mean_probability": 0.8240489856682047,
+          "observed_rate": 1.0
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 6,
+          "mean_probability": 0.0866269573860235,
+          "observed_rate": 0.0
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 129,
+          "mean_probability": 0.16763973718564606,
+          "observed_rate": 0.20155038759689922
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 620,
+          "mean_probability": 0.25225302657963294,
+          "observed_rate": 0.2725806451612903
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 5,
+          "mean_probability": 0.30331542349879836,
+          "observed_rate": 0.4
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 6,
+          "mean_probability": 0.08236084411887575,
+          "observed_rate": 0.0
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 63,
+          "mean_probability": 0.15783021787948062,
+          "observed_rate": 0.07936507936507936
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 118,
+          "mean_probability": 0.25157367091050353,
+          "observed_rate": 0.22033898305084745
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 150,
+          "mean_probability": 0.3544037295578517,
+          "observed_rate": 0.36666666666666664
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 133,
+          "mean_probability": 0.44890140951272617,
+          "observed_rate": 0.45864661654135336
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 126,
+          "mean_probability": 0.551286946385535,
+          "observed_rate": 0.49206349206349204
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 96,
+          "mean_probability": 0.6520275887533725,
+          "observed_rate": 0.59375
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 51,
+          "mean_probability": 0.7425416160266706,
+          "observed_rate": 0.6666666666666666
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 17,
+          "mean_probability": 0.8360479845901483,
+          "observed_rate": 1.0
+        }
+      ]
+    },
+    "temperature": {
+      "validation": {
+        "log_loss": 0.9057622474615572,
+        "brier": 0.5309161495957794,
+        "ece": 0.05855846087878973,
+        "accuracy": 0.5921052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5909536822741789,
+          "median_confidence": 0.5783806111300037,
+          "share_above_0_5": 0.6552631578947369,
+          "mean_entropy": 0.9059814346475554,
+          "normalised_entropy": 0.8246598404118634
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.003914301369841282,
+              "resolution": 0.052385796899521386,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.17044124685259135
+            },
+            "Draw": {
+              "reliability": 0.0005350515288974121,
+              "resolution": 0.003927327289515654,
+              "uncertainty": 0.16922437673130195,
+              "brier": 0.1658321009706837
+            },
+            "Home win": {
+              "reliability": 0.003951973961371549,
+              "resolution": 0.054913195826536775,
+              "uncertainty": 0.24844182825484765,
+              "brier": 0.19748060638968243
+            }
+          },
+          "reliability": 0.008401326860110244,
+          "resolution": 0.11122632001557381,
+          "uncertainty": 0.636578947368421,
+          "brier_decomposed": 0.5337539542129575
+        }
+      },
+      "test": {
+        "log_loss": 0.9989114424352142,
+        "brier": 0.5990783668951034,
+        "ece": 0.0640323908888026,
+        "accuracy": 0.5184210526315789,
+        "sharpness": {
+          "mean_confidence": 0.5651609989082528,
+          "median_confidence": 0.552093656174952,
+          "share_above_0_5": 0.6157894736842106,
+          "mean_entropy": 0.9427967708656674,
+          "normalised_entropy": 0.8581706035790446
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.0016505859620231421,
+              "resolution": 0.026502420349003256,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.19406090799529135
+            },
+            "Draw": {
+              "reliability": 0.0032175494854631997,
+              "resolution": 0.0013664902220996405,
+              "uncertainty": 0.19202042936288088,
+              "brier": 0.19387148862624445
+            },
+            "Home win": {
+              "reliability": 0.00459316590228591,
+              "resolution": 0.03585699666207276,
+              "uncertainty": 0.24312846260387813,
+              "brier": 0.21186463184409127
+            }
+          },
+          "reliability": 0.009461301349772251,
+          "resolution": 0.06372590723317566,
+          "uncertainty": 0.6540616343490304,
+          "brier_decomposed": 0.599797028465627
+        }
+      },
+      "test_reliability": [
+        {
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 86,
+          "mean_confidence": 0.38208367711804886,
+          "observed_accuracy": 0.45348837209302323
+        },
+        {
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 206,
+          "mean_confidence": 0.4478875944625862,
+          "observed_accuracy": 0.4077669902912621
+        },
+        {
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 175,
+          "mean_confidence": 0.5503021367673827,
+          "observed_accuracy": 0.4857142857142857
+        },
+        {
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 147,
+          "mean_confidence": 0.6452334892666699,
+          "observed_accuracy": 0.5374149659863946
+        },
+        {
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 104,
+          "mean_confidence": 0.7454235109598492,
+          "observed_accuracy": 0.7115384615384616
+        },
+        {
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 37,
+          "mean_confidence": 0.8419568018181491,
+          "observed_accuracy": 0.7567567567567568
+        },
+        {
+          "bin_low": 0.9,
+          "bin_high": 1.0,
+          "count": 5,
+          "mean_confidence": 0.9139349630477694,
+          "observed_accuracy": 1.0
+        }
+      ],
+      "test_per_class_reliability": [
+        {
+          "class": "Away win",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 85,
+          "mean_probability": 0.07122861099573687,
+          "observed_rate": 0.08235294117647059
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 161,
+          "mean_probability": 0.15041808089767184,
+          "observed_rate": 0.16770186335403728
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 150,
+          "mean_probability": 0.24886352138698423,
+          "observed_rate": 0.3
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 128,
+          "mean_probability": 0.34752172537773374,
+          "observed_rate": 0.3671875
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 91,
+          "mean_probability": 0.4468771390222605,
+          "observed_rate": 0.4175824175824176
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 70,
+          "mean_probability": 0.5524832912659358,
+          "observed_rate": 0.4857142857142857
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 45,
+          "mean_probability": 0.6393143029246466,
+          "observed_rate": 0.5555555555555556
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 26,
+          "mean_probability": 0.7424138885047744,
+          "observed_rate": 0.7692307692307693
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 4,
+          "mean_probability": 0.8359202751758149,
+          "observed_rate": 0.75
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 21,
+          "mean_probability": 0.08165577773547954,
+          "observed_rate": 0.047619047619047616
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 198,
+          "mean_probability": 0.16419039387001655,
+          "observed_rate": 0.2676767676767677
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 540,
+          "mean_probability": 0.24525723506808722,
+          "observed_rate": 0.26481481481481484
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 1,
+          "mean_probability": 0.30658221835433147,
+          "observed_rate": 0.0
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 18,
+          "mean_probability": 0.08047653370686263,
+          "observed_rate": 0.0
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 73,
+          "mean_probability": 0.15760813830582296,
+          "observed_rate": 0.0684931506849315
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 104,
+          "mean_probability": 0.2515473517742078,
+          "observed_rate": 0.28846153846153844
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 127,
+          "mean_probability": 0.35565299436947845,
+          "observed_rate": 0.3700787401574803
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 115,
+          "mean_probability": 0.4486871722458005,
+          "observed_rate": 0.4
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 105,
+          "mean_probability": 0.5488480337683473,
+          "observed_rate": 0.4857142857142857
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 102,
+          "mean_probability": 0.6478448950057977,
+          "observed_rate": 0.5294117647058824
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 78,
+          "mean_probability": 0.7464267184448738,
+          "observed_rate": 0.6923076923076923
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 33,
+          "mean_probability": 0.84268850201722,
+          "observed_rate": 0.7575757575757576
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.9,
+          "bin_high": 1.0,
+          "count": 5,
+          "mean_probability": 0.9139349630477694,
+          "observed_rate": 1.0
+        }
+      ]
+    },
+    "vector_scaling": {
+      "validation": {
+        "log_loss": 0.9049108166336477,
+        "brier": 0.530392185956117,
+        "ece": 0.043909693040400585,
+        "accuracy": 0.5921052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5874613855522979,
+          "median_confidence": 0.572506397099294,
+          "share_above_0_5": 0.6447368421052632,
+          "mean_entropy": 0.9066902662894879,
+          "normalised_entropy": 0.8253050467774247
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.0027075882041168865,
+              "resolution": 0.05243379509979473,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.16918653548659363
+            },
+            "Draw": {
+              "reliability": 9.307577347026138e-05,
+              "resolution": 0.002983273974409709,
+              "uncertainty": 0.16922437673130195,
+              "brier": 0.1663341785303625
+            },
+            "Home win": {
+              "reliability": 0.0029249362085380743,
+              "resolution": 0.05407949101429446,
+              "uncertainty": 0.24844182825484765,
+              "brier": 0.19728727344909125
+            }
+          },
+          "reliability": 0.005725600186125222,
+          "resolution": 0.1094965600884989,
+          "uncertainty": 0.636578947368421,
+          "brier_decomposed": 0.5328079874660474
+        }
+      },
+      "test": {
+        "log_loss": 0.9986971898781366,
+        "brier": 0.5987323631619806,
+        "ece": 0.05905565541553408,
+        "accuracy": 0.5171052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5607538655730503,
+          "median_confidence": 0.5470790901260064,
+          "share_above_0_5": 0.6078947368421053,
+          "mean_entropy": 0.9444137678940565,
+          "normalised_entropy": 0.8596424577036235
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.002598442404391855,
+              "resolution": 0.02635673086912347,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.19515445391753986
+            },
+            "Draw": {
+              "reliability": 0.0013127343520663343,
+              "resolution": 0.0011454972313637932,
+              "uncertainty": 0.19202042936288088,
+              "brier": 0.19218766648358343
+            },
+            "Home win": {
+              "reliability": 0.003913392008943226,
+              "resolution": 0.035054564047145846,
+              "uncertainty": 0.24312846260387813,
+              "brier": 0.2119872905656755
+            }
+          },
+          "reliability": 0.007824568765401416,
+          "resolution": 0.0625567921476331,
+          "uncertainty": 0.6540616343490304,
+          "brier_decomposed": 0.5993294109667987
+        }
+      },
+      "test_reliability": [
+        {
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 97,
+          "mean_confidence": 0.37794990633031056,
+          "observed_accuracy": 0.4329896907216495
+        },
+        {
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 201,
+          "mean_confidence": 0.44591736522269454,
+          "observed_accuracy": 0.417910447761194
+        },
+        {
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 176,
+          "mean_confidence": 0.5490606233187916,
+          "observed_accuracy": 0.48295454545454547
+        },
+        {
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 143,
+          "mean_confidence": 0.6448822430504624,
+          "observed_accuracy": 0.5454545454545454
+        },
+        {
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 100,
+          "mean_confidence": 0.7446783472343168,
+          "observed_accuracy": 0.7
+        },
+        {
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 37,
+          "mean_confidence": 0.8399341184363602,
+          "observed_accuracy": 0.7567567567567568
+        },
+        {
+          "bin_low": 0.9,
+          "bin_high": 1.0,
+          "count": 6,
+          "mean_confidence": 0.9140298243026725,
+          "observed_accuracy": 1.0
+        }
+      ],
+      "test_per_class_reliability": [
+        {
+          "class": "Away win",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 100,
+          "mean_probability": 0.06728032167589917,
+          "observed_rate": 0.07
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 163,
+          "mean_probability": 0.14929174807843135,
+          "observed_rate": 0.19631901840490798
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 142,
+          "mean_probability": 0.24738309455318672,
+          "observed_rate": 0.323943661971831
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 123,
+          "mean_probability": 0.344203650526675,
+          "observed_rate": 0.34959349593495936
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 88,
+          "mean_probability": 0.44491061026845585,
+          "observed_rate": 0.42045454545454547
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 68,
+          "mean_probability": 0.5519184370140842,
+          "observed_rate": 0.47058823529411764
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 46,
+          "mean_probability": 0.6409699630970668,
+          "observed_rate": 0.5652173913043478
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 25,
+          "mean_probability": 0.7457298295540233,
+          "observed_rate": 0.76
+        },
+        {
+          "class": "Away win",
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 5,
+          "mean_probability": 0.8352054347911555,
+          "observed_rate": 0.8
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 16,
+          "mean_probability": 0.080534472150678,
+          "observed_rate": 0.0625
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 169,
+          "mean_probability": 0.16360668124056463,
+          "observed_rate": 0.23076923076923078
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 547,
+          "mean_probability": 0.2525246703076625,
+          "observed_rate": 0.27239488117001825
+        },
+        {
+          "class": "Draw",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 28,
+          "mean_probability": 0.3082168590523159,
+          "observed_rate": 0.2857142857142857
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "count": 17,
+          "mean_probability": 0.08199410225037816,
+          "observed_rate": 0.0
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "count": 76,
+          "mean_probability": 0.15862020607963007,
+          "observed_rate": 0.07894736842105263
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.2,
+          "bin_high": 0.3,
+          "count": 104,
+          "mean_probability": 0.25124002495372255,
+          "observed_rate": 0.27884615384615385
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.3,
+          "bin_high": 0.4,
+          "count": 132,
+          "mean_probability": 0.3536592586476983,
+          "observed_rate": 0.3712121212121212
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "count": 113,
+          "mean_probability": 0.44670138677997767,
+          "observed_rate": 0.415929203539823
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.5,
+          "bin_high": 0.6,
+          "count": 108,
+          "mean_probability": 0.5472612591402741,
+          "observed_rate": 0.49074074074074076
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.6,
+          "bin_high": 0.7,
+          "count": 97,
+          "mean_probability": 0.6467375510695985,
+          "observed_rate": 0.5360824742268041
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.7,
+          "bin_high": 0.8,
+          "count": 75,
+          "mean_probability": 0.7443278531277477,
+          "observed_rate": 0.68
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "count": 32,
+          "mean_probability": 0.8406729752559235,
+          "observed_rate": 0.75
+        },
+        {
+          "class": "Home win",
+          "bin_low": 0.9,
+          "bin_high": 1.0,
+          "count": 6,
+          "mean_probability": 0.9140298243026725,
+          "observed_rate": 1.0
+        }
+      ]
+    }
+  }
+}

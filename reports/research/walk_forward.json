@@ -1,0 +1,1428 @@
+{
+  "generated_at": "2026-11-13T08:29:27+00:00",
+  "protocol": {
+    "train": "all seasons before the inner-validation season",
+    "validation": "season immediately before evaluation",
+    "evaluation": "next season, never used for fitting",
+    "candidates": [
+      "random_forest",
+      "lgbm_regularised",
+      "logistic"
+    ],
+    "selection_origins": [
+      "2019/20",
+      "2020/21",
+      "2021/22",
+      "2022/23",
+      "2023/24"
+    ],
+    "benchmark_only_origins": [
+      "2024/25",
+      "2025/26"
+    ]
+  },
+  "origins": [
+    {
+      "season": "2019/20",
+      "train_n": 1520,
+      "train_through": "2017/18",
+      "validation_season": "2018/19",
+      "n": 380,
+      "selected_model": "ensemble",
+      "production_model": "ensemble:lgbm_regularised+random_forest+logistic",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.6000000000000001,
+      "poisson_alpha": 0.7000000000000001,
+      "production": {
+        "n": 380,
+        "accuracy": 0.531578947368421,
+        "log_loss": 0.984818867136237,
+        "brier": 0.5838334997834019,
+        "macro_f1": 0.3937155256578051,
+        "draw_recall": 0.010869565217391304,
+        "draws_predicted": 1
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.5078947368421053,
+        "log_loss": 1.0045447960867961,
+        "brier": 0.5965524874834252,
+        "macro_f1": 0.39532414170318636,
+        "draw_recall": 0.03260869565217391,
+        "draws_predicted": 13
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.5289473684210526,
+        "log_loss": 0.9728032953387404,
+        "brier": 0.5750551694192386,
+        "macro_f1": 0.392590249622196,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.5236842105263158,
+        "log_loss": 0.9812793297238757,
+        "brier": 0.5824292696612831,
+        "macro_f1": 0.3881212121212121,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.531578947368421,
+        "log_loss": 0.984818867136237,
+        "brier": 0.5838334997834019,
+        "macro_f1": 0.3937155256578051,
+        "draw_recall": 0.010869565217391304,
+        "draws_predicted": 1
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.5263157894736842,
+        "log_loss": 0.9897475265078672,
+        "brier": 0.5862412798370438,
+        "macro_f1": 0.3864810713909101,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature": 0.75,
+      "vector_theta": [
+        1.391826324320093,
+        1.6429273173470895,
+        0.9557849911935069,
+        0.18496694234145453,
+        0.2003019821694958,
+        -0.3852767441482792
+      ],
+      "draw_policy": {
+        "selected": {
+          "accuracy": 0.5894736842105263,
+          "macro_f1": 0.4860732691113036,
+          "balanced_accuracy": 0.49310527066635546,
+          "draw_precision": 0.2903225806451613,
+          "draw_recall": 0.1267605633802817,
+          "draw_f1": 0.17647058823529413,
+          "home_recall": 0.7900552486187845,
+          "away_recall": 0.5625,
+          "draws_predicted": 31,
+          "home_predicted": 234,
+          "away_predicted": 115,
+          "n": 380,
+          "margin": 0.04,
+          "policy": "margin"
+        },
+        "validation_baseline": {
+          "accuracy": 0.5921052631578947,
+          "macro_f1": 0.4612745699183387,
+          "balanced_accuracy": 0.4837310001815682,
+          "draw_precision": 0.23529411764705882,
+          "draw_recall": 0.056338028169014086,
+          "draw_f1": 0.09090909090909091,
+          "home_recall": 0.8011049723756906,
+          "away_recall": 0.59375,
+          "draws_predicted": 17,
+          "home_predicted": 238,
+          "away_predicted": 125,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.531578947368421,
+          "macro_f1": 0.3937155256578051,
+          "balanced_accuracy": 0.4455504805736667,
+          "draw_precision": 1.0,
+          "draw_recall": 0.010869565217391304,
+          "draw_f1": 0.021505376344086023,
+          "home_recall": 0.8430232558139535,
+          "away_recall": 0.4827586206896552,
+          "draws_predicted": 1,
+          "home_predicted": 277,
+          "away_predicted": 102,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.5342105263157895,
+          "macro_f1": 0.40121202931689953,
+          "balanced_accuracy": 0.4491736689794638,
+          "draw_precision": 1.0,
+          "draw_recall": 0.021739130434782608,
+          "draw_f1": 0.0425531914893617,
+          "home_recall": 0.8430232558139535,
+          "away_recall": 0.4827586206896552,
+          "draws_predicted": 2,
+          "home_predicted": 276,
+          "away_predicted": 102,
+          "n": 380
+        },
+        "accuracy_change": 0.0026315789473684292,
+        "macro_f1_change": 0.007496503659094433
+      }
+    },
+    {
+      "season": "2020/21",
+      "train_n": 1900,
+      "train_through": "2018/19",
+      "validation_season": "2019/20",
+      "n": 380,
+      "selected_model": "ensemble",
+      "production_model": "ensemble:random_forest+lgbm_regularised+logistic",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.55,
+      "poisson_alpha": 0.9,
+      "production": {
+        "n": 380,
+        "accuracy": 0.5052631578947369,
+        "log_loss": 1.0040126623816243,
+        "brier": 0.5962718085454697,
+        "macro_f1": 0.3745462272670929,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.48947368421052634,
+        "log_loss": 1.019937254933348,
+        "brier": 0.6080112955997897,
+        "macro_f1": 0.37356418341138203,
+        "draw_recall": 0.024096385542168676,
+        "draws_predicted": 8
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.5157894736842106,
+        "log_loss": 1.0048369662768095,
+        "brier": 0.5969768752320005,
+        "macro_f1": 0.3840715946561712,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.49473684210526314,
+        "log_loss": 1.0345455026755828,
+        "brier": 0.6148477255408024,
+        "macro_f1": 0.36498965654975885,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.5052631578947369,
+        "log_loss": 1.0040126623816243,
+        "brier": 0.5962718085454697,
+        "macro_f1": 0.3745462272670929,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.48947368421052634,
+        "log_loss": 1.0140684833725042,
+        "brier": 0.6019676441794527,
+        "macro_f1": 0.37782738095238094,
+        "draw_recall": 0.024096385542168676,
+        "draws_predicted": 13
+      },
+      "temperature": 1.0250000000000001,
+      "vector_theta": [
+        0.981993056169305,
+        1.6092131953071036,
+        0.7985413538556321,
+        -0.2683979166215068,
+        0.6523827237419985,
+        -0.38398343602494744
+      ],
+      "draw_policy": {
+        "selected": {
+          "accuracy": 0.5263157894736842,
+          "macro_f1": 0.5018705227760774,
+          "balanced_accuracy": 0.5017839917250677,
+          "draw_precision": 0.3333333333333333,
+          "draw_recall": 0.43478260869565216,
+          "draw_f1": 0.37735849056603776,
+          "home_recall": 0.6395348837209303,
+          "away_recall": 0.43103448275862066,
+          "draws_predicted": 120,
+          "home_predicted": 169,
+          "away_predicted": 91,
+          "n": 380,
+          "margin": 0.16,
+          "policy": "margin"
+        },
+        "validation_baseline": {
+          "accuracy": 0.5263157894736842,
+          "macro_f1": 0.38963670574612824,
+          "balanced_accuracy": 0.44840951617214647,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.7848837209302325,
+          "away_recall": 0.5603448275862069,
+          "draws_predicted": 0,
+          "home_predicted": 251,
+          "away_predicted": 129,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.5052631578947369,
+          "macro_f1": 0.3745462272670929,
+          "balanced_accuracy": 0.43395969498910675,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.7986111111111112,
+          "away_recall": 0.5032679738562091,
+          "draws_predicted": 0,
+          "home_predicted": 235,
+          "away_predicted": 145,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.4789473684210526,
+          "macro_f1": 0.4622731923337103,
+          "balanced_accuracy": 0.47151350500039374,
+          "draw_precision": 0.2595419847328244,
+          "draw_recall": 0.40963855421686746,
+          "draw_f1": 0.3177570093457944,
+          "home_recall": 0.6388888888888888,
+          "away_recall": 0.3660130718954248,
+          "draws_predicted": 131,
+          "home_predicted": 154,
+          "away_predicted": 95,
+          "n": 380
+        },
+        "accuracy_change": -0.026315789473684237,
+        "macro_f1_change": 0.08772696506661737
+      }
+    },
+    {
+      "season": "2021/22",
+      "train_n": 2280,
+      "train_through": "2019/20",
+      "validation_season": "2020/21",
+      "n": 380,
+      "selected_model": "random_forest",
+      "production_model": "random_forest",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.35000000000000003,
+      "poisson_alpha": 0.5,
+      "production": {
+        "n": 380,
+        "accuracy": 0.5763157894736842,
+        "log_loss": 0.9444354441485181,
+        "brier": 0.5581468427884945,
+        "macro_f1": 0.4311107463040485,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.5342105263157895,
+        "log_loss": 0.9739310441440526,
+        "brier": 0.576816741758975,
+        "macro_f1": 0.3976190476190477,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.5789473684210527,
+        "log_loss": 0.9363657326526674,
+        "brier": 0.553857755353975,
+        "macro_f1": 0.4327608579497748,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.5421052631578948,
+        "log_loss": 0.9664627101613994,
+        "brier": 0.5734813774375712,
+        "macro_f1": 0.40292931173586544,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.5763157894736842,
+        "log_loss": 0.9444354441485181,
+        "brier": 0.5581468427884945,
+        "macro_f1": 0.4311107463040485,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.5526315789473685,
+        "log_loss": 0.956218670625825,
+        "brier": 0.5643061882664783,
+        "macro_f1": 0.416333407226779,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature": 1.0750000000000002,
+      "vector_theta": [
+        0.4618975592530002,
+        0.6539555282507201,
+        1.5202371485368635,
+        -0.19696894686255673,
+        -0.3931541877859386,
+        0.5901072117555402
+      ],
+      "draw_policy": {
+        "selected": null,
+        "validation_baseline": {
+          "accuracy": 0.5210526315789473,
+          "macro_f1": 0.3882720921394955,
+          "balanced_accuracy": 0.44662309368191727,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.7777777777777778,
+          "away_recall": 0.5620915032679739,
+          "draws_predicted": 0,
+          "home_predicted": 218,
+          "away_predicted": 162,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.5763157894736842,
+          "macro_f1": 0.4311107463040485,
+          "balanced_accuracy": 0.4942058623040218,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8159509202453987,
+          "away_recall": 0.6666666666666666,
+          "draws_predicted": 0,
+          "home_predicted": 230,
+          "away_predicted": 150,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.5763157894736842,
+          "macro_f1": 0.4311107463040485,
+          "balanced_accuracy": 0.4942058623040218,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8159509202453987,
+          "away_recall": 0.6666666666666666,
+          "draws_predicted": 0,
+          "home_predicted": 230,
+          "away_predicted": 150,
+          "n": 380
+        },
+        "accuracy_change": 0.0,
+        "macro_f1_change": 0.0
+      }
+    },
+    {
+      "season": "2022/23",
+      "train_n": 2660,
+      "train_through": "2020/21",
+      "validation_season": "2021/22",
+      "n": 380,
+      "selected_model": "ensemble",
+      "production_model": "ensemble:lgbm_regularised+random_forest+logistic",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.05,
+      "poisson_alpha": 0.9,
+      "production": {
+        "n": 380,
+        "accuracy": 0.5605263157894737,
+        "log_loss": 0.9659281473628734,
+        "brier": 0.57364715471624,
+        "macro_f1": 0.40800759013282734,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.5052631578947369,
+        "log_loss": 0.981787919766752,
+        "brier": 0.5850502226625564,
+        "macro_f1": 0.3672587133168046,
+        "draw_recall": 0.011494252873563218,
+        "draws_predicted": 3
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.5605263157894737,
+        "log_loss": 0.9655760864458621,
+        "brier": 0.5735072304072613,
+        "macro_f1": 0.40800759013282734,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.5368421052631579,
+        "log_loss": 0.9749821074415183,
+        "brier": 0.5801869399646995,
+        "macro_f1": 0.38941176470588235,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.5605263157894737,
+        "log_loss": 0.9659281473628734,
+        "brier": 0.57364715471624,
+        "macro_f1": 0.40800759013282734,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.5447368421052632,
+        "log_loss": 0.9702976343638553,
+        "brier": 0.5766171730252372,
+        "macro_f1": 0.39886470321252926,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature": 0.9,
+      "vector_theta": [
+        1.1907739434708975,
+        1.0162316873785637,
+        1.0854583834497376,
+        0.15495032775397108,
+        -0.10784571045458725,
+        -0.04709774095193536
+      ],
+      "draw_policy": {
+        "selected": {
+          "accuracy": 0.5736842105263158,
+          "macro_f1": 0.45114312975478277,
+          "balanced_accuracy": 0.49577257090811094,
+          "draw_precision": 0.23076923076923078,
+          "draw_recall": 0.03409090909090909,
+          "draw_f1": 0.0594059405940594,
+          "home_recall": 0.8098159509202454,
+          "away_recall": 0.6434108527131783,
+          "draws_predicted": 13,
+          "home_predicted": 227,
+          "away_predicted": 140,
+          "n": 380,
+          "margin": 0.07,
+          "policy": "margin"
+        },
+        "validation_baseline": {
+          "accuracy": 0.5763157894736842,
+          "macro_f1": 0.43090323525106133,
+          "balanced_accuracy": 0.49366687275090754,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8220858895705522,
+          "away_recall": 0.6589147286821705,
+          "draws_predicted": 0,
+          "home_predicted": 233,
+          "away_predicted": 147,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.5605263157894737,
+          "macro_f1": 0.40800759013282734,
+          "balanced_accuracy": 0.4681392102114081,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.7989130434782609,
+          "away_recall": 0.6055045871559633,
+          "draws_predicted": 0,
+          "home_predicted": 241,
+          "away_predicted": 139,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.5605263157894737,
+          "macro_f1": 0.4335123523093449,
+          "balanced_accuracy": 0.47497199412526153,
+          "draw_precision": 0.5,
+          "draw_recall": 0.04597701149425287,
+          "draw_f1": 0.08421052631578947,
+          "home_recall": 0.782608695652174,
+          "away_recall": 0.5963302752293578,
+          "draws_predicted": 8,
+          "home_predicted": 236,
+          "away_predicted": 136,
+          "n": 380
+        },
+        "accuracy_change": 0.0,
+        "macro_f1_change": 0.025504762176517537
+      }
+    },
+    {
+      "season": "2023/24",
+      "train_n": 3040,
+      "train_through": "2021/22",
+      "validation_season": "2022/23",
+      "n": 380,
+      "selected_model": "ensemble",
+      "production_model": "ensemble:random_forest+lgbm_regularised+logistic",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.45,
+      "poisson_alpha": 0.9,
+      "production": {
+        "n": 380,
+        "accuracy": 0.5894736842105263,
+        "log_loss": 0.9103878217868121,
+        "brier": 0.5331580253494379,
+        "macro_f1": 0.4343182498164048,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.5947368421052631,
+        "log_loss": 0.9399015752080853,
+        "brier": 0.5531718831206663,
+        "macro_f1": 0.4327669804777767,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.5921052631578947,
+        "log_loss": 0.9093414015220362,
+        "brier": 0.5332006823062818,
+        "macro_f1": 0.43643105865328086,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.5842105263157895,
+        "log_loss": 0.9330141417716238,
+        "brier": 0.5502600208494244,
+        "macro_f1": 0.42903773813857543,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.5894736842105263,
+        "log_loss": 0.9103878217868121,
+        "brier": 0.5331580253494379,
+        "macro_f1": 0.4343182498164048,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.5947368421052631,
+        "log_loss": 0.9160765576410738,
+        "brier": 0.5371755090224485,
+        "macro_f1": 0.43504688250309603,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature": 0.9500000000000001,
+      "vector_theta": [
+        0.8830661886798366,
+        0.7126727403204499,
+        1.1614011819255456,
+        -0.11613662436389571,
+        -0.29277602854912793,
+        0.40891528830438206
+      ],
+      "draw_policy": {
+        "selected": {
+          "accuracy": 0.5394736842105263,
+          "macro_f1": 0.4086715766503,
+          "balanced_accuracy": 0.4564395936588281,
+          "draw_precision": 0.2857142857142857,
+          "draw_recall": 0.022988505747126436,
+          "draw_f1": 0.0425531914893617,
+          "home_recall": 0.75,
+          "away_recall": 0.5963302752293578,
+          "draws_predicted": 7,
+          "home_predicted": 232,
+          "away_predicted": 141,
+          "n": 380,
+          "margin": 0.06,
+          "policy": "margin"
+        },
+        "validation_baseline": {
+          "accuracy": 0.5421052631578948,
+          "macro_f1": 0.3961352657004831,
+          "balanced_accuracy": 0.4554580507911183,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.7608695652173914,
+          "away_recall": 0.6055045871559633,
+          "draws_predicted": 0,
+          "home_predicted": 236,
+          "away_predicted": 144,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.5894736842105263,
+          "macro_f1": 0.4343182498164048,
+          "balanced_accuracy": 0.49269841269841264,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8114285714285714,
+          "away_recall": 0.6666666666666666,
+          "draws_predicted": 0,
+          "home_predicted": 232,
+          "away_predicted": 148,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.5868421052631579,
+          "macro_f1": 0.43382078265227103,
+          "balanced_accuracy": 0.4907936507936508,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8057142857142857,
+          "away_recall": 0.6666666666666666,
+          "draws_predicted": 2,
+          "home_predicted": 230,
+          "away_predicted": 148,
+          "n": 380
+        },
+        "accuracy_change": -0.002631578947368318,
+        "macro_f1_change": -0.0004974671641337913
+      }
+    },
+    {
+      "season": "2024/25",
+      "train_n": 3420,
+      "train_through": "2022/23",
+      "validation_season": "2023/24",
+      "n": 380,
+      "selected_model": "ensemble",
+      "production_model": "ensemble:random_forest+lgbm_regularised+logistic",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.30000000000000004,
+      "poisson_alpha": 1.0,
+      "production": {
+        "n": 380,
+        "accuracy": 0.5368421052631579,
+        "log_loss": 0.9775932901097355,
+        "brier": 0.5836666851313043,
+        "macro_f1": 0.4033896196784526,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.5210526315789473,
+        "log_loss": 1.0045449989722302,
+        "brier": 0.5989375816277674,
+        "macro_f1": 0.3896678034609069,
+        "draw_recall": 0.0,
+        "draws_predicted": 1
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.5421052631578948,
+        "log_loss": 0.9704811806803111,
+        "brier": 0.5788332704179626,
+        "macro_f1": 0.40626441726206064,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.5184210526315789,
+        "log_loss": 0.9955057257382153,
+        "brier": 0.5963392830238442,
+        "macro_f1": 0.3868586610522094,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.5368421052631579,
+        "log_loss": 0.9775932901097355,
+        "brier": 0.5836666851313043,
+        "macro_f1": 0.4033896196784526,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.5342105263157895,
+        "log_loss": 0.9763035784934854,
+        "brier": 0.5827782172149963,
+        "macro_f1": 0.4010822389518846,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature": 0.8500000000000001,
+      "vector_theta": [
+        1.301554248188723,
+        1.0902644484146409,
+        1.1337077820165489,
+        0.11994845576127984,
+        -0.07034813920692393,
+        -0.04960249081789908
+      ],
+      "draw_policy": {
+        "selected": null,
+        "validation_baseline": {
+          "accuracy": 0.5921052631578947,
+          "macro_f1": 0.43643105865328086,
+          "balanced_accuracy": 0.4954084397986837,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8114285714285714,
+          "away_recall": 0.6747967479674797,
+          "draws_predicted": 0,
+          "home_predicted": 230,
+          "away_predicted": 150,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.5368421052631579,
+          "macro_f1": 0.4033896196784526,
+          "balanced_accuracy": 0.46756272401433696,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8193548387096774,
+          "away_recall": 0.5833333333333334,
+          "draws_predicted": 0,
+          "home_predicted": 242,
+          "away_predicted": 138,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.5368421052631579,
+          "macro_f1": 0.4033896196784526,
+          "balanced_accuracy": 0.46756272401433696,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8193548387096774,
+          "away_recall": 0.5833333333333334,
+          "draws_predicted": 0,
+          "home_predicted": 242,
+          "away_predicted": 138,
+          "n": 380
+        },
+        "accuracy_change": 0.0,
+        "macro_f1_change": 0.0
+      }
+    },
+    {
+      "season": "2025/26",
+      "train_n": 3800,
+      "train_through": "2023/24",
+      "validation_season": "2024/25",
+      "n": 380,
+      "selected_model": "ensemble",
+      "production_model": "ensemble:lgbm_regularised+random_forest+logistic",
+      "no_odds_model": "ensemble",
+      "market_beta": 0.25,
+      "poisson_alpha": 0.8500000000000001,
+      "production": {
+        "n": 380,
+        "accuracy": 0.49736842105263157,
+        "log_loss": 1.0167283885756702,
+        "brier": 0.6108205589124289,
+        "macro_f1": 0.37127371273712734,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "no_odds": {
+        "n": 380,
+        "accuracy": 0.4842105263157895,
+        "log_loss": 1.0394934313649726,
+        "brier": 0.6248577680852879,
+        "macro_f1": 0.3592446201141853,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "market": {
+        "n": 380,
+        "accuracy": 0.48947368421052634,
+        "log_loss": 1.0157496188900592,
+        "brier": 0.61029786155316,
+        "macro_f1": 0.36495202760262996,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "elo": {
+        "n": 380,
+        "accuracy": 0.47368421052631576,
+        "log_loss": 1.0269094329903192,
+        "brier": 0.6180166362078384,
+        "macro_f1": 0.3533875338753387,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature_calibration": {
+        "n": 380,
+        "accuracy": 0.49736842105263157,
+        "log_loss": 1.0167283885756702,
+        "brier": 0.6108205589124289,
+        "macro_f1": 0.37127371273712734,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "vector_calibration": {
+        "n": 380,
+        "accuracy": 0.46578947368421053,
+        "log_loss": 1.0197278971488908,
+        "brier": 0.6146556569280178,
+        "macro_f1": 0.3533000502088879,
+        "draw_recall": 0.0,
+        "draws_predicted": 0
+      },
+      "temperature": 1.0,
+      "vector_theta": [
+        1.1084392071141145,
+        0.800700210236427,
+        1.2276823053210575,
+        0.18824718787245626,
+        -0.23021463109513707,
+        0.04195253618124266
+      ],
+      "draw_policy": {
+        "selected": {
+          "accuracy": 0.5394736842105263,
+          "macro_f1": 0.4289955658376711,
+          "balanced_accuracy": 0.47469859889214727,
+          "draw_precision": 0.36363636363636365,
+          "draw_recall": 0.043010752688172046,
+          "draw_f1": 0.07692307692307693,
+          "home_recall": 0.8129032258064516,
+          "away_recall": 0.5681818181818182,
+          "draws_predicted": 11,
+          "home_predicted": 235,
+          "away_predicted": 134,
+          "n": 380,
+          "margin": 0.08,
+          "policy": "margin"
+        },
+        "validation_baseline": {
+          "accuracy": 0.5394736842105263,
+          "macro_f1": 0.4049101097071577,
+          "balanced_accuracy": 0.46971326164874555,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8258064516129032,
+          "away_recall": 0.5833333333333334,
+          "draws_predicted": 0,
+          "home_predicted": 241,
+          "away_predicted": 139,
+          "n": 380
+        },
+        "eval_argmax": {
+          "accuracy": 0.49736842105263157,
+          "macro_f1": 0.37127371273712734,
+          "balanced_accuracy": 0.44000433181719734,
+          "draw_precision": 0.0,
+          "draw_recall": 0.0,
+          "draw_f1": 0.0,
+          "home_recall": 0.8024691358024691,
+          "away_recall": 0.5175438596491229,
+          "draws_predicted": 0,
+          "home_predicted": 248,
+          "away_predicted": 132,
+          "n": 380
+        },
+        "eval_policy": {
+          "accuracy": 0.48157894736842105,
+          "macro_f1": 0.3833171387039876,
+          "balanced_accuracy": 0.42964962263207873,
+          "draw_precision": 0.2222222222222222,
+          "draw_recall": 0.038461538461538464,
+          "draw_f1": 0.06557377049180328,
+          "home_recall": 0.7592592592592593,
+          "away_recall": 0.49122807017543857,
+          "draws_predicted": 18,
+          "home_predicted": 235,
+          "away_predicted": 127,
+          "n": 380
+        },
+        "accuracy_change": -0.01578947368421052,
+        "macro_f1_change": 0.012043425966860255
+      }
+    }
+  ],
+  "draw_policy_stability": {
+    "accuracy": [
+      0.0026315789473684292,
+      -0.026315789473684237,
+      0.0,
+      0.0,
+      -0.002631578947368318
+    ],
+    "macro_f1": [
+      0.007496503659094433,
+      0.08772696506661737,
+      0.0,
+      0.025504762176517537,
+      -0.0004974671641337913
+    ],
+    "policies_selected": 4,
+    "origins": 5,
+    "mean_accuracy_change": -0.0052631578947368255,
+    "mean_macro_f1_change": 0.02404615274761911,
+    "origins_with_macro_gain": 3
+  },
+  "summary": {
+    "production": {
+      "selection_origins": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5526315789473684,
+          "log_loss": 0.961916588563213,
+          "brier": 0.5690114662366088,
+          "macro_f1": 0.40833966783563574,
+          "draw_recall": 0.002173913043478261
+        },
+        "std": {
+          "accuracy": 0.0341598815414399,
+          "log_loss": 0.03630940172430826,
+          "brier": 0.024432651386300106,
+          "macro_f1": 0.02524569850412093,
+          "draw_recall": 0.004861017342390847
+        },
+        "min": {
+          "accuracy": 0.5052631578947369,
+          "log_loss": 0.9103878217868121,
+          "brier": 0.5331580253494379,
+          "macro_f1": 0.3745462272670929,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5894736842105263,
+          "log_loss": 1.0040126623816243,
+          "brier": 0.5962718085454697,
+          "macro_f1": 0.4343182498164048,
+          "draw_recall": 0.010869565217391304
+        }
+      },
+      "benchmark_origins": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5171052631578947,
+          "log_loss": 0.9971608393427028,
+          "brier": 0.5972436220218666,
+          "macro_f1": 0.38733166620778997,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.027912109783679515,
+          "log_loss": 0.02767269350766565,
+          "brier": 0.019200688286116843,
+          "macro_f1": 0.02270937558216721,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.49736842105263157,
+          "log_loss": 0.9775932901097355,
+          "brier": 0.5836666851313043,
+          "macro_f1": 0.37127371273712734,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5368421052631579,
+          "log_loss": 1.0167283885756702,
+          "brier": 0.6108205589124289,
+          "macro_f1": 0.4033896196784526,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "no_odds": {
+      "selection_origins": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5263157894736843,
+          "log_loss": 0.9840205180278069,
+          "brier": 0.5839205261250825,
+          "macro_f1": 0.3933066133056395,
+          "draw_recall": 0.013639866813581161
+        },
+        "std": {
+          "accuracy": 0.041483902027459045,
+          "log_loss": 0.030677846540951435,
+          "brier": 0.02083956954235207,
+          "macro_f1": 0.02572957792046085,
+          "draw_recall": 0.014541757493449632
+        },
+        "min": {
+          "accuracy": 0.48947368421052634,
+          "log_loss": 0.9399015752080853,
+          "brier": 0.5531718831206663,
+          "macro_f1": 0.3672587133168046,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5947368421052631,
+          "log_loss": 1.019937254933348,
+          "brier": 0.6080112955997897,
+          "macro_f1": 0.4327669804777767,
+          "draw_recall": 0.03260869565217391
+        }
+      },
+      "benchmark_origins": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5026315789473684,
+          "log_loss": 1.0220192151686014,
+          "brier": 0.6118976748565277,
+          "macro_f1": 0.37445621178754607,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.026051302464767504,
+          "log_loss": 0.024712273536747806,
+          "brier": 0.018328339613732446,
+          "macro_f1": 0.021512439249748497,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.4842105263157895,
+          "log_loss": 1.0045449989722302,
+          "brier": 0.5989375816277674,
+          "macro_f1": 0.3592446201141853,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5210526315789473,
+          "log_loss": 1.0394934313649726,
+          "brier": 0.6248577680852879,
+          "macro_f1": 0.3896678034609069,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "market": {
+      "selection_origins": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5552631578947368,
+          "log_loss": 0.9577846964472231,
+          "brier": 0.5665195425437514,
+          "macro_f1": 0.41077227020285,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.032390877960766215,
+          "log_loss": 0.036420135228100496,
+          "brier": 0.02408215690444529,
+          "macro_f1": 0.023414882120043296,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.5157894736842106,
+          "log_loss": 0.9093414015220362,
+          "brier": 0.5332006823062818,
+          "macro_f1": 0.3840715946561712,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5921052631578947,
+          "log_loss": 1.0048369662768095,
+          "brier": 0.5969768752320005,
+          "macro_f1": 0.43643105865328086,
+          "draw_recall": 0.0
+        }
+      },
+      "benchmark_origins": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5157894736842106,
+          "log_loss": 0.9931153997851851,
+          "brier": 0.5945655659855613,
+          "macro_f1": 0.38560822243234527,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.03721614637823934,
+          "log_loss": 0.03200961963183712,
+          "brier": 0.022248825758960207,
+          "macro_f1": 0.02921227087520444,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.48947368421052634,
+          "log_loss": 0.9704811806803111,
+          "brier": 0.5788332704179626,
+          "macro_f1": 0.36495202760262996,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5421052631578948,
+          "log_loss": 1.0157496188900592,
+          "brier": 0.61029786155316,
+          "macro_f1": 0.40626441726206064,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "elo": {
+      "selection_origins": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5363157894736842,
+          "log_loss": 0.9780567583547999,
+          "brier": 0.580241066690756,
+          "macro_f1": 0.39489793665025885,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.03246562213324452,
+          "log_loss": 0.036654044598024974,
+          "brier": 0.023167695759644717,
+          "macro_f1": 0.023455043849581577,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.49473684210526314,
+          "log_loss": 0.9330141417716238,
+          "brier": 0.5502600208494244,
+          "macro_f1": 0.36498965654975885,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5842105263157895,
+          "log_loss": 1.0345455026755828,
+          "brier": 0.6148477255408024,
+          "macro_f1": 0.42903773813857543,
+          "draw_recall": 0.0
+        }
+      },
+      "benchmark_origins": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.4960526315789473,
+          "log_loss": 1.0112075793642672,
+          "brier": 0.6071779596158413,
+          "macro_f1": 0.37012309746377403,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.03163372442150342,
+          "log_loss": 0.022205774352359865,
+          "brier": 0.01532820343457811,
+          "macro_f1": 0.023667661000722595,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.47368421052631576,
+          "log_loss": 0.9955057257382153,
+          "brier": 0.5963392830238442,
+          "macro_f1": 0.3533875338753387,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5184210526315789,
+          "log_loss": 1.0269094329903192,
+          "brier": 0.6180166362078384,
+          "macro_f1": 0.3868586610522094,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "temperature_calibration": {
+      "selection_origins": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5526315789473684,
+          "log_loss": 0.961916588563213,
+          "brier": 0.5690114662366088,
+          "macro_f1": 0.40833966783563574,
+          "draw_recall": 0.002173913043478261
+        },
+        "std": {
+          "accuracy": 0.0341598815414399,
+          "log_loss": 0.03630940172430826,
+          "brier": 0.024432651386300106,
+          "macro_f1": 0.02524569850412093,
+          "draw_recall": 0.004861017342390847
+        },
+        "min": {
+          "accuracy": 0.5052631578947369,
+          "log_loss": 0.9103878217868121,
+          "brier": 0.5331580253494379,
+          "macro_f1": 0.3745462272670929,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5894736842105263,
+          "log_loss": 1.0040126623816243,
+          "brier": 0.5962718085454697,
+          "macro_f1": 0.4343182498164048,
+          "draw_recall": 0.010869565217391304
+        }
+      },
+      "benchmark_origins": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5171052631578947,
+          "log_loss": 0.9971608393427028,
+          "brier": 0.5972436220218666,
+          "macro_f1": 0.38733166620778997,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.027912109783679515,
+          "log_loss": 0.02767269350766565,
+          "brier": 0.019200688286116843,
+          "macro_f1": 0.02270937558216721,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.49736842105263157,
+          "log_loss": 0.9775932901097355,
+          "brier": 0.5836666851313043,
+          "macro_f1": 0.37127371273712734,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5368421052631579,
+          "log_loss": 1.0167283885756702,
+          "brier": 0.6108205589124289,
+          "macro_f1": 0.4033896196784526,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "vector_calibration": {
+      "selection_origins": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.541578947368421,
+          "log_loss": 0.9692817745022252,
+          "brier": 0.5732615588661322,
+          "macro_f1": 0.40291068905713906,
+          "draw_recall": 0.004819277108433735
+        },
+        "std": {
+          "accuracy": 0.03842465736514521,
+          "log_loss": 0.03683465776946291,
+          "brier": 0.02442424150706176,
+          "macro_f1": 0.023067178933763335,
+          "draw_recall": 0.010776231216866456
+        },
+        "min": {
+          "accuracy": 0.48947368421052634,
+          "log_loss": 0.9160765576410738,
+          "brier": 0.5371755090224485,
+          "macro_f1": 0.37782738095238094,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5947368421052631,
+          "log_loss": 1.0140684833725042,
+          "brier": 0.6019676441794527,
+          "macro_f1": 0.43504688250309603,
+          "draw_recall": 0.024096385542168676
+        }
+      },
+      "benchmark_origins": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5,
+          "log_loss": 0.998015737821188,
+          "brier": 0.5987169370715071,
+          "macro_f1": 0.3771911445803863,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.04838099029171114,
+          "log_loss": 0.03070563018964267,
+          "brier": 0.022540753787942843,
+          "macro_f1": 0.0337871096801085,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.46578947368421053,
+          "log_loss": 0.9763035784934854,
+          "brier": 0.5827782172149963,
+          "macro_f1": 0.3533000502088879,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5342105263157895,
+          "log_loss": 1.0197278971488908,
+          "brier": 0.6146556569280178,
+          "macro_f1": 0.4010822389518846,
+          "draw_recall": 0.0
+        }
+      }
+    }
+  }
+}

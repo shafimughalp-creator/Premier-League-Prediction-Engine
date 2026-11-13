@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-11-13T01:14:41+00:00",
+  "trained_at": "2026-11-13T08:21:13+00:00",
   "data_cutoff": "2026-11-08",
   "model_type": "ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow",
   "config": "ensemble",
@@ -10,6 +10,8 @@
   "no_odds_poisson_alpha": 0.9,
   "test_log_loss": 0.9989,
   "test_accuracy": 0.5184,
+  "validation_log_loss": 0.9058,
+  "validation_accuracy": 0.5921,
   "test_brier": 0.5991,
   "test_ece": 0.064,
   "market_log_loss": 0.9931,
@@ -77,7 +79,7 @@
     }
   ],
   "data_quality": {
-    "generated_at": "2026-11-13T01:14:43+00:00",
+    "generated_at": "2026-11-13T08:21:15+00:00",
     "n_matches": 4660,
     "first_date": "2014-08-16",
     "last_date": "2026-11-08",

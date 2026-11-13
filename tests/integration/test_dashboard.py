@@ -113,3 +113,24 @@ def test_data_centre_has_refresh_control(app_path):
     assert not at.exception
     labels = [button.label for button in at.button]
     assert any("latest data" in label.lower() for label in labels)
+
+
+def test_model_performance_shows_research_evidence(app_path):
+    at = AppTest.from_file(app_path, default_timeout=300)
+    at.run()
+    at.sidebar.radio[0].set_value("Model Performance").run()
+    assert not at.exception
+    assert not [e for e in at.error], [str(e.value) for e in at.error]
+    text = " ".join(str(block.value) for block in at.markdown)
+    for heading in (
+        "Draw prediction analysis",
+        "Statistical comparison with the bookmaker consensus",
+        "Calibration, sharpness and reliability",
+        "Season-by-season historical performance",
+        "Walk-forward validation",
+        "Challenger experiments",
+        "Model status and limitations",
+    ):
+        assert heading in text, f"missing section: {heading}"
+    assert len(at.dataframe) >= 6, "research tables did not render"
+

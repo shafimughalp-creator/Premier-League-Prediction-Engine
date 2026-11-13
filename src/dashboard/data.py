@@ -99,6 +99,62 @@ def experiments() -> list[dict]:
     return data if isinstance(data, list) else []
 
 
+# --------------------------------------------------------------------------
+# Research evidence (optional; every loader degrades to an empty value)
+# --------------------------------------------------------------------------
+def _research(name: str) -> dict:
+    return read_json(config.REPORTS_DIR / "research" / name, default={}) or {}
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def research_audit() -> dict:
+    return _research("audit.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def draw_analysis() -> dict:
+    return _research("draw_analysis.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def calibration_analysis() -> dict:
+    return _research("calibration_analysis.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def paired_comparisons() -> dict:
+    return _research("paired_comparisons.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def walk_forward() -> dict:
+    return _research("walk_forward.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def challengers() -> dict:
+    return _research("challengers.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def decisions() -> dict:
+    return _research("promotion_decisions.json")
+
+
+@st.cache_data(ttl=TTL, show_spinner=False)
+def validation_predictions() -> pd.DataFrame:
+    df = _read_csv(config.EVAL_DIR / "validation_predictions.csv", ["_date"])
+    if not df.empty:
+        df = df.rename(columns={
+            "_date": "date", "_season": "season", "_home_team": "home_team",
+            "_away_team": "away_team", "_home_goals": "home_goals",
+            "_away_goals": "away_goals", "_result": "result",
+            "pred_home": "prob_home", "pred_draw": "prob_draw", "pred_away": "prob_away",
+        })
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    return df
+
+
 @st.cache_resource(show_spinner=False)
 def engine():
     from src.prediction.engine import PredictionEngine

@@ -384,3 +384,88 @@ def outcome_distribution_figure(home: int, draw: int, away: int) -> go.Figure:
     ))
     fig.update_yaxes(title="Matches")
     return plotly_layout(fig, height=280, legend=False)
+
+
+# --------------------------------------------------------------------------
+# Research evidence figures
+# --------------------------------------------------------------------------
+def draw_decile_figure(rows: list[dict]) -> go.Figure:
+    """Mean predicted draw probability against the observed draw rate."""
+    labels = [f"{r['mean_p_draw']:.0%}" for r in rows]
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=labels, y=[r["mean_p_draw"] for r in rows], name="Mean predicted",
+        marker_color=DRAW_COLOR, opacity=0.55,
+    ))
+    fig.add_trace(go.Scatter(
+        x=labels, y=[r["actual_draw_rate"] for r in rows], name="Observed draw rate",
+        mode="lines+markers", line=dict(color=PALETTE["accent_2"], width=2.5),
+        marker=dict(size=7),
+    ))
+    fig.update_xaxes(title="Draw-probability decile (mean p)")
+    fig.update_yaxes(title="Probability", tickformat=".0%", range=[0, 1])
+    return plotly_layout(fig, height=320)
+
+
+def policy_curve_figure(rows: list[dict], x_key: str = "threshold") -> go.Figure:
+    """Accuracy and macro F1 as a function of a draw decision policy."""
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=[r[x_key] for r in rows], y=[r["accuracy"] for r in rows],
+        mode="lines", name="Accuracy", line=dict(color=PALETTE["accent"], width=2.4),
+    ))
+    fig.add_trace(go.Scatter(
+        x=[r[x_key] for r in rows], y=[r["macro_f1"] for r in rows],
+        mode="lines", name="Macro F1", line=dict(color=PALETTE["accent_2"], width=2.4),
+    ))
+    fig.add_trace(go.Scatter(
+        x=[r[x_key] for r in rows], y=[r["draw_recall"] for r in rows],
+        mode="lines", name="Draw recall", line=dict(color=DRAW_COLOR, width=1.8,
+                                                     dash="dot"),
+    ))
+    fig.update_xaxes(title="Draw threshold" if x_key == "threshold" else "Draw margin")
+    fig.update_yaxes(title="Score", tickformat=".0%", range=[0, 1])
+    return plotly_layout(fig, height=320)
+
+
+def per_class_reliability_figure(rows: list[dict]) -> go.Figure:
+    colours = {"Away win": AWAY_COLOR, "Draw": DRAW_COLOR, "Home win": HOME_COLOR}
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=[0, 1], y=[0, 1], mode="lines", name="Perfect",
+        line=dict(color="rgba(255,255,255,0.22)", dash="dash", width=1),
+        showlegend=False,
+    ))
+    for name in ("Away win", "Draw", "Home win"):
+        subset = [r for r in rows if r["class"] == name]
+        if not subset:
+            continue
+        fig.add_trace(go.Scatter(
+            x=[r["mean_probability"] for r in subset],
+            y=[r["observed_rate"] for r in subset],
+            mode="lines+markers", name=name,
+            line=dict(color=colours[name], width=2),
+            marker=dict(size=5),
+        ))
+    fig.update_xaxes(title="Predicted probability", range=[0, 1], tickformat=".0%")
+    fig.update_yaxes(title="Observed frequency", range=[0, 1], tickformat=".0%")
+    return plotly_layout(fig, height=340)
+
+
+def walk_forward_figure(rows: list[dict], variants: tuple[str, ...] = ("production", "market")) -> go.Figure:
+    fig = go.Figure()
+    colours = {"production": PALETTE["accent"], "market": PALETTE["accent_2"],
+               "no_odds": PALETTE["good"]}
+    for variant in variants:
+        present = [r for r in rows if r.get(variant)]
+        if not present:
+            continue
+        fig.add_trace(go.Scatter(
+            x=[r["season"] for r in present],
+            y=[r[variant]["accuracy"] for r in present],
+            mode="lines+markers", name=variant.replace("_", " ").title(),
+            line=dict(color=colours.get(variant, PALETTE["muted"]), width=2.2),
+        ))
+    fig.update_xaxes(title="Evaluation season")
+    fig.update_yaxes(title="Accuracy", tickformat=".0%")
+    return plotly_layout(fig, height=320)

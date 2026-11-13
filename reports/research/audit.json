@@ -1,0 +1,259 @@
+{
+  "generated_at": "2026-11-13T08:47:07+00:00",
+  "git_commit": "8aff5dc (baseline before this audit)",
+  "determinism": {
+    "n_features": 237,
+    "n_features_no_odds": 223,
+    "identical": true,
+    "market_columns_in_no_odds": []
+  },
+  "metric_checks": {
+    "accuracy": {
+      "report": 0.5184210526315789,
+      "recomputed": 0.5184210526315789,
+      "match": true
+    },
+    "log_loss": {
+      "report": 0.9989114424352142,
+      "recomputed": 0.9989114424352142,
+      "match": true
+    },
+    "brier": {
+      "report": 0.5990783668951034,
+      "recomputed": 0.5990783668951034,
+      "match": true
+    },
+    "ece": {
+      "report": 0.06403239088880261,
+      "recomputed": 0.06403239088880261,
+      "match": true
+    },
+    "macro_f1": {
+      "report": 0.388696771305467,
+      "recomputed": 0.388696771305467,
+      "match": true
+    }
+  },
+  "probability_checks": {
+    "test": {
+      "pred": {
+        "all_finite": true,
+        "sums_to_one": true,
+        "min": 0.023718058482352172,
+        "max": 0.9236190151456359
+      },
+      "market": {
+        "all_finite": true,
+        "sums_to_one": true,
+        "min": 0.037550427827979384,
+        "max": 0.8872844380352859
+      },
+      "no_odds": {
+        "all_finite": true,
+        "sums_to_one": true,
+        "min": 0.05799909246843124,
+        "max": 0.8607630441437961
+      }
+    },
+    "validation": {
+      "pred": {
+        "all_finite": true,
+        "sums_to_one": true,
+        "min": 0.020703679598298302,
+        "max": 0.9250011567057761
+      },
+      "market": {
+        "all_finite": true,
+        "sums_to_one": true,
+        "min": 0.03339878713234027,
+        "max": 0.8892558419747039
+      },
+      "no_odds": {
+        "all_finite": true,
+        "sums_to_one": true,
+        "min": 0.05505917021898343,
+        "max": 0.8702185487626566
+      }
+    }
+  },
+  "artifact_checks": {
+    "features": 237,
+    "features_match_report": true,
+    "no_odds_features": 223,
+    "class_order": [
+      "A",
+      "D",
+      "H"
+    ],
+    "class_order_ok": true,
+    "test_accuracy": 0.5184210526315789,
+    "test_accuracy_matches_report": true,
+    "trained_at_matches_report": true,
+    "meta_trained_at_matches_report": true,
+    "registry_last_matches_report": true,
+    "registry_test_accuracy_matches_report": true,
+    "production_rows": 4660,
+    "n_matches": 4660,
+    "production_rows_match": true
+  },
+  "market_checks": {
+    "rows": 4660,
+    "coverage": 1.0,
+    "home_consensus_max_abs_error": 0.0,
+    "all_rows_sum_to_one": true,
+    "overround_range": [
+      1.008221277492155,
+      1.0697143178769073
+    ],
+    "price_sources_min": 4,
+    "price_sources_max": 8,
+    "price_sources_median": 6.0
+  },
+  "paired_production_vs_market": {
+    "n": 760,
+    "accuracy_a": 0.5184210526315789,
+    "accuracy_b": 0.5157894736842106,
+    "log_loss_a": 0.9989114424352142,
+    "log_loss_b": 0.9931153997851849,
+    "brier_a": 0.5990783668951034,
+    "brier_b": 0.5945655659855613,
+    "agreement_table": {
+      "both_correct": 392,
+      "only_a_correct": 2,
+      "only_b_correct": 0,
+      "both_wrong": 366
+    },
+    "mcnemar_exact_p": 1.0,
+    "accuracy_difference": {
+      "match_bootstrap": {
+        "mean": 0.002631578947368421,
+        "ci95": [
+          0.0,
+          0.006578947368421052
+        ],
+        "p_value": 0.268
+      },
+      "season_block_bootstrap": {
+        "mean": 0.002631578947368421,
+        "ci95": [
+          0.002631578947368421,
+          0.002631578947368421
+        ],
+        "p_value": 0.0,
+        "blocks": 2
+      }
+    },
+    "log_loss_difference": {
+      "match_bootstrap": {
+        "mean": -0.0057960426500291515,
+        "ci95": [
+          -0.01135218495542585,
+          -5.271090049656878e-05
+        ],
+        "p_value": 0.0485
+      },
+      "season_block_bootstrap": {
+        "mean": -0.0057960426500291515,
+        "ci95": [
+          -0.007174798664815017,
+          -0.004417286635243288
+        ],
+        "p_value": 0.0,
+        "blocks": 2
+      }
+    },
+    "brier_difference": {
+      "match_bootstrap": {
+        "mean": -0.004512800909542123,
+        "ci95": [
+          -0.008350595591264259,
+          -0.0007736694569050666
+        ],
+        "p_value": 0.021
+      },
+      "season_block_bootstrap": {
+        "mean": -0.004512800909542123,
+        "ci95": [
+          -0.005594041360823653,
+          -0.0034315604582605924
+        ],
+        "p_value": 0.0,
+        "blocks": 2
+      }
+    }
+  },
+  "paired_no_odds_vs_market": {
+    "n": 760,
+    "accuracy_a": 0.5039473684210526,
+    "accuracy_b": 0.5157894736842106,
+    "log_loss_a": 1.0231723158649388,
+    "log_loss_b": 0.9931153997851849,
+    "brier_a": 0.6126044957369856,
+    "brier_b": 0.5945655659855613,
+    "agreement_table": {
+      "both_correct": 358,
+      "only_a_correct": 25,
+      "only_b_correct": 34,
+      "both_wrong": 343
+    },
+    "mcnemar_exact_p": 0.5951904165688574,
+    "accuracy_difference": {
+      "match_bootstrap": {
+        "mean": -0.011842105263157895,
+        "ci95": [
+          -0.031578947368421054,
+          0.007894736842105263
+        ],
+        "p_value": 0.274
+      },
+      "season_block_bootstrap": {
+        "mean": -0.011842105263157895,
+        "ci95": [
+          -0.013157894736842105,
+          -0.010526315789473684
+        ],
+        "p_value": 0.0,
+        "blocks": 2
+      }
+    },
+    "log_loss_difference": {
+      "match_bootstrap": {
+        "mean": -0.030056916079753797,
+        "ci95": [
+          -0.042957262069076636,
+          -0.01737471699979053
+        ],
+        "p_value": 0.0
+      },
+      "season_block_bootstrap": {
+        "mean": -0.030056916079753797,
+        "ci95": [
+          -0.03344667260702889,
+          -0.026667159552478708
+        ],
+        "p_value": 0.0,
+        "blocks": 2
+      }
+    },
+    "brier_difference": {
+      "match_bootstrap": {
+        "mean": -0.018038929751424262,
+        "ci95": [
+          -0.026542012083693185,
+          -0.009418376201282176
+        ],
+        "p_value": 0.0
+      },
+      "season_block_bootstrap": {
+        "mean": -0.018038929751424262,
+        "ci95": [
+          -0.020425157833018126,
+          -0.015652701669830394
+        ],
+        "p_value": 0.0,
+        "blocks": 2
+      }
+    }
+  },
+  "passed": true
+}

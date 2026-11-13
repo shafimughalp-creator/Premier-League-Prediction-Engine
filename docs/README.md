@@ -33,3 +33,17 @@ python -m pytest -o addopts="-q"
 The test window is fixed at 2024/25 + 2025/26 (760 matches). Selection uses
 only 2023/24. Re-running on the cached raw files reproduces the metrics in the
 report.
+
+## Reproducing the research evidence
+
+```bash
+python -m src.research.run_audit        # reproducibility + market audit
+python -m src.research.run_diagnostics  # draw, calibration, paired statistics
+python -m src.research.run_challengers  # Dixon-Coles, core feature set
+python -m src.research.walk_forward     # expanding-window evaluation
+python -m src.research.finalize         # pre-registered promotion gates
+```
+
+Outputs land in `reports/research/`. The final decision and every gate outcome
+are in `reports/research/promotion_decisions.json`; the narrative is section 14
+of `reports/evaluation/FINAL_REPORT.md`.

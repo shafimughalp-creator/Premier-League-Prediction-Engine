@@ -391,3 +391,176 @@ Key artefacts:
 All random seeds are fixed (`RANDOM_STATE = 42`). The training report records
 the Python version and data cutoff. Re-running on the same cached raw files
 reproduces the reported metrics exactly.
+
+---
+
+# 14. Post-audit research programme (2026-11-13)
+
+Sections 1–13 are the original evaluation and are unchanged. This addendum
+records the independent audit, the controlled challenger programme, the
+walk-forward evaluation and the resulting promotion decisions. **No historical
+metric was rewritten.**
+
+## 14.1 Reproducibility and consistency audit
+
+`python -m src.research.run_audit` → `reports/research/audit.json`:
+
+| Check | Result |
+|---|---|
+| Feature matrix deterministic across two builds | PASS |
+| Market columns absent from the 223-feature no-odds set | PASS |
+| Reported accuracy / log loss / Brier / ECE / macro F1 recomputed from `test_predictions.csv` | PASS (exact) |
+| Every probability row finite and sums to 1 | PASS |
+| Artifact feature count, class order `A/D/H`, `trained_at`, test accuracy agree with report/metadata/registry | PASS |
+| Market consensus reconstructed from component prices | PASS (max abs error 0.0) |
+| Price-source count | 4–8 sources (median 6); `mkt_books` counts price sources, not distinct bookmakers |
+| Mean overround range | 1.008 – 1.070 |
+
+The audit also confirmed that the reported test metrics are reproducible from
+the held-out prediction file, not copied from a separate calculation.
+
+## 14.2 New validation evidence
+
+`reports/evaluation/validation_predictions.csv` (380 rows) and
+`test_predictions.csv` (760 rows) now carry production, market, no-odds and
+pre-calibration probabilities. `training_report.json`, the model artifact,
+metadata and experiment registry gained matching validation metrics. This made
+draw and calibration selection possible on 2023/24 without touching the test
+seasons.
+
+## 14.3 Draw blindness
+
+| Statistic (760 test matches) | Value |
+|---|---|
+| Actual draw rate | 25.9% |
+| Mean predicted draw probability | 22.0% |
+| Median predicted draw probability | 23.1% |
+| Matches where draw is argmax | 0 |
+| Draw recall | 0.0% |
+| Mean margin (p(draw) − strongest other) | −0.346 |
+
+A validation-only sweep over draw thresholds (0.18–0.36) and probability
+margins (0.00–0.16) selected a threshold of **0.28**: 2023/24 accuracy stayed at
+59.21% while macro F1 rose from 0.436 to 0.463 (11 draws predicted). The
+pre-registered replication gate required the policy to hold across
+selection-grade walk-forward origins:
+
+| Criterion | Result |
+|---|---|
+| Mean accuracy change across 5 origins | **−0.53 pp** (limit −0.50 pp) |
+| Origins with a macro-F1 gain | **3 of 5** (required 4) |
+| Worst origin accuracy change | **−2.63 pp** (2020/21; 131 draws forced) |
+| Historical test change (benchmark only) | −1.45 pp accuracy, +0.021 macro F1 |
+
+The policy was **rejected**. The 2020/21 origin is the decisive counter-example:
+the same validation rule selected a wide margin and forced 131 draws.
+
+## 14.4 Calibration
+
+| Method | Val log loss | Val ECE | Test log loss | Test ECE |
+|---|---|---|---|---|
+| Uncalibrated | 0.9093 | 0.0539 | 0.9935 | 0.0381 |
+| Temperature | 0.9058 | 0.0586 | 0.9989 | 0.0640 |
+| Vector scaling | 0.9049 | 0.0439 | 0.9987 | 0.0591 |
+
+Vector scaling improved validation log loss by 0.0009, below the pre-registered
+0.002 margin, and was worse than temperature scaling at 0 of 5 selection-grade
+walk-forward origins. **Temperature scaling was retained.** The fact that raw
+probabilities score better on the already-examined test seasons is reported as
+a limitation; it was not used to re-select calibration.
+
+## 14.5 Paired comparison with the bookmaker consensus
+
+| Agreement (760 test matches) | Count |
+|---|---|
+| Both correct | 392 |
+| Production only correct | 2 |
+| Market only correct | 0 |
+| Both incorrect | 366 |
+
+- Exact McNemar p = 1.00 (two discordant matches).
+- Accuracy difference (model − market): **+0.26 pp**, paired-bootstrap 95% CI
+  **0.00 to +0.66 pp**.
+- Log-loss difference (model − market): **+0.0058** (model worse), bootstrap
+  95% CI excludes zero.
+- Season-block bootstrap is uninformative with only two test seasons and is
+  reported for transparency, not as a second independent test.
+
+Conclusion: the model matches market accuracy within sampling noise and has
+slightly worse probability quality. There is no evidence of a bookmaker edge.
+
+## 14.6 Walk-forward evaluation
+
+Expanding-window protocol: train on all seasons before the inner-validation
+season, select every hyper-parameter/blend/calibration on that season, score the
+next season once. Selection-grade origins are 2019/20–2023/24; 2024/25–2025/26
+are benchmark-only.
+
+| Variant | Mean accuracy | Mean log loss | Mean macro F1 |
+|---|---|---|---|
+| Production | 55.26% ± 3.4 pp | 0.9619 | 0.408 |
+| Market consensus | 55.53% ± 3.2 pp | 0.9578 | 0.411 |
+| No-odds model | 52.63% ± 4.2 pp | 0.9840 | 0.393 |
+| Elo + logistic | 53.63% ± 3.3 pp | 0.9781 | 0.395 |
+
+The selected market weight was unstable (`beta` 0.05–0.60), and the production
+model never separated from the market. This is consistent with the fixed-split
+result and is the strongest evidence that the 51.84% test figure is a realistic
+estimate rather than an artefact of one season.
+
+## 14.7 Challengers
+
+| Challenger | Validation | Test (benchmark only) | Decision |
+|---|---|---|---|
+| Dixon-Coles standalone | 56.84% acc, 0.9364 LL | 46.84% acc, 1.0573 LL | Rejected |
+| Dixon-Coles + production (w=0.08) | 0.90548 LL (−0.0003) | 51.45% acc, 1.0000 LL | Rejected — below 0.002 gate |
+| Core odds-free features (143) | 0.9331 LL (−0.0045), 57.89% acc (−2.63 pp) | 50.13% acc, 1.0214 LL | Rejected — accuracy gate missed |
+
+Dixon-Coles was fitted with exponential time decay (`xi = 0.0018`), a low-score
+correction (`rho = 0.0221`) and home advantage 0.178, with an internal date
+cutoff so future rows cannot enter the fit. It improved draw probabilities but
+not overall probability quality.
+
+## 14.8 Promotion decision
+
+`reports/research/promotion_decisions.json`:
+
+| Candidate | Gate outcome |
+|---|---|
+| Draw threshold / margin policy | Rejected — did not replicate |
+| Vector scaling | Rejected — 0.0009 < 0.002 validation gain |
+| Core feature set | Rejected — accuracy loss 2.63 pp |
+| Dixon-Coles blend | Rejected — 0.0003 < 0.002 validation gain |
+
+**COMPLETE — EXISTING MODEL RETAINED.** The production ensemble, temperature
+scaling and argmax rule are unchanged.
+
+## 14.9 Verification
+
+- Full suite: `python -m pytest -o addopts="-q"` → **127 passed** (unit,
+  leakage, prediction, integration, dashboard AppTest, slow full-history audit).
+- New tests cover draw decision rules, reliability/Brier decomposition,
+  vector scaling, paired bootstrap, Dixon-Coles leakage isolation and every
+  promotion gate.
+- Dashboard AppTest asserts the new Model Performance sections render: draw
+  analysis, paired market comparison, calibration/sharpness, season table,
+  walk-forward, challengers and status/limitations.
+- Pipeline failure tests: a simulated refresh failure falls back to cached data
+  and still exits `ok`; a simulated training failure restores the incumbent
+  artifact byte-for-byte and records `status: failed`.
+- `python -m compileall src app.py` passes. Ruff is not installed in this
+  environment; no Ruff result is claimed.
+
+## 14.10 New artefacts
+
+| Artefact | Path |
+|---|---|
+| Reproducibility audit | `reports/research/audit.json` |
+| Draw analysis | `reports/research/draw_analysis.json` |
+| Calibration analysis | `reports/research/calibration_analysis.json` |
+| Paired comparisons | `reports/research/paired_comparisons.json` |
+| Walk-forward evaluation | `reports/research/walk_forward.json` |
+| Walk-forward predictions | `reports/research/walk_forward_predictions/*.csv` |
+| Challenger experiments | `reports/research/challengers.json` |
+| Promotion decisions | `reports/research/promotion_decisions.json` |
+| Validation predictions | `reports/evaluation/validation_predictions.csv` |

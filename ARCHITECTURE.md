@@ -52,8 +52,16 @@
 │   ├── models/
 │   │   ├── training.py           candidate zoo, calibration, blends, artifact
 │   │   ├── ensemble.py           soft-voting wrapper
+│   │   ├── dixon_coles.py        time-decayed goal model (research)
 │   │   └── evaluation.py         accuracy, F1, log loss, Brier, ECE, CI
 │   ├── prediction/engine.py      upcoming / manual / retrospective scoring
+│   ├── research/
+│   │   ├── diagnostics.py        draw rules, calibration, paired statistics
+│   │   ├── run_audit.py          reproducibility + market-consensus audit
+│   │   ├── run_diagnostics.py    draw/calibration/paired reports
+│   │   ├── run_challengers.py    Dixon-Coles + core-feature experiments
+│   │   ├── walk_forward.py       expanding-window evaluation
+│   │   └── finalize.py           pre-registered promotion gates
 │   ├── utilities/io.py           atomic JSON read/write
 │   └── dashboard/
 │       ├── theme.py              CSS design system + Plotly layout
@@ -74,7 +82,8 @@
 │   ├── models/model.pkl          production ensemble + no-odds variant
 │   └── metadata/model_meta.json  human-readable run summary
 ├── reports/
-│   ├── evaluation/               training report + held-out predictions
+│   ├── evaluation/               training report + held-out/validation predictions
+│   ├── research/                 audit, diagnostics, walk-forward, decisions
 │   ├── experiments/              append-only experiment registry
 │   └── data_quality/             quality + leakage reports
 └── .github/workflows/            test.yml, update.yml
@@ -95,8 +104,9 @@
 - Team names are canonicalised through `config.TEAM_ALIASES`.
 - `season_code` is forced to `str` at both build and load time. This matters:
   an integer round-trip through CSV silently broke season-transition logic.
-- Bookmaker prices from six providers are converted to overround-normalised
-  probabilities; dispersion, book count, favourite and entropy are derived.
+- Bookmaker prices from seven providers (plus average and maximum series) are
+  converted to overround-normalised probabilities; dispersion, price-source
+  count, favourite and entropy are derived.
 - Output columns are split into:
   - identity: `match_id`, `date`, `time`, `season_code`, `season`, teams
   - target: `home_goals`, `away_goals`, `result`
@@ -160,6 +170,29 @@ equal weights). The best of {best single, ensemble} is carried forward, then:
 
 Only after all three are frozen is the test season scored once. The production
 artifact is then refit on train + validation + test + current.
+
+Validation and pre-calibration probabilities are exported to
+`reports/evaluation/validation_predictions.csv` and `test_predictions.csv`.
+These files are the only inputs to the research diagnostics, so no experiment
+re-runs the training pipeline or touches the model artifact.
+
+### 4b. Research and promotion gates (`src/research/`)
+
+| Stage | Script | Output |
+|---|---|---|
+| Reproducibility audit | `run_audit.py` | `audit.json` |
+| Draw / calibration / paired stats | `run_diagnostics.py` | `draw_analysis.json`, `calibration_analysis.json`, `paired_comparisons.json` |
+| Challengers | `run_challengers.py` | `challengers.json` |
+| Expanding-window evaluation | `walk_forward.py` | `walk_forward.json` + per-season prediction CSVs |
+| Promotion decisions | `finalize.py` | `promotion_decisions.json` |
+
+The gates are fixed before running the experiments. A draw policy must pass the
+validation gate **and** replicate across selection-grade walk-forward origins
+(mean accuracy change ≥ −0.5 pp, macro-F1 gain in at least four of five
+origins, no origin worse than −1 pp). Calibration, core-feature and goal-model
+challengers must improve validation log loss by at least 0.002 without an
+unacceptable accuracy loss. The historical test seasons are copied into the
+reports for transparency but never enter a gate.
 
 ### 5. Prediction (`src/prediction/engine.py`)
 

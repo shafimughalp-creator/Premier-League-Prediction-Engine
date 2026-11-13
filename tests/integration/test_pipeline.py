@@ -92,3 +92,42 @@ def test_predictions_are_stable_across_repeated_runs():
         assert left["match_id"] == right["match_id"]
         assert left["prob_home"] == pytest.approx(right["prob_home"], abs=1e-9)
         assert left["predicted"] == right["predicted"]
+
+
+def test_refresh_failure_falls_back_to_cached_data(monkeypatch):
+    from src import pipeline
+
+    def _boom(**kwargs):
+        raise RuntimeError("simulated network failure")
+
+    monkeypatch.setattr(pipeline.acquisition, "refresh", _boom)
+    state = pipeline.run(offline=False, retrain="never", predict_only=True)
+    assert state["status"] == "ok"
+    steps = {step["step"]: step["status"] for step in state["steps"]}
+    assert steps["refresh"] == "degraded"
+    assert steps["process"] == "ok"
+    assert state["n_matches"] > 4000
+
+
+def test_training_failure_keeps_the_incumbent_artifact(monkeypatch):
+    from src import pipeline
+
+    model_path = config.MODELS_DIR / "model.pkl"
+    before = model_path.read_bytes()
+
+    def _boom(*args, **kwargs):
+        raise RuntimeError("simulated training failure")
+
+    monkeypatch.setattr("src.models.training.train", _boom)
+    monkeypatch.setattr(pipeline, "should_retrain", lambda *a, **k: (True, "test"))
+    with pytest.raises(RuntimeError):
+        pipeline.run(offline=True, retrain="always", predict_only=False)
+
+    assert model_path.read_bytes() == before
+    failed = read_json(config.DATA_DIR / "pipeline_state.json", default={})
+    assert failed["status"] == "failed"
+    assert "simulated training failure" in (failed.get("error") or "")
+
+    # Leave the pipeline state healthy for the remaining tests.
+    pipeline.run(offline=True, retrain="never", predict_only=True)
+

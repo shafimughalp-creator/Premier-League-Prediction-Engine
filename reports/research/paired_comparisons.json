@@ -1,0 +1,299 @@
+{
+  "generated_at": "2026-11-13T08:22:05+00:00",
+  "test": {
+    "production_vs_market": {
+      "n": 760,
+      "accuracy_a": 0.5184210526315789,
+      "accuracy_b": 0.5157894736842106,
+      "log_loss_a": 0.9989114424352142,
+      "log_loss_b": 0.9931153997851849,
+      "brier_a": 0.5990783668951034,
+      "brier_b": 0.5945655659855613,
+      "agreement_table": {
+        "both_correct": 392,
+        "only_a_correct": 2,
+        "only_b_correct": 0,
+        "both_wrong": 366
+      },
+      "mcnemar_exact_p": 1.0,
+      "accuracy_difference": {
+        "match_bootstrap": {
+          "mean": 0.002631578947368421,
+          "ci95": [
+            0.0,
+            0.006578947368421052
+          ],
+          "p_value": 0.268
+        },
+        "season_block_bootstrap": {
+          "mean": 0.002631578947368421,
+          "ci95": [
+            0.002631578947368421,
+            0.002631578947368421
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      },
+      "log_loss_difference": {
+        "match_bootstrap": {
+          "mean": -0.0057960426500291515,
+          "ci95": [
+            -0.01135218495542585,
+            -5.271090049656878e-05
+          ],
+          "p_value": 0.0485
+        },
+        "season_block_bootstrap": {
+          "mean": -0.0057960426500291515,
+          "ci95": [
+            -0.007174798664815017,
+            -0.004417286635243288
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      },
+      "brier_difference": {
+        "match_bootstrap": {
+          "mean": -0.004512800909542123,
+          "ci95": [
+            -0.008350595591264259,
+            -0.0007736694569050666
+          ],
+          "p_value": 0.021
+        },
+        "season_block_bootstrap": {
+          "mean": -0.004512800909542123,
+          "ci95": [
+            -0.005594041360823653,
+            -0.0034315604582605924
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      }
+    },
+    "no_odds_vs_market": {
+      "n": 760,
+      "accuracy_a": 0.5039473684210526,
+      "accuracy_b": 0.5157894736842106,
+      "log_loss_a": 1.0231723158649388,
+      "log_loss_b": 0.9931153997851849,
+      "brier_a": 0.6126044957369856,
+      "brier_b": 0.5945655659855613,
+      "agreement_table": {
+        "both_correct": 358,
+        "only_a_correct": 25,
+        "only_b_correct": 34,
+        "both_wrong": 343
+      },
+      "mcnemar_exact_p": 0.5951904165688574,
+      "accuracy_difference": {
+        "match_bootstrap": {
+          "mean": -0.011842105263157895,
+          "ci95": [
+            -0.031578947368421054,
+            0.007894736842105263
+          ],
+          "p_value": 0.274
+        },
+        "season_block_bootstrap": {
+          "mean": -0.011842105263157895,
+          "ci95": [
+            -0.013157894736842105,
+            -0.010526315789473684
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      },
+      "log_loss_difference": {
+        "match_bootstrap": {
+          "mean": -0.030056916079753797,
+          "ci95": [
+            -0.042957262069076636,
+            -0.01737471699979053
+          ],
+          "p_value": 0.0
+        },
+        "season_block_bootstrap": {
+          "mean": -0.030056916079753797,
+          "ci95": [
+            -0.03344667260702889,
+            -0.026667159552478708
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      },
+      "brier_difference": {
+        "match_bootstrap": {
+          "mean": -0.018038929751424262,
+          "ci95": [
+            -0.026542012083693185,
+            -0.009418376201282176
+          ],
+          "p_value": 0.0
+        },
+        "season_block_bootstrap": {
+          "mean": -0.018038929751424262,
+          "ci95": [
+            -0.020425157833018126,
+            -0.015652701669830394
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      }
+    },
+    "production_vs_no_odds": {
+      "n": 760,
+      "accuracy_a": 0.5184210526315789,
+      "accuracy_b": 0.5039473684210526,
+      "log_loss_a": 0.9989114424352142,
+      "log_loss_b": 1.0231723158649388,
+      "brier_a": 0.5990783668951034,
+      "brier_b": 0.6126044957369856,
+      "agreement_table": {
+        "both_correct": 359,
+        "only_a_correct": 35,
+        "only_b_correct": 24,
+        "both_wrong": 342
+      },
+      "mcnemar_exact_p": 0.3850529155229255,
+      "accuracy_difference": {
+        "match_bootstrap": {
+          "mean": 0.014473684210526316,
+          "ci95": [
+            -0.005263157894736842,
+            0.034210526315789476
+          ],
+          "p_value": 0.1795
+        },
+        "season_block_bootstrap": {
+          "mean": 0.014473684210526316,
+          "ci95": [
+            0.013157894736842105,
+            0.015789473684210527
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      },
+      "log_loss_difference": {
+        "match_bootstrap": {
+          "mean": 0.024260873429724644,
+          "ci95": [
+            0.011102656102971592,
+            0.03757877802073405
+          ],
+          "p_value": 0.0005
+        },
+        "season_block_bootstrap": {
+          "mean": 0.024260873429724644,
+          "ci95": [
+            0.022249872917235416,
+            0.02627187394221387
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      },
+      "brier_difference": {
+        "match_bootstrap": {
+          "mean": 0.013526128841882139,
+          "ci95": [
+            0.004531733511010439,
+            0.0224958671765308
+          ],
+          "p_value": 0.004
+        },
+        "season_block_bootstrap": {
+          "mean": 0.013526128841882139,
+          "ci95": [
+            0.012221141211569803,
+            0.014831116472194473
+          ],
+          "p_value": 0.0,
+          "blocks": 2
+        }
+      }
+    }
+  },
+  "validation": {
+    "production_vs_market": {
+      "n": 380,
+      "accuracy_a": 0.5921052631578947,
+      "accuracy_b": 0.5921052631578947,
+      "log_loss_a": 0.9057622474615572,
+      "log_loss_b": 0.9093414015220362,
+      "brier_a": 0.5309161495957794,
+      "brier_b": 0.5332006823062818,
+      "agreement_table": {
+        "both_correct": 224,
+        "only_a_correct": 1,
+        "only_b_correct": 1,
+        "both_wrong": 154
+      },
+      "mcnemar_exact_p": 1.0,
+      "accuracy_difference": {
+        "match_bootstrap": {
+          "mean": 0.0,
+          "ci95": [
+            -0.007894736842105263,
+            0.007894736842105263
+          ],
+          "p_value": 1.0
+        },
+        "season_block_bootstrap": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "blocks": 1
+        }
+      },
+      "log_loss_difference": {
+        "match_bootstrap": {
+          "mean": 0.0035791540604790395,
+          "ci95": [
+            -0.004821390730678171,
+            0.011691786521531378
+          ],
+          "p_value": 0.3955
+        },
+        "season_block_bootstrap": {
+          "mean": 0.0035791540604790395,
+          "ci95": [
+            0.0035791540604790395,
+            0.0035791540604790395
+          ],
+          "p_value": 0.0,
+          "blocks": 1
+        }
+      },
+      "brier_difference": {
+        "match_bootstrap": {
+          "mean": 0.0022845327105024222,
+          "ci95": [
+            -0.0026847694203862515,
+            0.007500494586307563
+          ],
+          "p_value": 0.366
+        },
+        "season_block_bootstrap": {
+          "mean": 0.0022845327105024222,
+          "ci95": [
+            0.0022845327105024222,
+            0.0022845327105024222
+          ],
+          "p_value": 0.0,
+          "blocks": 1
+        }
+      }
+    }
+  }
+}

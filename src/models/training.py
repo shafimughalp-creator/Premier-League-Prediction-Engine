@@ -325,12 +325,13 @@ def _prepare(df: pd.DataFrame, columns: list[str]):
     return df[columns].astype("float64"), df["_label"].to_numpy(dtype=int)
 
 
-def _fit_candidates(train, val, columns, ytr, yv):
+def _fit_candidates(train, val, columns, ytr, yv, candidates=None):
     Xtr, _ = _prepare(train, columns)
     Xv, _ = _prepare(val, columns)
     fitted = {}
     records = []
-    for spec in CANDIDATES:
+    specs = CANDIDATES if candidates is None else candidates
+    for spec in specs:
         name = spec["name"]
         try:
             model, best_iter, val_proba = _fit_once(
@@ -389,13 +390,13 @@ def _build_ensemble(fitted: dict, yv: np.ndarray) -> dict | None:
     }
 
 
-def _select_and_score(train, val, test, current, columns, label: str):
+def _select_and_score(train, val, test, current, columns, label: str, candidates=None):
     ytr = train["_label"].to_numpy(int)
     yv = val["_label"].to_numpy(int)
     yt = test["_label"].to_numpy(int)
     Xt, _ = _prepare(test, columns)
 
-    fitted, candidate_records = _fit_candidates(train, val, columns, ytr, yv)
+    fitted, candidate_records = _fit_candidates(train, val, columns, ytr, yv, candidates)
 
     # Baselines
     prior_val = _prior_proba(ytr, len(val))
@@ -477,6 +478,13 @@ def _select_and_score(train, val, test, current, columns, label: str):
     test_proba = apply_temperature(test_base, market_temperature)
     test_metrics = evaluate(yt, test_proba)
 
+    # Validation probabilities from the *same* frozen pipeline, so decision
+    # rules and calibration can be studied without touching the test seasons.
+    val_final = blended_val
+    if market_beta < 1.0:
+        val_final = market_beta * blended_val + (1.0 - market_beta) * market_val
+    val_proba = apply_temperature(val_final, market_temperature)
+
     # The same baselines scored on the *test* rows, so the dashboard compares
     # like with like. The validation baselines above drive model selection; the
     # test baselines below are purely descriptive evidence.
@@ -524,13 +532,17 @@ def _select_and_score(train, val, test, current, columns, label: str):
         "poisson_alpha": alpha,
         "market_beta": market_beta,
         "val_log_loss": market_ll,
+        "val_metrics": evaluate(yv, val_proba),
         "test_metrics": test_metrics,
         "candidates": candidate_records,
         "baselines": baseline_records,
         "test_baselines": test_baselines,
         "ensemble": ensemble,
         "test_proba": test_proba,
+        "test_proba_precal": test_base,
         "test_rows": test,
+        "val_proba": val_proba,
+        "val_proba_precal": val_final,
         "top_features": _feature_importance(production_model, columns),
         "n_estimators": (max(60, int(round(best["best_iter"] * 1.15)))
                          if not use_ensemble else None),
@@ -568,6 +580,14 @@ def train(seed_data: bool = True) -> dict:
         market_metrics = evaluate(test_df["_label"].to_numpy(int)[mask], market[mask])
         market_metrics["note"] = "Bookmaker consensus, overround-normalised"
 
+    market_val = val_df[["mkt_away", "mkt_draw", "mkt_home"]].to_numpy(dtype=float)
+    val_mask = np.isfinite(market_val).all(axis=1)
+    market_val_metrics = None
+    if val_mask.sum() >= 50:
+        market_val_metrics = evaluate(
+            val_df["_label"].to_numpy(int)[val_mask], market_val[val_mask])
+        market_val_metrics["note"] = "Bookmaker consensus, overround-normalised"
+
     accepted = (full["test_metrics"]["accuracy"] >= config.MIN_TEST_ACCURACY
                 and full["test_metrics"]["log_loss"] <= config.MAX_TEST_LOGLOSS)
 
@@ -591,8 +611,10 @@ def train(seed_data: bool = True) -> dict:
         "val_end": config.VAL_END,
         "production_rows": int(len(train_df) + len(val_df) + len(test_df) + len(current_df)),
         "metrics": {
+            "validation": full["val_metrics"],
             "test": full["test_metrics"],
             "market_baseline": market_metrics,
+            "market_baseline_validation": market_val_metrics,
             "no_odds": no_odds["test_metrics"],
         },
         "no_odds": {
@@ -639,7 +661,9 @@ def train(seed_data: bool = True) -> dict:
         "no_odds_ensemble": {k: v for k, v in (no_odds["ensemble"] or {}).items()
                              if k != "val_proba"},
         "test_metrics": full["test_metrics"],
+        "validation_metrics": full["val_metrics"],
         "market_baseline": market_metrics,
+        "market_baseline_validation": market_val_metrics,
         "no_odds_metrics": no_odds["test_metrics"],
         "season_breakdown": season_breakdown(test_df, test_df["_label"].to_numpy(int),
                                              full["test_proba"]),
@@ -666,6 +690,8 @@ def train(seed_data: bool = True) -> dict:
         "no_odds_poisson_alpha": round(no_odds["poisson_alpha"], 4),
         "test_log_loss": round(full["test_metrics"]["log_loss"], 4),
         "test_accuracy": round(full["test_metrics"]["accuracy"], 4),
+        "validation_log_loss": round(full["val_metrics"]["log_loss"], 4),
+        "validation_accuracy": round(full["val_metrics"]["accuracy"], 4),
         "test_brier": round(full["test_metrics"]["brier"], 4),
         "test_ece": round(full["test_metrics"]["ece"], 4),
         "market_log_loss": round(market_metrics["log_loss"], 4) if market_metrics else None,
@@ -687,7 +713,41 @@ def train(seed_data: bool = True) -> dict:
     test_out["predicted"] = [config.INDEX_TO_CODE[i] for i in full["test_proba"].argmax(axis=1)]
     test_out["confidence"] = full["test_proba"].max(axis=1)
     test_out["correct"] = (test_out["predicted"] == test_out["_result"]).astype(int)
+    test_out["precal_away"] = full["test_proba_precal"][:, 0]
+    test_out["precal_draw"] = full["test_proba_precal"][:, 1]
+    test_out["precal_home"] = full["test_proba_precal"][:, 2]
+    test_out["market_away"] = market[:, 0]
+    test_out["market_draw"] = market[:, 1]
+    test_out["market_home"] = market[:, 2]
+    test_out["no_odds_away"] = no_odds["test_proba"][:, 0]
+    test_out["no_odds_draw"] = no_odds["test_proba"][:, 1]
+    test_out["no_odds_home"] = no_odds["test_proba"][:, 2]
+    test_out["no_odds_predicted"] = [
+        config.INDEX_TO_CODE[i] for i in no_odds["test_proba"].argmax(axis=1)]
+    test_out["no_odds_correct"] = (
+        test_out["no_odds_predicted"] == test_out["_result"]).astype(int)
     test_out.to_csv(config.EVAL_DIR / "test_predictions.csv", index=False)
+
+    # Validation predictions: the only set used for decision-rule and
+    # calibration selection. Kept separate from the historical test file.
+    val_out = val_df[["_date", "_season", "_home_team", "_away_team",
+                      "_home_goals", "_away_goals", "_result"]].copy()
+    val_out["pred_away"] = full["val_proba"][:, 0]
+    val_out["pred_draw"] = full["val_proba"][:, 1]
+    val_out["pred_home"] = full["val_proba"][:, 2]
+    val_out["predicted"] = [config.INDEX_TO_CODE[i] for i in full["val_proba"].argmax(axis=1)]
+    val_out["confidence"] = full["val_proba"].max(axis=1)
+    val_out["correct"] = (val_out["predicted"] == val_out["_result"]).astype(int)
+    val_out["precal_away"] = full["val_proba_precal"][:, 0]
+    val_out["precal_draw"] = full["val_proba_precal"][:, 1]
+    val_out["precal_home"] = full["val_proba_precal"][:, 2]
+    val_out["market_away"] = market_val[:, 0]
+    val_out["market_draw"] = market_val[:, 1]
+    val_out["market_home"] = market_val[:, 2]
+    val_out["no_odds_away"] = no_odds["val_proba"][:, 0]
+    val_out["no_odds_draw"] = no_odds["val_proba"][:, 1]
+    val_out["no_odds_home"] = no_odds["val_proba"][:, 2]
+    val_out.to_csv(config.EVAL_DIR / "validation_predictions.csv", index=False)
 
     # Experiment registry
     registry_path = config.EXPERIMENT_DIR / "experiment_log.json"
@@ -698,15 +758,23 @@ def train(seed_data: bool = True) -> dict:
         except json.JSONDecodeError:
             registry = []
     registry.append({
+        "record_type": "training",
         "trained_at": trained_at,
         "selected_model": full["selected"],
         "poisson_alpha": full["poisson_alpha"],
         "temperature": full["temperature"],
         "candidates": full["candidates"],
+        "validation_metrics": full["val_metrics"],
         "test_metrics": full["test_metrics"],
         "no_odds_test_metrics": no_odds["test_metrics"],
     })
-    registry_path.write_text(json.dumps(registry[-20:], indent=2), encoding="utf-8")
+    # Keep every research record (append-only governance) but cap the training
+    # run history so the file does not grow without bound. Order is preserved.
+    training_idx = [i for i, r in enumerate(registry)
+                    if r.get("record_type", "training") == "training"]
+    drop = set(training_idx[:-20])
+    registry = [r for i, r in enumerate(registry) if i not in drop]
+    registry_path.write_text(json.dumps(registry, indent=2), encoding="utf-8")
 
     build_standings(matches)
     log.info("Saved model -> %s", config.MODELS_DIR / "model.pkl")

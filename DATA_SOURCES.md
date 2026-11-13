@@ -21,7 +21,8 @@ the pipeline degrades to the cached copy and records the failure in
 - `FTHG`, `FTAG`, `FTR` (full-time goals and result)
 - `HS`, `AS`, `HST`, `AST`, `HC`, `AC`, `HF`, `AF`, `HY`, `AY`, `HR`, `AR`
   (shots, shots on target, corners, fouls, cards)
-- `B365*`, `BW*`, `IW*`, `PS*`, `WH*`, `VC*` bookmaker prices
+- `B365*`, `BW*`, `IW*`, `PS*`, `WH*`, `VC*`, `BFD*` bookmaker prices, plus the
+  `Avg*` and `Max*` aggregate series
 
 ### Season codes
 
@@ -45,19 +46,27 @@ range of **2014-08-16 → 2026-11-08**.
 
 ### Derived market fields
 
-Bookmaker prices are converted to implied probabilities by removing the
+Each price source is converted to implied probabilities by removing its own
 overround:
 
 ```
 raw_i     = 1 / decimal_odds_i
 overround = sum(raw_i)
-mkt_i     = raw_i / overround
+p_i       = raw_i / overround
 ```
 
-The number of contributing bookmakers, the maximum dispersion between them, the
-favourite and the entropy of the consensus are also stored. These are the
-`mkt_*` columns. They are **pre-match** by definition (prices are published
-before kick-off) but they are excluded from the `no_odds` model variant.
+The consensus `mkt_home/draw/away` is the **row-wise mean of every available
+source**: seven bookmaker triples plus the average-odds and maximum-odds series.
+`mkt_books` counts the number of contributing **price sources** (4–8, median 6),
+not distinct bookmakers, and `mkt_disp_*` is the standard deviation across those
+sources. The consensus is verified by reconstruction in
+`reports/research/audit.json` (maximum absolute error 0.0).
+
+These are the `mkt_*` columns. They are **pre-match** by definition (prices are
+published before kick-off) but they are excluded from the `no_odds` model
+variant. The source does not publish a precise timestamp per price, so the
+project treats the snapshot as closing consensus; this is a documented
+approximation, not a verified publication time.
 
 ## 2. openfootball / football.json — fixture fallback
 
@@ -104,8 +113,13 @@ repository always carries a timestamped record of what the model saw.
 ## 5. Known limitations
 
 - football-data prices are a *consensus snapshot*, not a timestamped order book.
-- Early seasons have fewer bookmakers; the `mkt_books` count is exposed as a
-  feature so the model can learn to trust thin markets less.
+  The feed does not state a publication time, so the project cannot prove that
+  every price was available at a precise pre-match instant; it is treated as a
+  closing snapshot throughout.
+- Early seasons have fewer price sources; `mkt_books` exposes the count (4–8,
+  median 6) so the model can learn to trust thin markets less.
+- `mkt_books` counts price sources (bookmakers plus the average and maximum
+  series), not distinct bookmakers.
 - The 2026/27 season is in progress; metrics that include it are labelled
   "partial" and are never used for model selection.
 - Team names are normalised through `TEAM_ALIASES`; a genuinely new club would

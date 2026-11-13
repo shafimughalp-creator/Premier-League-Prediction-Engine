@@ -1,0 +1,755 @@
+{
+  "generated_at": "2026-11-13T08:27:07+00:00",
+  "selection_data": "2023/24 validation only",
+  "test_data": "2024/25 + 2025/26 historical benchmark",
+  "dixon_coles": {
+    "configuration": {
+      "xi": 0.0018,
+      "rho": 0.02208864185544901,
+      "home_advantage": 0.1775691139807072,
+      "intercept": 0.3418970336440527,
+      "teams": 33
+    },
+    "validation": {
+      "log_loss": 0.9364451598331163,
+      "accuracy": 0.5684210526315789,
+      "balanced_accuracy": 0.47584978706929926,
+      "macro_f1": 0.4190696441906964,
+      "brier": 0.5521877886970279,
+      "ece": 0.06351835221539649,
+      "correct": 216,
+      "incorrect": 164,
+      "n": 380,
+      "accuracy_ci95": [
+        0.5182,
+        0.6173
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5298013245033113,
+          "recall": 0.6504065040650406,
+          "f1": 0.583941605839416,
+          "support": 123
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 82
+        },
+        "Home win": {
+          "precision": 0.5938864628820961,
+          "recall": 0.7771428571428571,
+          "f1": 0.6732673267326733,
+          "support": 175
+        }
+      },
+      "confusion_matrix": [
+        [
+          80,
+          0,
+          43
+        ],
+        [
+          32,
+          0,
+          50
+        ],
+        [
+          39,
+          0,
+          136
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 151,
+        "Draw": 0,
+        "Home win": 229
+      }
+    },
+    "test": {
+      "log_loss": 1.0572770627408574,
+      "accuracy": 0.46842105263157896,
+      "balanced_accuracy": 0.41227890196883044,
+      "macro_f1": 0.3510730155723407,
+      "brier": 0.6376365251190631,
+      "ece": 0.06879100353579193,
+      "correct": 356,
+      "incorrect": 404,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4332,
+        0.504
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.4280821917808219,
+          "recall": 0.508130081300813,
+          "f1": 0.4646840148698885,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.4935897435897436,
+          "recall": 0.7287066246056783,
+          "f1": 0.5885350318471337,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          125,
+          0,
+          121
+        ],
+        [
+          81,
+          0,
+          116
+        ],
+        [
+          86,
+          0,
+          231
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 292,
+        "Draw": 0,
+        "Home win": 468
+      }
+    },
+    "blend_with_no_odds": {
+      "validation_selection": {
+        "weight": 0.4,
+        "log_loss": 0.9292367460138112,
+        "accuracy": 0.5921052631578947,
+        "macro_f1": 0.4346624155693368,
+        "brier": 0.5466798090719384
+      },
+      "test": {
+        "log_loss": 1.024664493468295,
+        "accuracy": 0.49473684210526314,
+        "balanced_accuracy": 0.43239892966753013,
+        "macro_f1": 0.36841798298906436,
+        "brier": 0.61432448714027,
+        "ece": 0.038795944486882526,
+        "correct": 376,
+        "incorrect": 384,
+        "n": 760,
+        "accuracy_ci95": [
+          0.4593,
+          0.5302
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.48031496062992124,
+            "recall": 0.4959349593495935,
+            "f1": 0.488,
+            "support": 246
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 197
+          },
+          "Home win": {
+            "precision": 0.5019762845849802,
+            "recall": 0.8012618296529969,
+            "f1": 0.6172539489671932,
+            "support": 317
+          }
+        },
+        "confusion_matrix": [
+          [
+            122,
+            0,
+            124
+          ],
+          [
+            69,
+            0,
+            128
+          ],
+          [
+            63,
+            0,
+            254
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 254,
+          "Draw": 0,
+          "Home win": 506
+        }
+      }
+    },
+    "blend_with_production": {
+      "validation_selection": {
+        "weight": 0.08,
+        "log_loss": 0.9054820601172163,
+        "accuracy": 0.5947368421052631,
+        "macro_f1": 0.43841627605465244,
+        "brier": 0.53077625283216
+      },
+      "test": {
+        "log_loss": 1.0000234326745292,
+        "accuracy": 0.5144736842105263,
+        "balanced_accuracy": 0.45211715524095303,
+        "macro_f1": 0.3856823780902808,
+        "brier": 0.5995689103025277,
+        "ece": 0.05355552287251544,
+        "correct": 391,
+        "incorrect": 369,
+        "n": 760,
+        "accuracy_ci95": [
+          0.479,
+          0.5498
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.4945054945054945,
+            "recall": 0.5487804878048781,
+            "f1": 0.5202312138728323,
+            "support": 246
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 197
+          },
+          "Home win": {
+            "precision": 0.5256673511293635,
+            "recall": 0.807570977917981,
+            "f1": 0.6368159203980099,
+            "support": 317
+          }
+        },
+        "confusion_matrix": [
+          [
+            135,
+            0,
+            111
+          ],
+          [
+            77,
+            0,
+            120
+          ],
+          [
+            61,
+            0,
+            256
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 273,
+          "Draw": 0,
+          "Home win": 487
+        }
+      }
+    }
+  },
+  "core_feature_set": {
+    "n_features": 143,
+    "features": [
+      "a_attack_away",
+      "a_attack_home",
+      "a_defence_away",
+      "a_defence_home",
+      "a_elo",
+      "a_form10_draw_rate",
+      "a_form10_ga",
+      "a_form10_gd",
+      "a_form10_gf",
+      "a_form10_loss_rate",
+      "a_form10_ppg",
+      "a_form10_shots",
+      "a_form10_sot",
+      "a_form10_win_rate",
+      "a_form3_draw_rate",
+      "a_form3_ga",
+      "a_form3_gd",
+      "a_form3_gf",
+      "a_form3_loss_rate",
+      "a_form3_ppg",
+      "a_form3_shots",
+      "a_form3_sot",
+      "a_form3_win_rate",
+      "a_form5_draw_rate",
+      "a_form5_ga",
+      "a_form5_gd",
+      "a_form5_gf",
+      "a_form5_loss_rate",
+      "a_form5_ppg",
+      "a_form5_shots",
+      "a_form5_sot",
+      "a_form5_win_rate",
+      "a_matches_14d",
+      "a_matches_28d",
+      "a_prev_gd_pg",
+      "a_prev_ppg",
+      "a_promoted",
+      "a_rest_days",
+      "a_season_game",
+      "a_season_gd_pg",
+      "a_season_ppg",
+      "a_season_progress",
+      "a_venue5_clean_sheet",
+      "a_venue5_gd",
+      "a_venue5_over25",
+      "a_venue5_ppg",
+      "abs_elo_diff",
+      "diff_form10_draw_rate",
+      "diff_form10_ga",
+      "diff_form10_gd",
+      "diff_form10_gf",
+      "diff_form10_loss_rate",
+      "diff_form10_ppg",
+      "diff_form10_shots",
+      "diff_form10_sot",
+      "diff_form10_win_rate",
+      "diff_form3_draw_rate",
+      "diff_form3_ga",
+      "diff_form3_gd",
+      "diff_form3_gf",
+      "diff_form3_loss_rate",
+      "diff_form3_ppg",
+      "diff_form3_shots",
+      "diff_form3_sot",
+      "diff_form3_win_rate",
+      "diff_form5_draw_rate",
+      "diff_form5_ga",
+      "diff_form5_gd",
+      "diff_form5_gf",
+      "diff_form5_loss_rate",
+      "diff_form5_ppg",
+      "diff_form5_shots",
+      "diff_form5_sot",
+      "diff_form5_win_rate",
+      "diff_prev_gd_pg",
+      "diff_prev_ppg",
+      "diff_season_gd_pg",
+      "diff_season_ppg",
+      "diff_venue5_clean_sheet",
+      "diff_venue5_gd",
+      "diff_venue5_over25",
+      "diff_venue5_ppg",
+      "elo_closeness",
+      "elo_diff",
+      "elo_expected_away",
+      "elo_expected_home",
+      "h2h_avg_total",
+      "h2h_draw_rate",
+      "h2h_n",
+      "h2h_ppg",
+      "h_attack_away",
+      "h_attack_home",
+      "h_defence_away",
+      "h_defence_home",
+      "h_elo",
+      "h_form10_draw_rate",
+      "h_form10_ga",
+      "h_form10_gd",
+      "h_form10_gf",
+      "h_form10_loss_rate",
+      "h_form10_ppg",
+      "h_form10_shots",
+      "h_form10_sot",
+      "h_form10_win_rate",
+      "h_form3_draw_rate",
+      "h_form3_ga",
+      "h_form3_gd",
+      "h_form3_gf",
+      "h_form3_loss_rate",
+      "h_form3_ppg",
+      "h_form3_shots",
+      "h_form3_sot",
+      "h_form3_win_rate",
+      "h_form5_draw_rate",
+      "h_form5_ga",
+      "h_form5_gd",
+      "h_form5_gf",
+      "h_form5_loss_rate",
+      "h_form5_ppg",
+      "h_form5_shots",
+      "h_form5_sot",
+      "h_form5_win_rate",
+      "h_matches_14d",
+      "h_matches_28d",
+      "h_prev_gd_pg",
+      "h_prev_ppg",
+      "h_promoted",
+      "h_rest_days",
+      "h_season_game",
+      "h_season_gd_pg",
+      "h_season_ppg",
+      "h_season_progress",
+      "h_venue5_clean_sheet",
+      "h_venue5_gd",
+      "h_venue5_over25",
+      "h_venue5_ppg",
+      "pois_exp_away",
+      "pois_exp_diff",
+      "pois_exp_home",
+      "pois_exp_total",
+      "pois_p_away",
+      "pois_p_draw",
+      "pois_p_home"
+    ],
+    "selected_model": "ensemble",
+    "validation": {
+      "log_loss": 0.9330521992251685,
+      "accuracy": 0.5789473684210527,
+      "balanced_accuracy": 0.47783197831978325,
+      "macro_f1": 0.4260508106343166,
+      "brier": 0.5483392436699692,
+      "ece": 0.01707445003048091,
+      "correct": 220,
+      "incorrect": 160,
+      "n": 380,
+      "accuracy_ci95": [
+        0.5288,
+        0.6276
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5572519083969466,
+          "recall": 0.5934959349593496,
+          "f1": 0.5748031496062992,
+          "support": 123
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 82
+        },
+        "Home win": {
+          "precision": 0.6049382716049383,
+          "recall": 0.84,
+          "f1": 0.7033492822966507,
+          "support": 175
+        }
+      },
+      "confusion_matrix": [
+        [
+          73,
+          3,
+          47
+        ],
+        [
+          33,
+          0,
+          49
+        ],
+        [
+          25,
+          3,
+          147
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 131,
+        "Draw": 6,
+        "Home win": 243
+      }
+    },
+    "test": {
+      "log_loss": 1.0213744064409702,
+      "accuracy": 0.5013157894736842,
+      "balanced_accuracy": 0.4407249866026179,
+      "macro_f1": 0.37938266072984517,
+      "brier": 0.6113061335418489,
+      "ece": 0.05507184366237344,
+      "correct": 381,
+      "incorrect": 379,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4659,
+        0.5368
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.483271375464684,
+          "recall": 0.5284552845528455,
+          "f1": 0.5048543689320388,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.16666666666666666,
+          "recall": 0.005076142131979695,
+          "f1": 0.009852216748768473,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5154639175257731,
+          "recall": 0.7886435331230284,
+          "f1": 0.6234413965087282,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          130,
+          4,
+          112
+        ],
+        [
+          73,
+          1,
+          123
+        ],
+        [
+          66,
+          1,
+          250
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 269,
+        "Draw": 6,
+        "Home win": 485
+      }
+    },
+    "temperature": 0.925,
+    "poisson_alpha": 0.9
+  },
+  "reference": {
+    "no_odds_validation": {
+      "log_loss": 0.9375836708077977,
+      "accuracy": 0.6052631578947368,
+      "balanced_accuracy": 0.5001006581494386,
+      "macro_f1": 0.4428011183689628,
+      "brier": 0.5515051766373169,
+      "ece": 0.04780682154106681,
+      "correct": 230,
+      "incorrect": 150,
+      "n": 380,
+      "accuracy_ci95": [
+        0.5553,
+        0.6531
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5789473684210527,
+          "recall": 0.6260162601626016,
+          "f1": 0.6015625,
+          "support": 123
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 82
+        },
+        "Home win": {
+          "precision": 0.6219512195121951,
+          "recall": 0.8742857142857143,
+          "f1": 0.7268408551068883,
+          "support": 175
+        }
+      },
+      "confusion_matrix": [
+        [
+          77,
+          1,
+          45
+        ],
+        [
+          34,
+          0,
+          48
+        ],
+        [
+          22,
+          0,
+          153
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 133,
+        "Draw": 1,
+        "Home win": 246
+      }
+    },
+    "no_odds_test": {
+      "log_loss": 1.0231723158649388,
+      "accuracy": 0.5039473684210526,
+      "balanced_accuracy": 0.441277046839869,
+      "macro_f1": 0.3762957224817836,
+      "brier": 0.6126044957369856,
+      "ece": 0.04784124905834392,
+      "correct": 383,
+      "incorrect": 377,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4685,
+        0.5394
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.49034749034749037,
+          "recall": 0.516260162601626,
+          "f1": 0.502970297029703,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5109780439121756,
+          "recall": 0.807570977917981,
+          "f1": 0.6259168704156479,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          127,
+          0,
+          119
+        ],
+        [
+          71,
+          0,
+          126
+        ],
+        [
+          61,
+          0,
+          256
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 259,
+        "Draw": 0,
+        "Home win": 501
+      }
+    },
+    "production_validation": {
+      "log_loss": 0.9057622474615572,
+      "accuracy": 0.5921052631578947,
+      "balanced_accuracy": 0.4954084397986837,
+      "macro_f1": 0.43643105865328086,
+      "brier": 0.5309161495957794,
+      "ece": 0.05855846087878972,
+      "correct": 225,
+      "incorrect": 155,
+      "n": 380,
+      "accuracy_ci95": [
+        0.542,
+        0.6404
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5533333333333333,
+          "recall": 0.6747967479674797,
+          "f1": 0.608058608058608,
+          "support": 123
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 82
+        },
+        "Home win": {
+          "precision": 0.6173913043478261,
+          "recall": 0.8114285714285714,
+          "f1": 0.7012345679012346,
+          "support": 175
+        }
+      },
+      "confusion_matrix": [
+        [
+          83,
+          0,
+          40
+        ],
+        [
+          34,
+          0,
+          48
+        ],
+        [
+          33,
+          0,
+          142
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 150,
+        "Draw": 0,
+        "Home win": 230
+      }
+    },
+    "production_test": {
+      "log_loss": 0.9989114424352142,
+      "accuracy": 0.5184210526315789,
+      "balanced_accuracy": 0.45557521821275,
+      "macro_f1": 0.388696771305467,
+      "brier": 0.5990783668951034,
+      "ece": 0.06403239088880261,
+      "correct": 394,
+      "incorrect": 366,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4829,
+        0.5538
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5,
+          "recall": 0.5528455284552846,
+          "f1": 0.525096525096525,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5286885245901639,
+          "recall": 0.8138801261829653,
+          "f1": 0.6409937888198758,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          136,
+          0,
+          110
+        ],
+        [
+          77,
+          0,
+          120
+        ],
+        [
+          59,
+          0,
+          258
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 272,
+        "Draw": 0,
+        "Home win": 488
+      }
+    }
+  }
+}

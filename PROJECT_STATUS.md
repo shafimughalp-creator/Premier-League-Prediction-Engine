@@ -1,9 +1,10 @@
 # Project Status
 
-**Last verified:** 2026-11-13
+**Last verified:** 2026-11-13 (post-audit release)
 **Data cutoff:** 2026-11-08 (Matchweek 10 complete)
 **Production model:** `ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow`
 **Artifact:** `artifacts/models/model.pkl` (237 features; 223-feature no-odds variant)
+**Decision:** **COMPLETE — EXISTING MODEL RETAINED**
 
 This file distinguishes **verified** behaviour from **prepared** functionality.
 Nothing is marked verified unless it was executed in this environment.
@@ -20,14 +21,21 @@ Nothing is marked verified unless it was executed in this environment.
 | Chronological split | train 3,420 / validation 380 / test 760 / current 100 |
 | Model training | 9 candidates compared; ensemble selected; artifact written (102 MB) |
 | Test evaluation | 760 unseen matches, 51.84% accuracy, log loss 0.9989 |
+| Reproducibility audit | `reports/research/audit.json` → `passed: true` |
 | Leakage audit | all checks pass (own-result, future, cold start, integrity) |
+| Draw diagnostics | `reports/research/draw_analysis.json` (validation + benchmark test) |
+| Calibration study | `reports/research/calibration_analysis.json` |
+| Paired market comparison | `reports/research/paired_comparisons.json` (McNemar + bootstrap) |
+| Walk-forward evaluation | 7 chronological origins, `reports/research/walk_forward.json` |
+| Challenger experiments | Dixon-Coles + core feature set, `reports/research/challengers.json` |
+| Promotion decisions | `reports/research/promotion_decisions.json` |
 | Prediction engine | upcoming 10 fixtures, manual, retrospective — all exercised |
 | Dashboard | all 7 pages render headlessly through Streamlit `AppTest` |
 | Pipeline | `python -m src.pipeline --offline --predict-only` exits 0 in ~20 s |
-| Unit + leakage tests | 108 tests pass across unit, leakage, prediction and integration suites |
-| Full suite | `python -m pytest -o addopts="-q"` → 108 passed in 230 s (includes slow full-history audit) |
+| Failure handling | refresh failure falls back to cache; training failure restores incumbent |
+| Full suite | `python -m pytest -o addopts="-q"` → **127 passed** (includes slow audit) |
 | GitHub workflows | files written and syntactically complete (not yet run on GitHub) |
-| Local version control | git repository initialized; initial commit `c6e77f5` (no remote configured) |
+| Local version control | git repository; baseline commits `c6e77f5`, `8aff5dc`; no remote |
 
 ## Honest performance summary
 
@@ -37,13 +45,64 @@ Nothing is marked verified unless it was executed in this environment.
 | Bookmaker consensus | 51.58% | 0.9931 | 0.5946 | 0.0321 |
 | No-odds variant | 50.39% | 1.0232 | 0.6126 | 0.0478 |
 
-- 95% CI for accuracy: **48.29% – 55.38%**.
-- Macro F1: **0.3887**. Draw recall: **0.0** (no draws selected by argmax).
+- 95% CI for accuracy: **48.29% – 55.38%** (Wilson, 760 matches).
+- Macro F1: **0.3887**. Draw recall: **0.0** (argmax never selects a draw).
 - The 50% minimum is met. The 53–55% target is **not** demonstrated.
 - The selected blend puts **95% weight on the bookmaker consensus**
-  (`market_beta = 0.05`), chosen on validation log loss. This is a finding, not
-  a bug: with this feature set the independent model signal did not beat the
-  closing market.
+  (`market_beta = 0.05`), chosen on validation log loss.
+- Paired comparison: 392 matches correct for both systems, 2 only for the
+  model, 0 only for the market, 366 both wrong. Exact McNemar p = 1.00.
+  Accuracy difference +0.26 pp (95% CI 0.00 to +0.66). Log-loss difference
+  −0.0058 (market minus model; the market is slightly better).
+
+## Draw findings
+
+- Actual draw rate on the test seasons: 25.9%. Mean predicted draw
+  probability: 22.0%. The model is mildly under-confident on draws but never
+  ranks a draw first (share of matches where draw is argmax: 0%).
+- A validation-selected threshold of 0.28 raised 2023/24 macro F1 from 0.436 to
+  0.463 at unchanged accuracy. It did **not** replicate: across five
+  selection-grade walk-forward origins the mean accuracy change was −0.53 pp,
+  macro F1 improved in only 3 of 5 origins, and the worst origin lost 2.63 pp
+  accuracy. Applied to the already-examined test seasons it lost 1.45 pp.
+- **Decision:** argmax retained. No draws are forced.
+
+## Calibration findings
+
+- Validation selected temperature scaling (`T = 0.85` in the production blend).
+- Vector scaling improved validation log loss by only 0.0009 (gate: 0.002) and
+  was worse than temperature scaling at 0 of 5 walk-forward origins.
+- On the already-examined test seasons, uncalibrated probabilities score better
+  than temperature-scaled ones (log loss 0.9935 vs 0.9989; ECE 0.038 vs 0.064).
+  This is reported as a limitation, not used to re-select calibration.
+- **Decision:** temperature scaling retained because it was selected on
+  validation and the alternative failed its gate.
+
+## Walk-forward findings
+
+Selection-grade origins (2019/20–2023/24), mean ± standard deviation:
+
+| Variant | Accuracy | Log loss | Macro F1 |
+|---|---|---|---|
+| Production | 55.26% ± 3.4 pp | 0.9619 | 0.408 |
+| Market consensus | 55.53% ± 3.2 pp | 0.9578 | 0.411 |
+| No-odds model | 52.63% ± 4.2 pp | 0.9840 | 0.393 |
+| Elo + logistic | 53.63% ± 3.3 pp | 0.9781 | 0.395 |
+
+The production blend tracks the market within noise. The validation-selected
+market weight is unstable across origins (`beta` ranged 0.05–0.60), which is
+expected when the independent signal is weak. The 2024/25 and 2025/26 origins
+are reported for completeness only.
+
+## Challengers evaluated and rejected
+
+| Challenger | Validation result | Decision |
+|---|---|---|
+| Draw threshold / margin policies | +0.027 macro F1 at equal accuracy (2023/24) | Rejected — did not replicate |
+| Vector scaling | −0.0009 log loss vs temperature | Rejected — below 0.002 gate |
+| Dixon-Coles standalone | 56.84% accuracy, log loss 0.9364 | Rejected — weaker than production |
+| Dixon-Coles + production blend | weight 0.08, −0.0003 log loss | Rejected — negligible gain |
+| Core odds-free features (143) | −0.0045 log loss but −2.63 pp accuracy | Rejected — accuracy gate missed |
 
 ## Prepared but not yet proven in production
 
@@ -52,33 +111,38 @@ Nothing is marked verified unless it was executed in this environment.
 | GitHub Actions | Workflows committed locally | Push to a GitHub repository and observe one green run |
 | Daily automation | `update.yml` scheduled 06:15 UTC | Repository secrets/permissions; first scheduled execution |
 | Live fixture prices | Full variant ready | football-data must publish prices for the next round |
-| Auto-retrain guard | Implemented and unit-exercised | A real ≥10-match data increment to trigger promotion |
-| Standings | Computed from processed matches | Verified for the current partial season |
-| Draw-aware decision rule | API exists (`choose_outcome(threshold=...)`) | Validation-tuned threshold experiment; not promoted |
+| Auto-retrain guard | Implemented and integration-tested | A real ≥10-match data increment to trigger promotion |
+| Prospective evaluation | 2026/27 fixtures available | Let the season complete without re-tuning, then score once |
 
 ## Known limitations
 
-1. **Draws are never predicted** by the argmax rule. This inflates home/away
-   recall and zeroes draw recall. Forcing draws would trade accuracy for macro
-   F1; that decision has not been made silently.
+1. **Draws are never predicted** by argmax. Validation-selected draw policies
+   did not replicate out of sample, so none was promoted.
 2. **Market dependence.** The production pipeline is 95% market consensus. It
    should be described as a calibrated market-plus-model blend, not as an
    independent forecasting edge.
-3. **2026/27 is partial** (100 matches). It is used only for the production
+3. **Test-set reuse.** 2024/25 and 2025/26 were examined in earlier work and
+   remain historical benchmark evidence. Genuine prospective evidence requires
+   future matches.
+4. **Single-season validation.** Walk-forward evaluation mitigates but does not
+   eliminate selection noise; the market weight varies widely by origin.
+5. **Calibration transfer.** Temperature scaling helped validation but not the
+   historical test seasons; the discrepancy is documented rather than tuned away.
+6. **2026/27 is partial** (100 matches). It is used only for the production
    refit and current predictions, never for selection.
-4. **No injury/lineup data.** The historical record does not support a
-   leakage-free 13-season lineup dataset.
-5. **CatBoost unavailable** in this environment; it is omitted rather than
+7. **No injury/lineup/travel/referee data.** No leakage-free historical source
+   with reliable timestamps was available without paid access.
+8. **CatBoost unavailable** in this environment; it is omitted rather than
    faked.
+9. **Bookmaker prices** are a pre-match snapshot without explicit publication
+   timestamps; they are treated as closing consensus.
+10. **GitHub automation** is written but unverified on a live repository.
 
-## Next actions (in priority order)
+## Next actions
 
 1. Push the repository and let `test.yml` run end to end.
 2. Enable the daily `update.yml` schedule and confirm one committed refresh.
-3. Run a validation-only draw-threshold study; promote only if it improves
-   validation macro F1 without material accuracy loss.
-4. Investigate features that could add signal beyond the closing market
-   (lineup strength, travel, referee, rest asymmetry) with strict pre-match
-   timestamps.
-5. Add a proper probability-sharpness report (reliability + resolution) to the
-   Model Performance page.
+3. Accumulate genuinely future matches (2026/27 onward) and score them once
+   with the frozen production model as a prospective test.
+4. Only revisit new data sources if a timestamped, leakage-free historical
+   source becomes available at acceptable cost.

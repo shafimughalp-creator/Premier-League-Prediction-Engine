@@ -860,5 +860,1751 @@
         "Home win": 501
       }
     }
+  },
+  {
+    "trained_at": "2026-11-13T08:15:28+00:00",
+    "selected_model": "ensemble",
+    "poisson_alpha": 1.0,
+    "temperature": 0.8500000000000001,
+    "candidates": [
+      {
+        "name": "lgbm_regularised",
+        "kind": "lightgbm",
+        "status": "ok",
+        "val_log_loss": 0.91904,
+        "val_log_loss_calibrated": 0.91757,
+        "val_accuracy": 0.58684,
+        "val_macro_f1": 0.44621,
+        "temperature": 0.9,
+        "best_iteration": 83
+      },
+      {
+        "name": "lgbm_shallow",
+        "kind": "lightgbm",
+        "status": "ok",
+        "val_log_loss": 0.92154,
+        "val_log_loss_calibrated": 0.92005,
+        "val_accuracy": 0.58684,
+        "val_macro_f1": 0.43486,
+        "temperature": 0.9,
+        "best_iteration": 51
+      },
+      {
+        "name": "lgbm_deep",
+        "kind": "lightgbm",
+        "status": "ok",
+        "val_log_loss": 0.91905,
+        "val_log_loss_calibrated": 0.91858,
+        "val_accuracy": 0.6,
+        "val_macro_f1": 0.45744,
+        "temperature": 0.95,
+        "best_iteration": 193
+      },
+      {
+        "name": "xgb_regularised",
+        "kind": "xgboost",
+        "status": "ok",
+        "val_log_loss": 0.92324,
+        "val_log_loss_calibrated": 0.92169,
+        "val_accuracy": 0.58158,
+        "val_macro_f1": 0.43504,
+        "temperature": 0.9,
+        "best_iteration": 109
+      },
+      {
+        "name": "xgb_deep",
+        "kind": "xgboost",
+        "status": "ok",
+        "val_log_loss": 0.92395,
+        "val_log_loss_calibrated": 0.92302,
+        "val_accuracy": 0.59211,
+        "val_macro_f1": 0.45083,
+        "temperature": 0.925,
+        "best_iteration": 196
+      },
+      {
+        "name": "random_forest",
+        "kind": "random_forest",
+        "status": "ok",
+        "val_log_loss": 0.91853,
+        "val_log_loss_calibrated": 0.9163,
+        "val_accuracy": 0.58158,
+        "val_macro_f1": 0.43568,
+        "temperature": 0.875,
+        "best_iteration": 600
+      },
+      {
+        "name": "extra_trees",
+        "kind": "extra_trees",
+        "status": "ok",
+        "val_log_loss": 0.92474,
+        "val_log_loss_calibrated": 0.92178,
+        "val_accuracy": 0.58421,
+        "val_macro_f1": 0.42891,
+        "temperature": 0.85,
+        "best_iteration": 700
+      },
+      {
+        "name": "hist_gradient",
+        "kind": "hist_gradient",
+        "status": "ok",
+        "val_log_loss": 1.11169,
+        "val_log_loss_calibrated": 0.98589,
+        "val_accuracy": 0.55789,
+        "val_macro_f1": 0.44626,
+        "temperature": 1.8,
+        "best_iteration": 500
+      },
+      {
+        "name": "logistic",
+        "kind": "logistic",
+        "status": "ok",
+        "val_log_loss": 0.93794,
+        "val_log_loss_calibrated": 0.93123,
+        "val_accuracy": 0.58158,
+        "val_macro_f1": 0.48866,
+        "temperature": 1.225,
+        "best_iteration": 1
+      }
+    ],
+    "validation_metrics": {
+      "log_loss": 0.9057622474582218,
+      "accuracy": 0.5921052631578947,
+      "balanced_accuracy": 0.4954084397986837,
+      "macro_f1": 0.43643105865328086,
+      "brier": 0.5309161495926156,
+      "ece": 0.05855846087590213,
+      "correct": 225,
+      "incorrect": 155,
+      "n": 380,
+      "accuracy_ci95": [
+        0.542,
+        0.6404
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5533333333333333,
+          "recall": 0.6747967479674797,
+          "f1": 0.608058608058608,
+          "support": 123
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 82
+        },
+        "Home win": {
+          "precision": 0.6173913043478261,
+          "recall": 0.8114285714285714,
+          "f1": 0.7012345679012346,
+          "support": 175
+        }
+      },
+      "confusion_matrix": [
+        [
+          83,
+          0,
+          40
+        ],
+        [
+          34,
+          0,
+          48
+        ],
+        [
+          33,
+          0,
+          142
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 150,
+        "Draw": 0,
+        "Home win": 230
+      }
+    },
+    "test_metrics": {
+      "log_loss": 0.9989114424347747,
+      "accuracy": 0.5184210526315789,
+      "balanced_accuracy": 0.45557521821275,
+      "macro_f1": 0.388696771305467,
+      "brier": 0.5990783668942767,
+      "ece": 0.06403239089934591,
+      "correct": 394,
+      "incorrect": 366,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4829,
+        0.5538
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5,
+          "recall": 0.5528455284552846,
+          "f1": 0.525096525096525,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5286885245901639,
+          "recall": 0.8138801261829653,
+          "f1": 0.6409937888198758,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          136,
+          0,
+          110
+        ],
+        [
+          77,
+          0,
+          120
+        ],
+        [
+          59,
+          0,
+          258
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 272,
+        "Draw": 0,
+        "Home win": 488
+      }
+    },
+    "no_odds_test_metrics": {
+      "log_loss": 1.023172314807347,
+      "accuracy": 0.5039473684210526,
+      "balanced_accuracy": 0.441277046839869,
+      "macro_f1": 0.3762957224817836,
+      "brier": 0.6126044956875959,
+      "ece": 0.047841246507896944,
+      "correct": 383,
+      "incorrect": 377,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4685,
+        0.5394
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.49034749034749037,
+          "recall": 0.516260162601626,
+          "f1": 0.502970297029703,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5109780439121756,
+          "recall": 0.807570977917981,
+          "f1": 0.6259168704156479,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          127,
+          0,
+          119
+        ],
+        [
+          71,
+          0,
+          126
+        ],
+        [
+          61,
+          0,
+          256
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 259,
+        "Draw": 0,
+        "Home win": 501
+      }
+    }
+  },
+  {
+    "trained_at": "2026-11-13T08:21:13+00:00",
+    "selected_model": "ensemble",
+    "poisson_alpha": 1.0,
+    "temperature": 0.8500000000000001,
+    "candidates": [
+      {
+        "name": "lgbm_regularised",
+        "kind": "lightgbm",
+        "status": "ok",
+        "val_log_loss": 0.91904,
+        "val_log_loss_calibrated": 0.91757,
+        "val_accuracy": 0.58684,
+        "val_macro_f1": 0.44621,
+        "temperature": 0.9,
+        "best_iteration": 83
+      },
+      {
+        "name": "lgbm_shallow",
+        "kind": "lightgbm",
+        "status": "ok",
+        "val_log_loss": 0.92154,
+        "val_log_loss_calibrated": 0.92005,
+        "val_accuracy": 0.58684,
+        "val_macro_f1": 0.43486,
+        "temperature": 0.9,
+        "best_iteration": 51
+      },
+      {
+        "name": "lgbm_deep",
+        "kind": "lightgbm",
+        "status": "ok",
+        "val_log_loss": 0.91905,
+        "val_log_loss_calibrated": 0.91858,
+        "val_accuracy": 0.6,
+        "val_macro_f1": 0.45744,
+        "temperature": 0.95,
+        "best_iteration": 193
+      },
+      {
+        "name": "xgb_regularised",
+        "kind": "xgboost",
+        "status": "ok",
+        "val_log_loss": 0.92324,
+        "val_log_loss_calibrated": 0.92169,
+        "val_accuracy": 0.58158,
+        "val_macro_f1": 0.43504,
+        "temperature": 0.9,
+        "best_iteration": 109
+      },
+      {
+        "name": "xgb_deep",
+        "kind": "xgboost",
+        "status": "ok",
+        "val_log_loss": 0.92395,
+        "val_log_loss_calibrated": 0.92302,
+        "val_accuracy": 0.59211,
+        "val_macro_f1": 0.45083,
+        "temperature": 0.925,
+        "best_iteration": 196
+      },
+      {
+        "name": "random_forest",
+        "kind": "random_forest",
+        "status": "ok",
+        "val_log_loss": 0.91853,
+        "val_log_loss_calibrated": 0.9163,
+        "val_accuracy": 0.58158,
+        "val_macro_f1": 0.43568,
+        "temperature": 0.875,
+        "best_iteration": 600
+      },
+      {
+        "name": "extra_trees",
+        "kind": "extra_trees",
+        "status": "ok",
+        "val_log_loss": 0.92474,
+        "val_log_loss_calibrated": 0.92178,
+        "val_accuracy": 0.58421,
+        "val_macro_f1": 0.42891,
+        "temperature": 0.85,
+        "best_iteration": 700
+      },
+      {
+        "name": "hist_gradient",
+        "kind": "hist_gradient",
+        "status": "ok",
+        "val_log_loss": 1.11169,
+        "val_log_loss_calibrated": 0.98589,
+        "val_accuracy": 0.55789,
+        "val_macro_f1": 0.44626,
+        "temperature": 1.8,
+        "best_iteration": 500
+      },
+      {
+        "name": "logistic",
+        "kind": "logistic",
+        "status": "ok",
+        "val_log_loss": 0.93794,
+        "val_log_loss_calibrated": 0.93123,
+        "val_accuracy": 0.58158,
+        "val_macro_f1": 0.48866,
+        "temperature": 1.225,
+        "best_iteration": 1
+      }
+    ],
+    "validation_metrics": {
+      "log_loss": 0.9057622474615572,
+      "accuracy": 0.5921052631578947,
+      "balanced_accuracy": 0.4954084397986837,
+      "macro_f1": 0.43643105865328086,
+      "brier": 0.5309161495957794,
+      "ece": 0.05855846087878972,
+      "correct": 225,
+      "incorrect": 155,
+      "n": 380,
+      "accuracy_ci95": [
+        0.542,
+        0.6404
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5533333333333333,
+          "recall": 0.6747967479674797,
+          "f1": 0.608058608058608,
+          "support": 123
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 82
+        },
+        "Home win": {
+          "precision": 0.6173913043478261,
+          "recall": 0.8114285714285714,
+          "f1": 0.7012345679012346,
+          "support": 175
+        }
+      },
+      "confusion_matrix": [
+        [
+          83,
+          0,
+          40
+        ],
+        [
+          34,
+          0,
+          48
+        ],
+        [
+          33,
+          0,
+          142
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 150,
+        "Draw": 0,
+        "Home win": 230
+      }
+    },
+    "test_metrics": {
+      "log_loss": 0.9989114424352142,
+      "accuracy": 0.5184210526315789,
+      "balanced_accuracy": 0.45557521821275,
+      "macro_f1": 0.388696771305467,
+      "brier": 0.5990783668951034,
+      "ece": 0.06403239088880261,
+      "correct": 394,
+      "incorrect": 366,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4829,
+        0.5538
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.5,
+          "recall": 0.5528455284552846,
+          "f1": 0.525096525096525,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5286885245901639,
+          "recall": 0.8138801261829653,
+          "f1": 0.6409937888198758,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          136,
+          0,
+          110
+        ],
+        [
+          77,
+          0,
+          120
+        ],
+        [
+          59,
+          0,
+          258
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 272,
+        "Draw": 0,
+        "Home win": 488
+      }
+    },
+    "no_odds_test_metrics": {
+      "log_loss": 1.0231723158649388,
+      "accuracy": 0.5039473684210526,
+      "balanced_accuracy": 0.441277046839869,
+      "macro_f1": 0.3762957224817836,
+      "brier": 0.6126044957369856,
+      "ece": 0.04784124905834392,
+      "correct": 383,
+      "incorrect": 377,
+      "n": 760,
+      "accuracy_ci95": [
+        0.4685,
+        0.5394
+      ],
+      "per_class": {
+        "Away win": {
+          "precision": 0.49034749034749037,
+          "recall": 0.516260162601626,
+          "f1": 0.502970297029703,
+          "support": 246
+        },
+        "Draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 197
+        },
+        "Home win": {
+          "precision": 0.5109780439121756,
+          "recall": 0.807570977917981,
+          "f1": 0.6259168704156479,
+          "support": 317
+        }
+      },
+      "confusion_matrix": [
+        [
+          127,
+          0,
+          119
+        ],
+        [
+          71,
+          0,
+          126
+        ],
+        [
+          61,
+          0,
+          256
+        ]
+      ],
+      "prediction_distribution": {
+        "Away win": 259,
+        "Draw": 0,
+        "Home win": 501
+      }
+    }
+  },
+  {
+    "record_type": "research",
+    "date": "2026-11-13",
+    "dataset": {
+      "train": "2014/15-2022/23 (3,420 matches)",
+      "validation": "2023/24 (380 matches)",
+      "test_benchmark_only": "2024/25-2025/26 (760 matches)",
+      "current": "2026/27 partial (100 matches)"
+    },
+    "features": "237 full / 223 odds-free (production unchanged)",
+    "leakage_checks": "empirical own-result, future-truncation and cold-start proofs unchanged; no new feature added",
+    "tests": "python -m pytest -o addopts=\"-q\" -> 127 passed in 304 s",
+    "experiment_id": "EXP-2026-11-13-01",
+    "title": "Independent reproducibility and market-consensus audit",
+    "hypothesis": "Reported metrics, artifact, metadata and registry are mutually consistent; consensus is reconstructible.",
+    "changes": "Added validation/pre-calibration probability exports and reports/research/run_audit.py.",
+    "model_config": "Production artifact unchanged.",
+    "validation_results": {
+      "audit_passed": true,
+      "determinism_identical": true,
+      "metric_checks": {
+        "accuracy": true,
+        "log_loss": true,
+        "brier": true,
+        "ece": true,
+        "macro_f1": true
+      },
+      "market_reconstruction_max_abs_error": 0.0,
+      "price_sources": [
+        4,
+        8
+      ]
+    },
+    "evaluation_results": {
+      "note": "Test metrics recomputed exactly from test_predictions.csv."
+    },
+    "statistical_uncertainty": "Not applicable (deterministic consistency checks).",
+    "decision": "verified",
+    "reason": "All audit checks passed; documentation corrected for mkt_books semantics."
+  },
+  {
+    "record_type": "research",
+    "date": "2026-11-13",
+    "dataset": {
+      "train": "2014/15-2022/23 (3,420 matches)",
+      "validation": "2023/24 (380 matches)",
+      "test_benchmark_only": "2024/25-2025/26 (760 matches)",
+      "current": "2026/27 partial (100 matches)"
+    },
+    "features": "237 full / 223 odds-free (production unchanged)",
+    "leakage_checks": "empirical own-result, future-truncation and cold-start proofs unchanged; no new feature added",
+    "tests": "python -m pytest -o addopts=\"-q\" -> 127 passed in 304 s",
+    "experiment_id": "EXP-2026-11-13-02",
+    "title": "Draw decision policies (threshold and margin)",
+    "hypothesis": "A validation-selected draw rule raises macro F1 without materially losing accuracy and replicates out of sample.",
+    "changes": "Added draw diagnostics and policy selection; no production change.",
+    "model_config": "Frozen production probabilities; decision rule varied only.",
+    "validation_results": {
+      "baseline": {
+        "accuracy": 0.5921052631578947,
+        "macro_f1": 0.43643105865328086,
+        "balanced_accuracy": 0.4954084397986837,
+        "draw_precision": 0.0,
+        "draw_recall": 0.0,
+        "draw_f1": 0.0,
+        "home_recall": 0.8114285714285714,
+        "away_recall": 0.6747967479674797,
+        "draws_predicted": 0,
+        "home_predicted": 230,
+        "away_predicted": 150,
+        "n": 380
+      },
+      "selected": {
+        "accuracy": 0.5921052631578947,
+        "macro_f1": 0.4632677826809038,
+        "balanced_accuracy": 0.5016337591947347,
+        "draw_precision": 0.36363636363636365,
+        "draw_recall": 0.04878048780487805,
+        "draw_f1": 0.08602150537634409,
+        "home_recall": 0.8057142857142857,
+        "away_recall": 0.6504065040650406,
+        "draws_predicted": 11,
+        "home_predicted": 224,
+        "away_predicted": 145,
+        "n": 380,
+        "threshold": 0.28,
+        "policy": "threshold"
+      },
+      "reason": "Validation macro-F1 gate met without material accuracy loss."
+    },
+    "evaluation_results": {
+      "test_policy": {
+        "accuracy": 0.5039473684210526,
+        "macro_f1": 0.40989857515179634,
+        "balanced_accuracy": 0.44892977384993316,
+        "draw_precision": 0.25,
+        "draw_recall": 0.05583756345177665,
+        "draw_f1": 0.0912863070539419,
+        "home_recall": 0.7665615141955836,
+        "away_recall": 0.524390243902439,
+        "draws_predicted": 44,
+        "home_predicted": 455,
+        "away_predicted": 261,
+        "n": 760
+      },
+      "test_argmax": {
+        "accuracy": 0.5184210526315789,
+        "macro_f1": 0.388696771305467,
+        "balanced_accuracy": 0.45557521821275,
+        "draw_precision": 0.0,
+        "draw_recall": 0.0,
+        "draw_f1": 0.0,
+        "home_recall": 0.8138801261829653,
+        "away_recall": 0.5528455284552846,
+        "draws_predicted": 0,
+        "home_predicted": 488,
+        "away_predicted": 272,
+        "n": 760
+      }
+    },
+    "statistical_uncertainty": {
+      "accuracy": [
+        0.0026315789473684292,
+        -0.026315789473684237,
+        0.0,
+        0.0,
+        -0.002631578947368318
+      ],
+      "macro_f1": [
+        0.007496503659094433,
+        0.08772696506661737,
+        0.0,
+        0.025504762176517537,
+        -0.0004974671641337913
+      ],
+      "policies_selected": 4,
+      "origins": 5,
+      "mean_accuracy_change": -0.0052631578947368255,
+      "mean_macro_f1_change": 0.02404615274761911,
+      "origins_with_macro_gain": 3
+    },
+    "decision": "rejected",
+    "reason": "Validation selected a draw threshold of 0.28, which raised 2023/24 macro F1 by +0.027 without changing accuracy. It did not replicate across walk-forward origins: mean accuracy change -0.53%, macro-F1 improved in 3 of 5 origins, worst accuracy loss -2.63%. Applied to the already-examined test seasons it changed accuracy by -1.45%. Argmax is retained; no draws are forced."
+  },
+  {
+    "record_type": "research",
+    "date": "2026-11-13",
+    "dataset": {
+      "train": "2014/15-2022/23 (3,420 matches)",
+      "validation": "2023/24 (380 matches)",
+      "test_benchmark_only": "2024/25-2025/26 (760 matches)",
+      "current": "2026/27 partial (100 matches)"
+    },
+    "features": "237 full / 223 odds-free (production unchanged)",
+    "leakage_checks": "empirical own-result, future-truncation and cold-start proofs unchanged; no new feature added",
+    "tests": "python -m pytest -o addopts=\"-q\" -> 127 passed in 304 s",
+    "experiment_id": "EXP-2026-11-13-03",
+    "title": "Multiclass calibration: temperature vs vector scaling",
+    "hypothesis": "Class-specific vector scaling improves probability quality over temperature scaling.",
+    "changes": "Added calibration diagnostics and a pre-registered promotion gate.",
+    "model_config": "Pre-calibration production probabilities; calibration fitted on 2023/24 only.",
+    "validation_results": {
+      "temperature": {
+        "log_loss": 0.9057622474615572,
+        "brier": 0.5309161495957794,
+        "ece": 0.05855846087878973,
+        "accuracy": 0.5921052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5909536822741789,
+          "median_confidence": 0.5783806111300037,
+          "share_above_0_5": 0.6552631578947369,
+          "mean_entropy": 0.9059814346475554,
+          "normalised_entropy": 0.8246598404118634
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.003914301369841282,
+              "resolution": 0.052385796899521386,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.17044124685259135
+            },
+            "Draw": {
+              "reliability": 0.0005350515288974121,
+              "resolution": 0.003927327289515654,
+              "uncertainty": 0.16922437673130195,
+              "brier": 0.1658321009706837
+            },
+            "Home win": {
+              "reliability": 0.003951973961371549,
+              "resolution": 0.054913195826536775,
+              "uncertainty": 0.24844182825484765,
+              "brier": 0.19748060638968243
+            }
+          },
+          "reliability": 0.008401326860110244,
+          "resolution": 0.11122632001557381,
+          "uncertainty": 0.636578947368421,
+          "brier_decomposed": 0.5337539542129575
+        }
+      },
+      "vector_scaling": {
+        "log_loss": 0.9049108166336477,
+        "brier": 0.530392185956117,
+        "ece": 0.043909693040400585,
+        "accuracy": 0.5921052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5874613855522979,
+          "median_confidence": 0.572506397099294,
+          "share_above_0_5": 0.6447368421052632,
+          "mean_entropy": 0.9066902662894879,
+          "normalised_entropy": 0.8253050467774247
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.0027075882041168865,
+              "resolution": 0.05243379509979473,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.16918653548659363
+            },
+            "Draw": {
+              "reliability": 9.307577347026138e-05,
+              "resolution": 0.002983273974409709,
+              "uncertainty": 0.16922437673130195,
+              "brier": 0.1663341785303625
+            },
+            "Home win": {
+              "reliability": 0.0029249362085380743,
+              "resolution": 0.05407949101429446,
+              "uncertainty": 0.24844182825484765,
+              "brier": 0.19728727344909125
+            }
+          },
+          "reliability": 0.005725600186125222,
+          "resolution": 0.1094965600884989,
+          "uncertainty": 0.636578947368421,
+          "brier_decomposed": 0.5328079874660474
+        }
+      },
+      "gate": {
+        "min_log_loss_gain": 0.002,
+        "max_ece_worsening": 0.002,
+        "vector_scaling_promoted": false
+      }
+    },
+    "evaluation_results": {
+      "temperature_test": {
+        "log_loss": 0.9989114424352142,
+        "brier": 0.5990783668951034,
+        "ece": 0.0640323908888026,
+        "accuracy": 0.5184210526315789,
+        "sharpness": {
+          "mean_confidence": 0.5651609989082528,
+          "median_confidence": 0.552093656174952,
+          "share_above_0_5": 0.6157894736842106,
+          "mean_entropy": 0.9427967708656674,
+          "normalised_entropy": 0.8581706035790446
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.0016505859620231421,
+              "resolution": 0.026502420349003256,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.19406090799529135
+            },
+            "Draw": {
+              "reliability": 0.0032175494854631997,
+              "resolution": 0.0013664902220996405,
+              "uncertainty": 0.19202042936288088,
+              "brier": 0.19387148862624445
+            },
+            "Home win": {
+              "reliability": 0.00459316590228591,
+              "resolution": 0.03585699666207276,
+              "uncertainty": 0.24312846260387813,
+              "brier": 0.21186463184409127
+            }
+          },
+          "reliability": 0.009461301349772251,
+          "resolution": 0.06372590723317566,
+          "uncertainty": 0.6540616343490304,
+          "brier_decomposed": 0.599797028465627
+        }
+      },
+      "vector_scaling_test": {
+        "log_loss": 0.9986971898781366,
+        "brier": 0.5987323631619806,
+        "ece": 0.05905565541553408,
+        "accuracy": 0.5171052631578947,
+        "sharpness": {
+          "mean_confidence": 0.5607538655730503,
+          "median_confidence": 0.5470790901260064,
+          "share_above_0_5": 0.6078947368421053,
+          "mean_entropy": 0.9444137678940565,
+          "normalised_entropy": 0.8596424577036235
+        },
+        "brier_decomposition": {
+          "per_class": {
+            "Away win": {
+              "reliability": 0.002598442404391855,
+              "resolution": 0.02635673086912347,
+              "uncertainty": 0.21891274238227146,
+              "brier": 0.19515445391753986
+            },
+            "Draw": {
+              "reliability": 0.0013127343520663343,
+              "resolution": 0.0011454972313637932,
+              "uncertainty": 0.19202042936288088,
+              "brier": 0.19218766648358343
+            },
+            "Home win": {
+              "reliability": 0.003913392008943226,
+              "resolution": 0.035054564047145846,
+              "uncertainty": 0.24312846260387813,
+              "brier": 0.2119872905656755
+            }
+          },
+          "reliability": 0.007824568765401416,
+          "resolution": 0.0625567921476331,
+          "uncertainty": 0.6540616343490304,
+          "brier_decomposed": 0.5993294109667987
+        }
+      }
+    },
+    "statistical_uncertainty": {
+      "vector_better_origins": 0,
+      "origins": 5
+    },
+    "decision": "rejected",
+    "reason": "Vector scaling improved validation log loss by 0.0009 and ECE by 0.0146, below the pre-registered 0.002 log-loss margin. Across selection-grade walk-forward origins it beat temperature scaling at only 0 of 5 origins. Temperature scaling is retained."
+  },
+  {
+    "record_type": "research",
+    "date": "2026-11-13",
+    "dataset": {
+      "train": "2014/15-2022/23 (3,420 matches)",
+      "validation": "2023/24 (380 matches)",
+      "test_benchmark_only": "2024/25-2025/26 (760 matches)",
+      "current": "2026/27 partial (100 matches)"
+    },
+    "features": "237 full / 223 odds-free (production unchanged)",
+    "leakage_checks": "empirical own-result, future-truncation and cold-start proofs unchanged; no new feature added",
+    "tests": "python -m pytest -o addopts=\"-q\" -> 127 passed in 304 s",
+    "experiment_id": "EXP-2026-11-13-04",
+    "title": "Dixon-Coles goal model and compact odds-free feature set",
+    "hypothesis": "A goal-based model or a smaller feature set improves the independent signal.",
+    "changes": "Added src/models/dixon_coles.py and reports/research/run_challengers.py.",
+    "model_config": {
+      "dixon_coles": {
+        "xi": 0.0018,
+        "rho": 0.02208864185544901,
+        "home_advantage": 0.1775691139807072,
+        "intercept": 0.3418970336440527,
+        "teams": 33
+      },
+      "core_features": 143,
+      "core_selected_model": "ensemble"
+    },
+    "validation_results": {
+      "dixon_coles": {
+        "log_loss": 0.9364451598331163,
+        "accuracy": 0.5684210526315789,
+        "balanced_accuracy": 0.47584978706929926,
+        "macro_f1": 0.4190696441906964,
+        "brier": 0.5521877886970279,
+        "ece": 0.06351835221539649,
+        "correct": 216,
+        "incorrect": 164,
+        "n": 380,
+        "accuracy_ci95": [
+          0.5182,
+          0.6173
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.5298013245033113,
+            "recall": 0.6504065040650406,
+            "f1": 0.583941605839416,
+            "support": 123
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 82
+          },
+          "Home win": {
+            "precision": 0.5938864628820961,
+            "recall": 0.7771428571428571,
+            "f1": 0.6732673267326733,
+            "support": 175
+          }
+        },
+        "confusion_matrix": [
+          [
+            80,
+            0,
+            43
+          ],
+          [
+            32,
+            0,
+            50
+          ],
+          [
+            39,
+            0,
+            136
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 151,
+          "Draw": 0,
+          "Home win": 229
+        }
+      },
+      "dixon_coles_blend": {
+        "weight": 0.08,
+        "log_loss": 0.9054820601172163,
+        "accuracy": 0.5947368421052631,
+        "macro_f1": 0.43841627605465244,
+        "brier": 0.53077625283216
+      },
+      "core_features": {
+        "log_loss": 0.9330521992251685,
+        "accuracy": 0.5789473684210527,
+        "balanced_accuracy": 0.47783197831978325,
+        "macro_f1": 0.4260508106343166,
+        "brier": 0.5483392436699692,
+        "ece": 0.01707445003048091,
+        "correct": 220,
+        "incorrect": 160,
+        "n": 380,
+        "accuracy_ci95": [
+          0.5288,
+          0.6276
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.5572519083969466,
+            "recall": 0.5934959349593496,
+            "f1": 0.5748031496062992,
+            "support": 123
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 82
+          },
+          "Home win": {
+            "precision": 0.6049382716049383,
+            "recall": 0.84,
+            "f1": 0.7033492822966507,
+            "support": 175
+          }
+        },
+        "confusion_matrix": [
+          [
+            73,
+            3,
+            47
+          ],
+          [
+            33,
+            0,
+            49
+          ],
+          [
+            25,
+            3,
+            147
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 131,
+          "Draw": 6,
+          "Home win": 243
+        }
+      },
+      "reference_production": {
+        "log_loss": 0.9057622474615572,
+        "accuracy": 0.5921052631578947,
+        "balanced_accuracy": 0.4954084397986837,
+        "macro_f1": 0.43643105865328086,
+        "brier": 0.5309161495957794,
+        "ece": 0.05855846087878972,
+        "correct": 225,
+        "incorrect": 155,
+        "n": 380,
+        "accuracy_ci95": [
+          0.542,
+          0.6404
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.5533333333333333,
+            "recall": 0.6747967479674797,
+            "f1": 0.608058608058608,
+            "support": 123
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 82
+          },
+          "Home win": {
+            "precision": 0.6173913043478261,
+            "recall": 0.8114285714285714,
+            "f1": 0.7012345679012346,
+            "support": 175
+          }
+        },
+        "confusion_matrix": [
+          [
+            83,
+            0,
+            40
+          ],
+          [
+            34,
+            0,
+            48
+          ],
+          [
+            33,
+            0,
+            142
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 150,
+          "Draw": 0,
+          "Home win": 230
+        }
+      },
+      "reference_no_odds": {
+        "log_loss": 0.9375836708077977,
+        "accuracy": 0.6052631578947368,
+        "balanced_accuracy": 0.5001006581494386,
+        "macro_f1": 0.4428011183689628,
+        "brier": 0.5515051766373169,
+        "ece": 0.04780682154106681,
+        "correct": 230,
+        "incorrect": 150,
+        "n": 380,
+        "accuracy_ci95": [
+          0.5553,
+          0.6531
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.5789473684210527,
+            "recall": 0.6260162601626016,
+            "f1": 0.6015625,
+            "support": 123
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 82
+          },
+          "Home win": {
+            "precision": 0.6219512195121951,
+            "recall": 0.8742857142857143,
+            "f1": 0.7268408551068883,
+            "support": 175
+          }
+        },
+        "confusion_matrix": [
+          [
+            77,
+            1,
+            45
+          ],
+          [
+            34,
+            0,
+            48
+          ],
+          [
+            22,
+            0,
+            153
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 133,
+          "Draw": 1,
+          "Home win": 246
+        }
+      }
+    },
+    "evaluation_results": {
+      "dixon_coles": {
+        "log_loss": 1.0572770627408574,
+        "accuracy": 0.46842105263157896,
+        "balanced_accuracy": 0.41227890196883044,
+        "macro_f1": 0.3510730155723407,
+        "brier": 0.6376365251190631,
+        "ece": 0.06879100353579193,
+        "correct": 356,
+        "incorrect": 404,
+        "n": 760,
+        "accuracy_ci95": [
+          0.4332,
+          0.504
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.4280821917808219,
+            "recall": 0.508130081300813,
+            "f1": 0.4646840148698885,
+            "support": 246
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 197
+          },
+          "Home win": {
+            "precision": 0.4935897435897436,
+            "recall": 0.7287066246056783,
+            "f1": 0.5885350318471337,
+            "support": 317
+          }
+        },
+        "confusion_matrix": [
+          [
+            125,
+            0,
+            121
+          ],
+          [
+            81,
+            0,
+            116
+          ],
+          [
+            86,
+            0,
+            231
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 292,
+          "Draw": 0,
+          "Home win": 468
+        }
+      },
+      "dixon_coles_blend": {
+        "log_loss": 1.0000234326745292,
+        "accuracy": 0.5144736842105263,
+        "balanced_accuracy": 0.45211715524095303,
+        "macro_f1": 0.3856823780902808,
+        "brier": 0.5995689103025277,
+        "ece": 0.05355552287251544,
+        "correct": 391,
+        "incorrect": 369,
+        "n": 760,
+        "accuracy_ci95": [
+          0.479,
+          0.5498
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.4945054945054945,
+            "recall": 0.5487804878048781,
+            "f1": 0.5202312138728323,
+            "support": 246
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 197
+          },
+          "Home win": {
+            "precision": 0.5256673511293635,
+            "recall": 0.807570977917981,
+            "f1": 0.6368159203980099,
+            "support": 317
+          }
+        },
+        "confusion_matrix": [
+          [
+            135,
+            0,
+            111
+          ],
+          [
+            77,
+            0,
+            120
+          ],
+          [
+            61,
+            0,
+            256
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 273,
+          "Draw": 0,
+          "Home win": 487
+        }
+      },
+      "core_features": {
+        "log_loss": 1.0213744064409702,
+        "accuracy": 0.5013157894736842,
+        "balanced_accuracy": 0.4407249866026179,
+        "macro_f1": 0.37938266072984517,
+        "brier": 0.6113061335418489,
+        "ece": 0.05507184366237344,
+        "correct": 381,
+        "incorrect": 379,
+        "n": 760,
+        "accuracy_ci95": [
+          0.4659,
+          0.5368
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.483271375464684,
+            "recall": 0.5284552845528455,
+            "f1": 0.5048543689320388,
+            "support": 246
+          },
+          "Draw": {
+            "precision": 0.16666666666666666,
+            "recall": 0.005076142131979695,
+            "f1": 0.009852216748768473,
+            "support": 197
+          },
+          "Home win": {
+            "precision": 0.5154639175257731,
+            "recall": 0.7886435331230284,
+            "f1": 0.6234413965087282,
+            "support": 317
+          }
+        },
+        "confusion_matrix": [
+          [
+            130,
+            4,
+            112
+          ],
+          [
+            73,
+            1,
+            123
+          ],
+          [
+            66,
+            1,
+            250
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 269,
+          "Draw": 6,
+          "Home win": 485
+        }
+      },
+      "reference_production": {
+        "log_loss": 0.9989114424352142,
+        "accuracy": 0.5184210526315789,
+        "balanced_accuracy": 0.45557521821275,
+        "macro_f1": 0.388696771305467,
+        "brier": 0.5990783668951034,
+        "ece": 0.06403239088880261,
+        "correct": 394,
+        "incorrect": 366,
+        "n": 760,
+        "accuracy_ci95": [
+          0.4829,
+          0.5538
+        ],
+        "per_class": {
+          "Away win": {
+            "precision": 0.5,
+            "recall": 0.5528455284552846,
+            "f1": 0.525096525096525,
+            "support": 246
+          },
+          "Draw": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 197
+          },
+          "Home win": {
+            "precision": 0.5286885245901639,
+            "recall": 0.8138801261829653,
+            "f1": 0.6409937888198758,
+            "support": 317
+          }
+        },
+        "confusion_matrix": [
+          [
+            136,
+            0,
+            110
+          ],
+          [
+            77,
+            0,
+            120
+          ],
+          [
+            59,
+            0,
+            258
+          ]
+        ],
+        "prediction_distribution": {
+          "Away win": 272,
+          "Draw": 0,
+          "Home win": 488
+        }
+      }
+    },
+    "statistical_uncertainty": "Validation gains were below the pre-registered 0.002 log-loss margin or lost accuracy.",
+    "decision": "rejected",
+    "reason": "Standalone Dixon-Coles reached 56.8% validation accuracy and was clearly weaker than the production blend. A validation-selected 0.08 blend improved validation log loss by only +0.0003, below the 0.002 gate. No goal-model component is promoted. The 143-feature odds-free core set improved validation log loss by +0.0045 but changed validation accuracy by -2.63%. The accuracy gate was missed, so the full odds-free feature set is retained."
+  },
+  {
+    "record_type": "research",
+    "date": "2026-11-13",
+    "dataset": {
+      "train": "2014/15-2022/23 (3,420 matches)",
+      "validation": "2023/24 (380 matches)",
+      "test_benchmark_only": "2024/25-2025/26 (760 matches)",
+      "current": "2026/27 partial (100 matches)"
+    },
+    "features": "237 full / 223 odds-free (production unchanged)",
+    "leakage_checks": "empirical own-result, future-truncation and cold-start proofs unchanged; no new feature added",
+    "tests": "python -m pytest -o addopts=\"-q\" -> 127 passed in 304 s",
+    "experiment_id": "EXP-2026-11-13-05",
+    "title": "Expanding-window walk-forward evaluation",
+    "hypothesis": "The fixed-split result is not an artefact of one validation season.",
+    "changes": "Added reports/research/walk_forward.py and per-season prediction files.",
+    "model_config": "Per origin: random_forest, lgbm_regularised, logistic; ensemble/blends/calibration selected on the inner validation season.",
+    "validation_results": {
+      "production": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5526315789473684,
+          "log_loss": 0.961916588563213,
+          "brier": 0.5690114662366088,
+          "macro_f1": 0.40833966783563574,
+          "draw_recall": 0.002173913043478261
+        },
+        "std": {
+          "accuracy": 0.0341598815414399,
+          "log_loss": 0.03630940172430826,
+          "brier": 0.024432651386300106,
+          "macro_f1": 0.02524569850412093,
+          "draw_recall": 0.004861017342390847
+        },
+        "min": {
+          "accuracy": 0.5052631578947369,
+          "log_loss": 0.9103878217868121,
+          "brier": 0.5331580253494379,
+          "macro_f1": 0.3745462272670929,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5894736842105263,
+          "log_loss": 1.0040126623816243,
+          "brier": 0.5962718085454697,
+          "macro_f1": 0.4343182498164048,
+          "draw_recall": 0.010869565217391304
+        }
+      },
+      "no_odds": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5263157894736843,
+          "log_loss": 0.9840205180278069,
+          "brier": 0.5839205261250825,
+          "macro_f1": 0.3933066133056395,
+          "draw_recall": 0.013639866813581161
+        },
+        "std": {
+          "accuracy": 0.041483902027459045,
+          "log_loss": 0.030677846540951435,
+          "brier": 0.02083956954235207,
+          "macro_f1": 0.02572957792046085,
+          "draw_recall": 0.014541757493449632
+        },
+        "min": {
+          "accuracy": 0.48947368421052634,
+          "log_loss": 0.9399015752080853,
+          "brier": 0.5531718831206663,
+          "macro_f1": 0.3672587133168046,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5947368421052631,
+          "log_loss": 1.019937254933348,
+          "brier": 0.6080112955997897,
+          "macro_f1": 0.4327669804777767,
+          "draw_recall": 0.03260869565217391
+        }
+      },
+      "market": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5552631578947368,
+          "log_loss": 0.9577846964472231,
+          "brier": 0.5665195425437514,
+          "macro_f1": 0.41077227020285,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.032390877960766215,
+          "log_loss": 0.036420135228100496,
+          "brier": 0.02408215690444529,
+          "macro_f1": 0.023414882120043296,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.5157894736842106,
+          "log_loss": 0.9093414015220362,
+          "brier": 0.5332006823062818,
+          "macro_f1": 0.3840715946561712,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5921052631578947,
+          "log_loss": 1.0048369662768095,
+          "brier": 0.5969768752320005,
+          "macro_f1": 0.43643105865328086,
+          "draw_recall": 0.0
+        }
+      },
+      "elo": {
+        "origins": 5,
+        "seasons": [
+          "2019/20",
+          "2020/21",
+          "2021/22",
+          "2022/23",
+          "2023/24"
+        ],
+        "mean": {
+          "accuracy": 0.5363157894736842,
+          "log_loss": 0.9780567583547999,
+          "brier": 0.580241066690756,
+          "macro_f1": 0.39489793665025885,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.03246562213324452,
+          "log_loss": 0.036654044598024974,
+          "brier": 0.023167695759644717,
+          "macro_f1": 0.023455043849581577,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.49473684210526314,
+          "log_loss": 0.9330141417716238,
+          "brier": 0.5502600208494244,
+          "macro_f1": 0.36498965654975885,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5842105263157895,
+          "log_loss": 1.0345455026755828,
+          "brier": 0.6148477255408024,
+          "macro_f1": 0.42903773813857543,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "evaluation_results": {
+      "production": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5171052631578947,
+          "log_loss": 0.9971608393427028,
+          "brier": 0.5972436220218666,
+          "macro_f1": 0.38733166620778997,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.027912109783679515,
+          "log_loss": 0.02767269350766565,
+          "brier": 0.019200688286116843,
+          "macro_f1": 0.02270937558216721,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.49736842105263157,
+          "log_loss": 0.9775932901097355,
+          "brier": 0.5836666851313043,
+          "macro_f1": 0.37127371273712734,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5368421052631579,
+          "log_loss": 1.0167283885756702,
+          "brier": 0.6108205589124289,
+          "macro_f1": 0.4033896196784526,
+          "draw_recall": 0.0
+        }
+      },
+      "no_odds": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5026315789473684,
+          "log_loss": 1.0220192151686014,
+          "brier": 0.6118976748565277,
+          "macro_f1": 0.37445621178754607,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.026051302464767504,
+          "log_loss": 0.024712273536747806,
+          "brier": 0.018328339613732446,
+          "macro_f1": 0.021512439249748497,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.4842105263157895,
+          "log_loss": 1.0045449989722302,
+          "brier": 0.5989375816277674,
+          "macro_f1": 0.3592446201141853,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5210526315789473,
+          "log_loss": 1.0394934313649726,
+          "brier": 0.6248577680852879,
+          "macro_f1": 0.3896678034609069,
+          "draw_recall": 0.0
+        }
+      },
+      "market": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.5157894736842106,
+          "log_loss": 0.9931153997851851,
+          "brier": 0.5945655659855613,
+          "macro_f1": 0.38560822243234527,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.03721614637823934,
+          "log_loss": 0.03200961963183712,
+          "brier": 0.022248825758960207,
+          "macro_f1": 0.02921227087520444,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.48947368421052634,
+          "log_loss": 0.9704811806803111,
+          "brier": 0.5788332704179626,
+          "macro_f1": 0.36495202760262996,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5421052631578948,
+          "log_loss": 1.0157496188900592,
+          "brier": 0.61029786155316,
+          "macro_f1": 0.40626441726206064,
+          "draw_recall": 0.0
+        }
+      },
+      "elo": {
+        "origins": 2,
+        "seasons": [
+          "2024/25",
+          "2025/26"
+        ],
+        "mean": {
+          "accuracy": 0.4960526315789473,
+          "log_loss": 1.0112075793642672,
+          "brier": 0.6071779596158413,
+          "macro_f1": 0.37012309746377403,
+          "draw_recall": 0.0
+        },
+        "std": {
+          "accuracy": 0.03163372442150342,
+          "log_loss": 0.022205774352359865,
+          "brier": 0.01532820343457811,
+          "macro_f1": 0.023667661000722595,
+          "draw_recall": 0.0
+        },
+        "min": {
+          "accuracy": 0.47368421052631576,
+          "log_loss": 0.9955057257382153,
+          "brier": 0.5963392830238442,
+          "macro_f1": 0.3533875338753387,
+          "draw_recall": 0.0
+        },
+        "max": {
+          "accuracy": 0.5184210526315789,
+          "log_loss": 1.0269094329903192,
+          "brier": 0.6180166362078384,
+          "macro_f1": 0.3868586610522094,
+          "draw_recall": 0.0
+        }
+      }
+    },
+    "statistical_uncertainty": "Mean and standard deviation across five selection-grade origins.",
+    "decision": "documented",
+    "reason": "Production tracks the market within noise; no re-tuning performed."
+  },
+  {
+    "record_type": "research",
+    "date": "2026-11-13",
+    "dataset": {
+      "train": "2014/15-2022/23 (3,420 matches)",
+      "validation": "2023/24 (380 matches)",
+      "test_benchmark_only": "2024/25-2025/26 (760 matches)",
+      "current": "2026/27 partial (100 matches)"
+    },
+    "features": "237 full / 223 odds-free (production unchanged)",
+    "leakage_checks": "empirical own-result, future-truncation and cold-start proofs unchanged; no new feature added",
+    "tests": "python -m pytest -o addopts=\"-q\" -> 127 passed in 304 s",
+    "experiment_id": "EXP-2026-11-13-06",
+    "title": "Challenger promotion decision",
+    "hypothesis": "At least one challenger clears all pre-registered gates.",
+    "changes": "Added reports/research/finalize.py.",
+    "model_config": "Production ensemble, temperature scaling and argmax retained.",
+    "validation_results": {
+      "technical_correctness": {
+        "passed": true,
+        "evidence": "reports/research/audit.json"
+      },
+      "chronological_validation": {
+        "passed": true,
+        "evidence": "reports/research/draw_analysis.json, reports/research/calibration_analysis.json"
+      },
+      "statistical_evidence": {
+        "passed": true,
+        "evidence": "reports/research/paired_comparisons.json"
+      },
+      "operational_compatibility": {
+        "passed": null,
+        "evidence": "tests/ and PROJECT_STATUS.md (recorded after the final test run)"
+      }
+    },
+    "evaluation_results": {
+      "decision": "COMPLETE \u2014 EXISTING MODEL RETAINED"
+    },
+    "statistical_uncertainty": "On the already-examined 760 test matches the production model won 2 matches the market missed and lost 0 (exact McNemar p=1.00). The paired accuracy difference is +0.26% (95% CI +0.00% to +0.66%). Probability quality is slightly worse than the market: log-loss difference -0.0058 (market minus model). This is not evidence of beating the bookmakers.",
+    "decision": "existing_model_retained",
+    "reason": "Every justified challenger was evaluated on 2023/24 validation and replicated with expanding-window walk-forward origins. None cleared its pre-registered gate, so the existing production ensemble and argmax decision rule are retained. The model matches market accuracy within noise and has marginally worse probability quality; no bookmaker-beating claim is supported."
   }
 ]

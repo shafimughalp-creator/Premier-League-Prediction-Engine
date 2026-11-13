@@ -150,3 +150,131 @@ Season detail:
    second prior.
 5. Rolling-origin evaluation (walk-forward) as a robustness check on the fixed
    chronological split.
+
+---
+
+# Post-audit programme (2026-11-13)
+
+Items 1, 2, 4 and 5 of the plan above were executed below. Item 3 was
+investigated and rejected because no leakage-free historical source with
+reliable timestamps was available. The production split, features, model
+artifact and decision rule were **not** changed.
+
+## E5 — Independent reproducibility audit
+
+- **Hypothesis:** the reported metrics, artifact, metadata and registry are
+  internally consistent, and the market consensus is reconstructible.
+- **Changes:** validation/pre-calibration probability exports; `run_audit.py`.
+- **Data boundaries:** unchanged (train 3,420 / validation 380 / test 760).
+- **Features:** 237 full, 223 odds-free.
+- **Result:** `reports/research/audit.json` → `passed: true`.
+  - Feature matrix deterministic across two independent builds.
+  - Accuracy, log loss, Brier, ECE and macro F1 recomputed exactly from
+    `test_predictions.csv`.
+  - Artifact class order `A/D/H`, feature counts, `trained_at` and test accuracy
+    agree with the report, metadata and registry.
+  - Every probability row finite and sums to 1.
+  - Consensus reconstructed from seven bookmaker triples plus average and
+    maximum series: maximum absolute error 0.0.
+  - Price sources 4–8 per match (median 6); `mkt_books` counts sources, not
+    bookmakers.
+- **Leakage:** unchanged empirical proofs; no new feature was added.
+- **Tests:** audit itself passed; full suite below.
+- **Decision:** verified. Documentation corrected for `mkt_books` semantics.
+
+## E6 — Draw decision policies
+
+- **Hypothesis:** a validation-selected draw threshold or margin can raise
+  macro F1 without materially losing accuracy, and the gain replicates.
+- **Changes:** `diagnostics.py`, `run_diagnostics.py`; no production change.
+- **Selection:** 2023/24 only. Thresholds 0.18–0.36, margins 0.00–0.16.
+- **Result (validation):** threshold 0.28 raised macro F1 0.436 → 0.463 at
+  unchanged 59.21% accuracy (11 draws predicted).
+- **Replication (walk-forward, 5 selection-grade origins):**
+  - mean accuracy change **−0.53 pp** (gate −0.50 pp);
+  - macro-F1 gain in **3 of 5** origins (gate 4 of 5);
+  - worst origin **−2.63 pp** (2020/21, margin 0.16 forced 131 draws).
+- **Test benchmark:** −1.45 pp accuracy, +0.021 macro F1. Not used for the
+  decision.
+- **Leakage:** probabilities are frozen model outputs; no future data.
+- **Tests:** decision-rule and gate tests added.
+- **Decision:** **rejected**. Argmax retained; no draws are forced.
+
+## E7 — Calibration comparison
+
+- **Hypothesis:** class-specific vector scaling improves probability quality
+  over the existing temperature scaling.
+- **Selection:** 2023/24 only; gate = log-loss gain ≥ 0.002 with ECE worsening
+  ≤ 0.002.
+- **Result:** validation log loss 0.9058 (temperature) vs 0.9049 (vector):
+  gain 0.0009, below the gate. Vector scaling was worse than temperature at
+  0 of 5 selection-grade walk-forward origins.
+- **Test benchmark:** temperature 0.9989 vs vector 0.9987 log loss.
+- **Note:** raw (uncalibrated) probabilities score better on the already-
+  examined test seasons (0.9935). This is reported as a limitation and was not
+  used to re-select calibration.
+- **Decision:** **rejected**. Temperature scaling retained.
+
+## E8 — Challenger models
+
+- **Hypothesis A:** a Dixon-Coles goal model adds information beyond the
+  feature-based ensemble.
+- **Hypothesis B:** a compact odds-free feature set reduces dilution on 3,420
+  training matches.
+- **Configuration:** Dixon-Coles with exponential decay `xi = 0.0018`,
+  low-score correction `rho = 0.0221`, home advantage 0.178, internal date
+  cutoff. Core set = 143 of 223 odds-free columns.
+- **Result:**
+
+| Candidate | Validation | Test (benchmark only) | Decision |
+|---|---|---|---|
+| Dixon-Coles standalone | 56.84% acc, 0.9364 LL | 46.84% acc, 1.0573 LL | Rejected |
+| DC + production, w=0.08 | 0.90548 LL (−0.0003) | 51.45% acc, 1.0000 LL | Rejected |
+| Core 143 features | 0.9331 LL (−0.0045), 57.89% acc | 50.13% acc, 1.0214 LL | Rejected |
+
+- **Leakage:** Dixon-Coles enforces its cutoff internally; a test supplies
+  future rows and confirms predictions are unchanged. No new data source.
+- **Tests:** 4 Dixon-Coles tests plus gate tests.
+- **Decision:** both **rejected**. The production feature set and model remain.
+
+## E9 — Walk-forward evaluation
+
+- **Hypothesis:** the fixed-split result is not an artefact of one validation
+  season.
+- **Protocol:** expanding window; train through season *n−2*, validate on
+  *n−1*, evaluate on *n*. Origins 2019/20–2023/24 are selection-grade;
+  2024/25–2025/26 are benchmark-only.
+- **Candidates per origin:** random forest, LightGBM regularised, logistic
+  regression (small diverse set to control compute).
+- **Result (selection-origin mean):**
+
+| Variant | Accuracy | Log loss | Macro F1 |
+|---|---|---|---|
+| Production | 55.26% ± 3.4 pp | 0.9619 | 0.408 |
+| Market | 55.53% ± 3.2 pp | 0.9578 | 0.411 |
+| No-odds | 52.63% ± 4.2 pp | 0.9840 | 0.393 |
+| Elo + logistic | 53.63% ± 3.3 pp | 0.9781 | 0.395 |
+
+- The selected market weight ranged 0.05–0.60 across origins. The production
+  model never separated from the market.
+- **Decision:** documented. No re-tuning on this basis.
+
+## E10 — Promotion decision
+
+| Challenger | Gate | Outcome |
+|---|---|---|
+| Draw threshold/margin | validation + replication | Rejected |
+| Vector scaling | ≥0.002 validation log-loss gain | Rejected |
+| Core feature set | ≥0.002 gain, ≤0.5 pp accuracy loss | Rejected |
+| Dixon-Coles blend | ≥0.002 validation log-loss gain | Rejected |
+
+**COMPLETE — EXISTING MODEL RETAINED.** Evidence:
+`reports/research/promotion_decisions.json`.
+
+## Post-audit verification
+
+- `python -m pytest -o addopts="-q"` → **127 passed** in 304 s.
+- Dashboard `AppTest` asserts the new Model Performance sections render.
+- Pipeline tests simulate refresh failure (cache fallback) and training failure
+  (incumbent artifact restored byte-for-byte).
+- `python -m compileall src app.py` passes; Ruff is not installed.

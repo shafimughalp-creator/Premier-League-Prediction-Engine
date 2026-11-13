@@ -41,6 +41,27 @@ were frozen on the 2023/24 validation season.
 Full detail: [`reports/evaluation/FINAL_REPORT.md`](reports/evaluation/FINAL_REPORT.md)
 and [`EXPERIMENT_LOG.md`](EXPERIMENT_LOG.md).
 
+### Post-audit findings (2026-11-13)
+
+An independent audit and controlled challenger programme was run after the
+original release. Nothing below changed the production model.
+
+| Check | Result |
+|---|---|
+| Reproducibility audit | PASS — metrics recomputed exactly from `test_predictions.csv`; artifact/metadata/registry agree |
+| Paired market comparison | 392 both correct, 2 model-only, 0 market-only, 366 both wrong; McNemar p = 1.00 |
+| Accuracy difference (model − market) | +0.26 pp, 95% CI 0.00 to +0.66 pp |
+| Log-loss difference (model − market) | +0.0058 (model slightly worse) |
+| Walk-forward, selection origins | production 55.26% ± 3.4 pp; market 55.53% ± 3.2 pp |
+| Draw threshold (0.28, validation-selected) | rejected — mean −0.53 pp accuracy, macro gain in 3/5 origins |
+| Vector scaling | rejected — 0.0009 validation log-loss gain (gate 0.002) |
+| Dixon-Coles + production blend | rejected — 0.0003 validation log-loss gain |
+| Core 143-feature odds-free set | rejected — −2.63 pp validation accuracy |
+
+**Decision: COMPLETE — EXISTING MODEL RETAINED.** Evidence lives in
+`reports/research/` and the Model Performance page.
+
+
 ---
 
 ## Quickstart
@@ -77,7 +98,7 @@ Seven pages, all rendered headlessly in CI via Streamlit `AppTest`:
 | **Match Centre** | Elo, form, venue splits, rest, head-to-head, radar profile, probability decomposition |
 | **Manual Prediction** | Any two teams and a date; point-in-time features; retrospective warning |
 | **Historical Analysis** | Held-out ledger, rolling accuracy, confusion matrix, highest-confidence misses |
-| **Model Performance** | Metrics, calibration curve, per-class table, candidate comparison, importances |
+| **Model Performance** | Metrics, calibration, per-class table, candidates, draw analysis, paired market statistics, walk-forward, challengers, limitations |
 | **Data Centre** | Refresh control, sources, integrity + leakage audits, pipeline log, metadata |
 
 Design: dark navy canvas, translucent panels, violet/electric-blue accents,
@@ -173,12 +194,14 @@ this project is not currently a pushed repository. See `PROJECT_STATUS.md`.
 python -m pytest tests/unit tests/leakage      # fast
 python -m pytest tests/prediction               # engine behaviour
 python -m pytest tests/integration              # pipeline + dashboard AppTest
-python -m pytest -o addopts="-q"             # include the slow full-history audit
+python -m pytest -o addopts="-q"                # include the slow full-history audit
 ```
 
-The leakage tests use the real `FeatureBuilder`, not a reimplementation. The
-dashboard tests render every page and exercise the manual-prediction workflow,
-including the same-team rejection path.
+The current suite contains **127 tests**. The leakage tests use the real
+`FeatureBuilder`, not a reimplementation. The dashboard tests render every page
+and exercise the manual-prediction workflow, including the same-team rejection
+path. Pipeline tests simulate a refresh failure (cache fallback) and a training
+failure (incumbent artifact restored byte-for-byte).
 
 ---
 
@@ -190,13 +213,14 @@ src/
   pipeline.py          refresh → validate → guarded retrain → predict
   data/                acquisition, processing, validation
   features/builder.py  chronological feature state machine
-  models/              candidate zoo, ensemble, metrics
+  models/              candidate zoo, ensemble, metrics, Dixon-Coles
   prediction/engine.py upcoming / manual / retrospective
+  research/            audit, diagnostics, walk-forward, promotion gates
   dashboard/           theme, cached data, components, 7 pages
 tests/                 unit, leakage, prediction, integration
 data/                  raw cache, processed tables, fixtures
 artifacts/             model.pkl, metadata
-reports/               evaluation, experiments, data quality
+reports/               evaluation, research, experiments, data quality
 ```
 
 More detail: [`ARCHITECTURE.md`](ARCHITECTURE.md).
@@ -205,11 +229,16 @@ More detail: [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Limitations
 
-- Draws are never selected by argmax (draw recall 0%), and the model is 95%
-  market consensus. Both facts are surfaced in the UI, not hidden.
+- Draws are never selected by argmax (draw recall 0%). Validation-selected draw
+  thresholds did not replicate across walk-forward origins and were rejected;
+  no draws are forced to inflate recall.
+- The model is 95% market consensus. Paired tests show it matches market
+  accuracy within noise and has slightly worse probability quality.
+- The 2024/25 and 2025/26 test seasons were examined in earlier work; a genuine
+  prospective test requires future matches.
 - The 2026/27 season is partial and used only for the production refit.
-- No injury, lineup or referee data: none can be reconstructed leakage-free
-  across 13 seasons from the chosen public sources.
+- No injury, lineup, referee or travel data: none can be reconstructed
+  leakage-free across 13 seasons from the chosen public sources.
 - CatBoost is unavailable in this environment and is omitted.
 - GitHub automation is prepared but not yet verified on a live repository.
 

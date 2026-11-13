@@ -2,6 +2,56 @@
 
 All notable changes to this project. Dates are UTC.
 
+## [1.1.0] — 2026-11-13
+
+### Added
+
+- **Research evidence layer** (`src/research/`)
+  - `run_audit.py`: determinism, metric recomputation, artifact/metadata/registry
+    consistency, probability invariants, market-consensus reconstruction.
+  - `diagnostics.py`: draw summaries and deciles, threshold/margin curves,
+    validation-only policy selection, reliability tables, ECE, Brier
+    decomposition, sharpness, temperature and vector scaling, exact McNemar,
+    paired match bootstrap and season-block bootstrap.
+  - `run_diagnostics.py`, `run_challengers.py`, `walk_forward.py`,
+    `finalize.py` and JSON outputs under `reports/research/`.
+  - `src/models/dixon_coles.py`: time-decayed Dixon-Coles goal model with an
+    internal date cutoff and low-score correction.
+- Validation probability export (`reports/evaluation/validation_predictions.csv`)
+  and pre-calibration columns in both prediction files.
+- Validation metrics in the training report, model artifact, metadata and
+  experiment registry.
+- Model Performance page: draw analysis, paired market comparison,
+  calibration/sharpness, season table, walk-forward table, challenger table and
+  an explicit status/limitations block.
+- Tests for draw rules, calibration, paired statistics, promotion gates,
+  Dixon-Coles leakage isolation, pipeline failure recovery and the new dashboard
+  sections. Full suite: **127 passed**.
+
+### Changed
+
+- Experiment registry now records `record_type` and preserves research records
+  while capping training-run history at 20.
+- Dashboard research loaders degrade to empty states when a report is missing.
+- Documentation reflects that `mkt_books` counts price sources (4–8, median 6),
+  not distinct bookmakers, and that prices have no explicit publication
+  timestamp.
+
+### Research outcomes (no production change)
+
+- Draw threshold 0.28 passed the validation gate but failed the walk-forward
+  replication gate (mean −0.53 pp accuracy, macro gain in 3/5 origins) and was
+  rejected.
+- Vector scaling was rejected (0.0009 validation log-loss gain, gate 0.002).
+- Dixon-Coles standalone and blended variants were rejected (0.0003 gain).
+- The 143-feature odds-free core set was rejected (−2.63 pp validation accuracy).
+- Paired test comparison: +2 model-only wins, 0 market-only, McNemar p = 1.00;
+  accuracy difference +0.26 pp (95% CI 0.00 to +0.66); log loss 0.0058 worse
+  than the market.
+- Walk-forward selection-origin means: production 55.26%, market 55.53%,
+  no-odds 52.63%.
+- Decision: **COMPLETE — EXISTING MODEL RETAINED**.
+
 ## [1.0.0] — 2026-11-13
 
 ### Added
@@ -11,7 +61,7 @@ All notable changes to this project. Dates are UTC.
     the fixtures feed and the openfootball 2026/27 schedule.
   - Raw-byte caching with retry logic and an append-only update log.
   - Canonical team normalisation (36 clubs) and overround-normalised bookmaker
-    consensus features from six providers.
+    consensus features from seven providers (plus average and maximum series).
   - Integrity validation and fixture validation.
 
 - **Feature engineering**
