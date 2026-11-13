@@ -1,0 +1,117 @@
+{
+  "trained_at": "2026-11-13T01:14:41+00:00",
+  "data_cutoff": "2026-11-08",
+  "model_type": "ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow",
+  "config": "ensemble",
+  "n_features": 237,
+  "temperature": 0.85,
+  "poisson_alpha": 1.0,
+  "market_beta": 0.05,
+  "no_odds_poisson_alpha": 0.9,
+  "test_log_loss": 0.9989,
+  "test_accuracy": 0.5184,
+  "test_brier": 0.5991,
+  "test_ece": 0.064,
+  "market_log_loss": 0.9931,
+  "market_accuracy": 0.5158,
+  "no_odds_log_loss": 1.0232,
+  "no_odds_accuracy": 0.5039,
+  "accepted": true,
+  "split": {
+    "train": {
+      "n": 3420,
+      "start": "2014-08-16",
+      "end": "2023-05-28"
+    },
+    "validation": {
+      "n": 380,
+      "start": "2023-08-11",
+      "end": "2024-05-19"
+    },
+    "test": {
+      "n": 760,
+      "start": "2024-08-16",
+      "end": "2026-05-24"
+    }
+  },
+  "top_features": [
+    {
+      "feature": "mkt_home",
+      "importance": 0.0325
+    },
+    {
+      "feature": "odds_home",
+      "importance": 0.0323
+    },
+    {
+      "feature": "mkt_balance",
+      "importance": 0.0313
+    },
+    {
+      "feature": "odds_away",
+      "importance": 0.0299
+    },
+    {
+      "feature": "mkt_away",
+      "importance": 0.0276
+    },
+    {
+      "feature": "elo_expected_home",
+      "importance": 0.0217
+    },
+    {
+      "feature": "elo_diff",
+      "importance": 0.0197
+    },
+    {
+      "feature": "elo_expected_away",
+      "importance": 0.0173
+    },
+    {
+      "feature": "pois_exp_diff",
+      "importance": 0.0141
+    },
+    {
+      "feature": "mkt_favourite",
+      "importance": 0.0136
+    }
+  ],
+  "data_quality": {
+    "generated_at": "2026-11-13T01:14:43+00:00",
+    "n_matches": 4660,
+    "first_date": "2014-08-16",
+    "last_date": "2026-11-08",
+    "n_teams": 36,
+    "seasons": {
+      "1415": 380,
+      "1516": 380,
+      "1617": 380,
+      "1718": 380,
+      "1819": 380,
+      "1920": 380,
+      "2021": 380,
+      "2122": 380,
+      "2223": 380,
+      "2324": 380,
+      "2425": 380,
+      "2526": 380,
+      "2627": 100
+    },
+    "duplicate_fixtures": 0,
+    "invalid_results": 0,
+    "odds_coverage": 1.0,
+    "shots_coverage": 1.0,
+    "missing_by_column": {
+      "mkt_home": 0,
+      "home_shots": 0,
+      "home_sot": 0,
+      "home_corners": 0,
+      "home_fouls": 0
+    },
+    "outcome_distribution": {
+      "H": 0.4436,
+      "A": 0.3182,
+      "D": 0.2382
+    }
+  }
+}

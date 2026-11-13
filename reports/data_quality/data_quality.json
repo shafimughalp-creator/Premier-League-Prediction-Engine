@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-11-13T01:30:58+00:00",
+  "n_matches": 4660,
+  "first_date": "2014-08-16",
+  "last_date": "2026-11-08",
+  "n_teams": 36,
+  "seasons": {
+    "1415": 380,
+    "1516": 380,
+    "1617": 380,
+    "1718": 380,
+    "1819": 380,
+    "1920": 380,
+    "2021": 380,
+    "2122": 380,
+    "2223": 380,
+    "2324": 380,
+    "2425": 380,
+    "2526": 380,
+    "2627": 100
+  },
+  "duplicate_fixtures": 0,
+  "invalid_results": 0,
+  "odds_coverage": 1.0,
+  "shots_coverage": 1.0,
+  "missing_by_column": {
+    "mkt_home": 0,
+    "home_shots": 0,
+    "home_sot": 0,
+    "home_corners": 0,
+    "home_fouls": 0
+  },
+  "outcome_distribution": {
+    "H": 0.4436,
+    "A": 0.3182,
+    "D": 0.2382
+  }
+}

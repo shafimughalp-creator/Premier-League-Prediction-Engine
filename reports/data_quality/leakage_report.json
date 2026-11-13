@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-11-13T01:06:56+00:00",
+  "integrity": {
+    "ok": true,
+    "checks": {
+      "required_columns": true,
+      "valid_dates": true,
+      "distinct_teams": true,
+      "goal_range": true,
+      "result_matches_score": true,
+      "no_duplicate_fixtures": true,
+      "result_codes": true,
+      "sorted_chronologically": true,
+      "team_names_canonical": true
+    },
+    "issues": [],
+    "n_matches": 4660,
+    "n_teams": 36,
+    "first_date": "2014-08-16",
+    "last_date": "2026-11-08"
+  },
+  "own_result": {
+    "test": "own_result_independence",
+    "passed": true,
+    "cases": [
+      {
+        "match_id": "2014-08-16_Arsenal_Crystal Palace",
+        "date": "2014-08-16",
+        "n_features": 237,
+        "identical": true
+      },
+      {
+        "match_id": "2020-10-24_Fulham_Crystal Palace",
+        "date": "2020-10-24",
+        "n_features": 237,
+        "identical": true
+      },
+      {
+        "match_id": "2026-11-08_Man United_Aston Villa",
+        "date": "2026-11-08",
+        "n_features": 237,
+        "identical": true
+      }
+    ]
+  },
+  "future_independence": {
+    "test": "future_independence",
+    "passed": true,
+    "cases": [
+      {
+        "date": "2019-12-28",
+        "matches_on_date": 7,
+        "rows_match": true,
+        "identical": true
+      }
+    ]
+  },
+  "cold_start": {
+    "test": "chronological_cold_start",
+    "passed": true,
+    "checks": {
+      "first_match_elo_is_start": true,
+      "first_match_has_no_history": true,
+      "first_match_season_game_one": true
+    },
+    "match": "2014-08-16_Arsenal_Crystal Palace"
+  },
+  "passed": true
+}

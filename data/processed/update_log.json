@@ -1,0 +1,23 @@
+[
+  {
+    "started_at": "2026-11-12T22:24:47+00:00",
+    "finished_at": "2026-11-12T22:25:45+00:00",
+    "seasons": {
+      "1415": "downloaded",
+      "1516": "downloaded",
+      "1617": "downloaded",
+      "1718": "downloaded",
+      "1819": "downloaded",
+      "1920": "downloaded",
+      "2021": "downloaded",
+      "2122": "downloaded",
+      "2223": "downloaded",
+      "2324": "downloaded",
+      "2425": "downloaded",
+      "2526": "downloaded",
+      "2627": "downloaded"
+    },
+    "fixtures": "downloaded",
+    "openfootball": "downloaded"
+  }
+]

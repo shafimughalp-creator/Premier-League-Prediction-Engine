@@ -1,0 +1,11 @@
+date,time,home_team,away_team,source,round,mkt_home,mkt_draw,mkt_away,mkt_overround,mkt_disp_home,mkt_disp_draw,mkt_disp_away,mkt_books,mkt_balance,mkt_favourite,mkt_entropy,odds_home,odds_draw,odds_away,matchweek,match_id
+2026-11-21,15:00,Aston Villa,Sunderland,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Aston Villa_Sunderland
+2026-11-21,15:00,Bournemouth,Nott'm Forest,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Bournemouth_Nott'm Forest
+2026-11-21,15:00,Brentford,Everton,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Brentford_Everton
+2026-11-21,15:00,Chelsea,Leeds,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Chelsea_Leeds
+2026-11-21,15:00,Coventry,Crystal Palace,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Coventry_Crystal Palace
+2026-11-21,15:00,Hull,Brighton,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Hull_Brighton
+2026-11-21,15:00,Liverpool,Man United,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Liverpool_Man United
+2026-11-21,15:00,Man City,Fulham,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Man City_Fulham
+2026-11-21,15:00,Newcastle,Arsenal,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Newcastle_Arsenal
+2026-11-21,15:00,Tottenham,Ipswich,openfootball schedule,Matchday 11,,,,,,,,,,,,,,,11.0,2026-11-21_Tottenham_Ipswich
