@@ -27,6 +27,7 @@ Nothing is marked verified unless it was executed in this environment.
 | Unit + leakage tests | 108 tests pass across unit, leakage, prediction and integration suites |
 | Full suite | `python -m pytest -o addopts="-q"` → 108 passed in 230 s (includes slow full-history audit) |
 | GitHub workflows | files written and syntactically complete (not yet run on GitHub) |
+| Local version control | git repository initialized; initial commit `c6e77f5` (no remote configured) |
 
 ## Honest performance summary
 

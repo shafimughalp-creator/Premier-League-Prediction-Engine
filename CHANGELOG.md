@@ -104,3 +104,5 @@ All notable changes to this project. Dates are UTC.
 - CatBoost is not installed in this environment and is therefore not part of
   the candidate zoo.
 - The 53–55% accuracy target was not reached; see `reports/evaluation/FINAL_REPORT.md`.
+- The repository was initialised locally (initial commit `c6e77f5`). No remote
+  is configured, so no push or live GitHub Actions run has occurred.
