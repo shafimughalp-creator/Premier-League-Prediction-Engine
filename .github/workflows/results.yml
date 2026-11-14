@@ -1,0 +1,119 @@
+name: results
+
+# Workflow C — synchronises official final results and evaluates the frozen
+# pre-match prediction snapshots against them:
+#   1. src.results.sync      downloads the current-season feeds and stores
+#                            official finals in data/results/results.json
+#   2. src.evaluation.evaluate  scores snapshots vs results into
+#                            data/evaluation/{evaluations,matchweeks,
+#                            freshness}.json
+# No model training, no re-prediction: snapshots are read-only here.
+
+on:
+  schedule:
+    # Every six hours at :23 (00:23, 06:23, 12:23, 18:23 UTC). The 06:23 run
+    # picks up the previous night's results shortly after the 06:15 UTC
+    # prediction refresh; the other runs cover evening/weekend kickoffs and
+    # late provider corrections. GitHub cron is UTC, runs only on the default
+    # branch, and may be delayed under load — the stores are idempotent, so a
+    # late run is always correct, merely later.
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+# Commits result/evaluation stores back to the repository.
+permissions:
+  contents: write
+
+# Serialised with sync-fixtures and update so the three never push at once.
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Synchronise official final results
+        # Exits non-zero only when no provider is usable; the existing result
+        # store is preserved in that case and the job is marked failed.
+        run: python -m src.results.sync --fetch --json
+
+      - name: Evaluate snapshots and rebuild aggregates
+        run: python -m src.evaluation.evaluate --json
+
+      - name: Write the run summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          def read(path):
+              p = Path(path)
+              return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+
+          results = read("data/results/results.json")
+          evaluation = read("data/evaluation/matchweeks.json")
+          freshness = read("data/evaluation/freshness.json")
+
+          season = (evaluation.get("seasons") or {}).get("2627", {})
+          totals = season.get("season") or {}
+          lines = ["### Results sync + evaluation", ""]
+          lines += [
+              f"- Official results stored: {len(results.get('results', {}))}",
+              f"- Last results sync: {results.get('updated_at')}",
+              f"- Season correct: {totals.get('correct', 0)} / "
+              f"evaluated {totals.get('evaluated', 0)} "
+              f"(accuracy {totals.get('accuracy')}%)",
+              f"- Pending: {totals.get('pending', 0)}, "
+              f"completed without eligible prediction: "
+              f"{totals.get('missing_prediction', 0)}",
+              "",
+              "| Matchweek | Correct | Evaluated | Accuracy | Pending | Missing prediction |",
+              "| --- | --- | --- | --- | --- | --- |",
+          ]
+          for key in sorted(season.get("matchweeks", {}), key=lambda k: (len(k), k)):
+              week = season["matchweeks"][key]
+              lines.append(
+                  f"| {key} | {week['correct']} | {week['evaluated']} | "
+                  f"{week['accuracy']} | {week['pending']} | "
+                  f"{week['missing_prediction']} |")
+          lines += ["", f"- Fixture sync: {freshness.get('fixtures', {}).get('last_sync_at')}",
+                    f"- Predictions: {freshness.get('predictions', {}).get('last_run')}",
+                    f"- Evaluation: {freshness.get('evaluation', {}).get('last_run')}"]
+          summary = "\n".join(lines)
+          print(summary)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+              fh.write(summary + "\n")
+          PY
+
+      - name: Commit result and evaluation stores
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Only real data changes justify a commit.
+          git add data/results data/evaluation data/predictions/snapshots.json
+          if git diff --cached --quiet; then
+            echo "No result or evaluation changes; nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore(results): sync final results and evaluation [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
