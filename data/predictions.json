@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T14:19:07+00:00",
+  "generated_at": "2026-11-14T16:28:20+00:00",
   "model_version": "epl-20261113-1478e7d5",
   "model_type": "ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow",
   "mode": "upcoming",
@@ -18,6 +18,7 @@
   },
   "fixtures": [
     {
+      "fixture_id": "2627:Aston Villa:Sunderland",
       "match_id": "2026-11-21_Aston Villa_Sunderland",
       "date": "2026-11-21",
       "time": "15:00",
@@ -28,11 +29,11 @@
       "home_short": "AVL",
       "away_short": "SUN",
       "prob_home": 0.4895351540432115,
-      "prob_draw": 0.2742383809557039,
+      "prob_draw": 0.2742383809557038,
       "prob_away": 0.2362264650010846,
       "probabilities": {
         "home": 0.4895351540432115,
-        "draw": 0.2742383809557039,
+        "draw": 0.2742383809557038,
         "away": 0.2362264650010846
       },
       "predicted": "H",
@@ -42,7 +43,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -77,6 +78,7 @@
       }
     },
     {
+      "fixture_id": "2627:Bournemouth:Nott'm Forest",
       "match_id": "2026-11-21_Bournemouth_Nott'm Forest",
       "date": "2026-11-21",
       "time": "15:00",
@@ -86,22 +88,22 @@
       "away_display": "Nottingham Forest",
       "home_short": "BOU",
       "away_short": "NFO",
-      "prob_home": 0.46317737293923045,
-      "prob_draw": 0.3052458653609969,
-      "prob_away": 0.2315767616997727,
+      "prob_home": 0.4631773729392305,
+      "prob_draw": 0.30524586536099685,
+      "prob_away": 0.23157676169977273,
       "probabilities": {
-        "home": 0.46317737293923045,
-        "draw": 0.3052458653609969,
-        "away": 0.2315767616997727
+        "home": 0.4631773729392305,
+        "draw": 0.30524586536099685,
+        "away": 0.23157676169977273
       },
       "predicted": "H",
       "predicted_label": "Home win",
-      "confidence": 0.46317737293923045,
+      "confidence": 0.4631773729392305,
       "confidence_band": "Medium",
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -136,6 +138,7 @@
       }
     },
     {
+      "fixture_id": "2627:Brentford:Everton",
       "match_id": "2026-11-21_Brentford_Everton",
       "date": "2026-11-21",
       "time": "15:00",
@@ -160,7 +163,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -195,6 +198,7 @@
       }
     },
     {
+      "fixture_id": "2627:Chelsea:Leeds",
       "match_id": "2026-11-21_Chelsea_Leeds",
       "date": "2026-11-21",
       "time": "15:00",
@@ -219,7 +223,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -254,6 +258,7 @@
       }
     },
     {
+      "fixture_id": "2627:Coventry:Crystal Palace",
       "match_id": "2026-11-21_Coventry_Crystal Palace",
       "date": "2026-11-21",
       "time": "15:00",
@@ -278,7 +283,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -313,6 +318,7 @@
       }
     },
     {
+      "fixture_id": "2627:Hull:Brighton",
       "match_id": "2026-11-21_Hull_Brighton",
       "date": "2026-11-21",
       "time": "15:00",
@@ -337,7 +343,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -372,6 +378,7 @@
       }
     },
     {
+      "fixture_id": "2627:Liverpool:Man United",
       "match_id": "2026-11-21_Liverpool_Man United",
       "date": "2026-11-21",
       "time": "15:00",
@@ -396,7 +403,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -431,6 +438,7 @@
       }
     },
     {
+      "fixture_id": "2627:Man City:Fulham",
       "match_id": "2026-11-21_Man City_Fulham",
       "date": "2026-11-21",
       "time": "15:00",
@@ -455,7 +463,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -490,6 +498,7 @@
       }
     },
     {
+      "fixture_id": "2627:Newcastle:Arsenal",
       "match_id": "2026-11-21_Newcastle_Arsenal",
       "date": "2026-11-21",
       "time": "15:00",
@@ -499,22 +508,22 @@
       "away_display": "Arsenal",
       "home_short": "NEW",
       "away_short": "ARS",
-      "prob_home": 0.16862201434180654,
-      "prob_draw": 0.2160394361556824,
-      "prob_away": 0.615338549502511,
+      "prob_home": 0.16862201434180651,
+      "prob_draw": 0.21603943615568239,
+      "prob_away": 0.6153385495025111,
       "probabilities": {
-        "home": 0.16862201434180654,
-        "draw": 0.2160394361556824,
-        "away": 0.615338549502511
+        "home": 0.16862201434180651,
+        "draw": 0.21603943615568239,
+        "away": 0.6153385495025111
       },
       "predicted": "A",
       "predicted_label": "Away win",
-      "confidence": 0.615338549502511,
+      "confidence": 0.6153385495025111,
       "confidence_band": "High",
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",
@@ -549,6 +558,7 @@
       }
     },
     {
+      "fixture_id": "2627:Tottenham:Ipswich",
       "match_id": "2026-11-21_Tottenham_Ipswich",
       "date": "2026-11-21",
       "time": "15:00",
@@ -573,7 +583,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "no_odds",
-      "predicted_at": "2026-11-13T14:19:06+00:00",
+      "predicted_at": "2026-11-14T16:28:20+00:00",
       "has_odds": false,
       "market": null,
       "source": "openfootball schedule",

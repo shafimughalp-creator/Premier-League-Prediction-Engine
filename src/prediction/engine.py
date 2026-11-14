@@ -131,9 +131,11 @@ class Prediction:
     season: str = ""
     matchweek: float | None = None
     context: dict = field(default_factory=dict)
+    fixture_id: str | None = None
 
     def as_dict(self) -> dict:
         return {
+            "fixture_id": self.fixture_id,
             "match_id": self.match_id,
             "date": self.date,
             "time": self.time,
@@ -417,6 +419,7 @@ class PredictionEngine:
                 season=str(row.get("season") or config.SEASONS.get(config.CURRENT_SEASON, "")),
                 matchweek=row.get("matchweek"),
                 context=self._context(features, i),
+                fixture_id=str(row.get("fixture_id")) if row.get("fixture_id") else None,
             ))
         out.sort(key=lambda p: (p.date, p.time, p.home_team))
         return out

@@ -35,7 +35,8 @@ import joblib
 import pandas as pd
 
 from src import config
-from src.data import acquisition, processing, validation
+from src.data import acquisition, fixture_sync, processing, validation
+from src.prediction import snapshots
 from src.prediction.engine import PredictionEngine
 from src.utilities.io import read_json, write_json_atomic
 
@@ -220,6 +221,19 @@ def stage_predict(state: dict) -> dict:
     payload = engine.predict_upcoming(save=True)
     _push_step(state, "predict", "ok",
                f"{payload['n_fixtures']} fixtures, model {payload['model_version']}")
+    # Immutable pre-match snapshots: persist/revise/lock the eligible
+    # prediction for every fixture the payload covers (see
+    # src/prediction/snapshots.py for the eligibility policy).
+    store_rows = fixture_sync.load_store()
+    snapshot_report = snapshots.reconcile(store_rows, payload["fixtures"])
+    state["snapshots"] = {
+        key: snapshot_report[key]
+        for key in ("created", "revised", "unchanged", "locked", "missing",
+                    "invalid", "status_updates", "total")
+    }
+    _push_step(state, "snapshots", "ok",
+               "created={created} revised={revised} unchanged={unchanged} "
+               "locked={locked} missing={missing} invalid={invalid}".format(**snapshot_report))
     return payload
 
 

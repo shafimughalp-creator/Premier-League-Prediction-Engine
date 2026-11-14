@@ -1,42 +1,48 @@
 {
-  "last_run": "2026-11-13T14:18:48+00:00",
+  "last_run": "2026-11-14T16:27:39+00:00",
   "status": "ok",
   "steps": [
     {
-      "at": "2026-11-13T14:18:48+00:00",
+      "at": "2026-11-14T16:27:39+00:00",
       "step": "refresh",
       "status": "skipped",
       "detail": "offline mode"
     },
     {
-      "at": "2026-11-13T14:18:50+00:00",
+      "at": "2026-11-14T16:27:41+00:00",
       "step": "process",
       "status": "ok",
       "detail": "4660 matches"
     },
     {
-      "at": "2026-11-13T14:18:50+00:00",
+      "at": "2026-11-14T16:27:41+00:00",
       "step": "validate",
       "status": "ok",
       "detail": "odds=100% shots=100%"
     },
     {
-      "at": "2026-11-13T14:18:50+00:00",
+      "at": "2026-11-14T16:27:42+00:00",
       "step": "fixtures",
       "status": "ok",
       "detail": "new=0 updated=0 postponed=0 cancelled=0 rejected=0 upcoming=10"
     },
     {
-      "at": "2026-11-13T14:18:50+00:00",
+      "at": "2026-11-14T16:27:42+00:00",
       "step": "train",
       "status": "skipped",
       "detail": "predict-only mode"
     },
     {
-      "at": "2026-11-13T14:19:07+00:00",
+      "at": "2026-11-14T16:28:21+00:00",
       "step": "predict",
       "status": "ok",
       "detail": "10 fixtures, model epl-20261113-1478e7d5"
+    },
+    {
+      "at": "2026-11-14T16:28:21+00:00",
+      "step": "snapshots",
+      "status": "ok",
+      "detail": "created=0 revised=0 unchanged=10 locked=0 missing=0 invalid=0"
     }
   ],
   "data_quality": {
@@ -58,7 +64,7 @@
   },
   "error": null,
   "traceback": null,
-  "last_success": "2026-11-13T14:19:08+00:00",
+  "last_success": "2026-11-14T16:28:23+00:00",
   "n_matches": 4660,
   "data_cutoff": "2026-11-08",
   "n_fixtures": 10,
@@ -66,7 +72,7 @@
   "model_type": "ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow",
   "test_accuracy": 0.5184210526315789,
   "retrained": false,
-  "duration_seconds": 19.6,
+  "duration_seconds": 44.0,
   "fixture_sync": {
     "status": "ok",
     "sources": {
@@ -95,5 +101,15 @@
     "store_rows": 280,
     "upcoming_rows": 10,
     "store_changed": false
+  },
+  "snapshots": {
+    "created": 0,
+    "revised": 0,
+    "unchanged": 10,
+    "locked": 0,
+    "missing": 0,
+    "invalid": 0,
+    "status_updates": 0,
+    "total": 10
   }
 }
