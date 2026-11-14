@@ -2,6 +2,50 @@
 
 All notable changes to this project. Dates are UTC.
 
+## [1.2.0] — 2026-11-13
+
+### Added
+
+- **Persistent fixture synchronisation** (`src/data/fixture_sync.py`)
+  - Parses the football-data `fixtures.csv` feed and the openfootball
+    `football.json` schedule (the two providers the project already used).
+  - Stable `fixture_id` (`"{season_code}:{home}:{away}"`) plus explicit
+    `scheduled` / `rescheduled` / `postponed` / `cancelled` / `completed`
+    statuses, `season_code`, `season`, `timezone`, `first_seen_at` and
+    `updated_at` in `data/fixtures/upcoming.csv`.
+  - Sidecar `data/fixtures/sync_state.json` records sources, counts and the
+    last 60 runs.
+  - Idempotent merge: a repeat run leaves the store byte-identical
+    (`new=0 updated=0 unchanged=280`).
+  - Fixtures absent from a provider response are retained; only explicit
+    cancellation/postponement or a result in `matches.csv` removes them.
+  - All-provider failure returns `ok: false`, exits `1` and preserves the
+    store; one failed provider reports `partial`.
+  - CLI: `python -m src.data.fixture_sync [--fetch] [--json]`.
+- **`fixtures` pipeline stage** (`src/pipeline.py`), run after validation and
+  before the guarded retrain/predict steps.
+- **`.github/workflows/sync-fixtures.yml`**: daily 05:45 UTC + manual dispatch,
+  Python 3.12, minimal `contents: write`, serialised with the prediction
+  workflow, commits only when `upcoming.csv` changed.
+- **31 fixture-sync tests** covering parsing, validation, dedupe, idempotency,
+  reschedules, postponements, cancellations, history protection, unknown teams,
+  provider failures, the upcoming view, pipeline delegation and workflow
+  configuration. Full suite: **158 passed**.
+
+### Fixed
+
+- `_parse_date` parsed ISO dates with `dayfirst=True`, turning `2026-10-11`
+  into 10 November (and `2026-10-12` into 10 December). That resurrected four
+  already-completed Matchday 6 fixtures as "upcoming" and produced a 3-fixture
+  view instead of Matchday 11's 10 fixtures. ISO is now parsed first, with
+  day-first only as the football-data fallback.
+- `acquisition.refresh()` silently returned cached files when `force=False`, so
+  a scheduled run on a warm checkout never re-downloaded. It now always
+  attempts the selected downloads and falls back to cache on failure.
+- `processing.load_fixtures()` no longer rebuilds the fixture file from scratch
+  (which could overwrite a valid store with an empty response); it delegates to
+  the sync store and only bootstraps when the store is missing.
+
 ## [1.1.0] — 2026-11-13
 
 ### Added

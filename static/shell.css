@@ -1,0 +1,148 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ------------------------------------------------------------------
+   Streamlit shell overrides.
+   The prototype is a plain document: body scrolls, fixed sidebar,
+   fixed drawer. Streamlit wraps st.html in an app shell with its own
+   scroll container, header and theme background. These rules remove
+   that chrome and hand layout/scroll back to the prototype CSS.
+   static/style.css stays verbatim; everything here is shell only.
+   ------------------------------------------------------------------ */
+
+/* Streamlit chrome */
+#MainMenu,
+footer,
+header[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"],
+[data-testid="stSidebar"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stAppDeployButton"],
+[data-testid="stBottom"] {
+  display: none !important;
+}
+
+/* Let the document scroll instead of Streamlit's main pane. */
+html,
+body,
+#root {
+  height: auto !important;
+  min-height: 100% !important;
+}
+
+body {
+  overflow: visible !important;
+}
+
+html {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: auto !important;
+}
+
+/* Streamlit thins the scrollbar; the prototype uses the browser default. */
+html::-webkit-scrollbar {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+[data-testid="stApp"] {
+  position: static !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+[data-testid="stAppViewContainer"] {
+  position: static !important;
+  display: block !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+/* Streamlit's built-in skip link would be the first thing Tab reaches,
+   ahead of the prototype's own `.skip` link. Remove it so keyboard order
+   matches the prototype exactly. */
+[data-testid="stSkipToContent"] {
+  display: none !important;
+}
+
+/* Streamlit pins this wrapper to 100dvh, which caps body height at the
+   viewport and misplaces body's bottom radial gradient. Let it grow. */
+[data-testid="stAppViewContainer"] > div {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+[data-testid="stMain"] {
+  display: block !important;
+  position: static !important;
+  inset: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+[data-testid="stMainBlockContainer"],
+.block-container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+[data-testid="stVerticalBlock"] {
+  display: block !important;
+  gap: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+[data-testid="stElementContainer"] {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+[data-testid="stHtml"] {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Streamlit's theme sets its own font/colour/line-height on wrappers.
+   Hand those back to the prototype's body rules. */
+[data-testid="stApp"],
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stVerticalBlock"],
+[data-testid="stElementContainer"],
+[data-testid="stHtml"] {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  font-size: 16px !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: normal !important;
+  letter-spacing: normal !important;
+  color: #fff !important;
+  -webkit-font-smoothing: auto !important;
+  -moz-osx-font-smoothing: auto !important;
+}
+
+/* Streamlit gives paragraphs a 1rem bottom margin; the prototype has none. */
+p {
+  margin-bottom: 0 !important;
+}
+
+/* Streamlit indents lists; the prototype's reset removes that padding. */
+ul,
+ol {
+  margin: 0 !important;
+  padding: 0 !important;
+}

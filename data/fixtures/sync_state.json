@@ -1,0 +1,480 @@
+{
+  "last_run": {
+    "started_at": "2026-11-13T14:18:50+00:00",
+    "finished_at": "2026-11-13T14:18:50+00:00",
+    "ok": true,
+    "status": "ok",
+    "sources": {
+      "football-data": {
+        "status": "cached",
+        "rows": 0,
+        "url": "https://www.football-data.co.uk/fixtures.csv"
+      },
+      "openfootball": {
+        "status": "cached",
+        "rows": 280,
+        "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+      }
+    },
+    "counts": {
+      "new": 0,
+      "updated": 0,
+      "unchanged": 280,
+      "postponed": 0,
+      "cancelled": 0,
+      "completed": 0,
+      "retained": 0,
+      "duplicates": 0,
+      "rejected": 0
+    },
+    "historical_skipped": 110,
+    "store_rows": 280,
+    "upcoming_rows": 10,
+    "store_changed": false,
+    "rejected": []
+  },
+  "history": [
+    {
+      "started_at": "2026-11-13T13:34:57+00:00",
+      "finished_at": "2026-11-13T13:35:38+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "downloaded",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "downloaded",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 280,
+        "updated": 0,
+        "unchanged": 0,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": true,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T13:36:18+00:00",
+      "finished_at": "2026-11-13T13:36:19+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T13:36:59+00:00",
+      "finished_at": "2026-11-13T13:36:59+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T13:53:28+00:00",
+      "finished_at": "2026-11-13T13:53:28+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T13:54:05+00:00",
+      "finished_at": "2026-11-13T13:54:05+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T13:54:25+00:00",
+      "finished_at": "2026-11-13T13:54:25+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T13:54:28+00:00",
+      "finished_at": "2026-11-13T13:54:29+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T14:16:47+00:00",
+      "finished_at": "2026-11-13T14:16:47+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": true,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T14:16:49+00:00",
+      "finished_at": "2026-11-13T14:16:49+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T14:17:45+00:00",
+      "finished_at": "2026-11-13T14:17:46+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T14:18:27+00:00",
+      "finished_at": "2026-11-13T14:18:27+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T14:18:46+00:00",
+      "finished_at": "2026-11-13T14:18:47+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-13T14:18:50+00:00",
+      "finished_at": "2026-11-13T14:18:50+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "cached",
+          "rows": 0,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "cached",
+          "rows": 280,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 0,
+        "unchanged": 280,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 0,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 280,
+      "upcoming_rows": 10,
+      "store_changed": false,
+      "rejected": []
+    }
+  ]
+}

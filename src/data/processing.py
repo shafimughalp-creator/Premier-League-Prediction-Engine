@@ -249,85 +249,20 @@ def _fixture_odds(row: pd.Series) -> dict:
 
 
 def load_fixtures(refresh: bool = False, matches: pd.DataFrame | None = None) -> pd.DataFrame:
-    """Resolve upcoming EPL fixtures, preferring rows with quoted odds."""
+    """Return the next matchweek of upcoming fixtures from the synced store.
+
+    The store is maintained by :mod:`src.data.fixture_sync` (CLI, pipeline and
+    the scheduled workflow). Prediction only reads it, so scoring a fixture
+    never triggers a network call. ``refresh=True`` forces a live
+    synchronisation first; a missing store is bootstrapped from the cached
+    provider payloads.
+    """
+    from src.data import fixture_sync
+
     matches = matches if matches is not None else load_processed()
-    cutoff = pd.Timestamp(matches["date"].max())
-    frames: list[pd.DataFrame] = []
-
-    # 1) football-data fixture feed (only rows after the last completed match)
-    try:
-        acquisition.download_fixtures(force=refresh)
-        fx = pd.read_csv(config.RAW_DIR / "fixtures.csv", encoding="utf-8-sig", low_memory=False)
-        fx = fx[fx["Div"].astype(str).str.upper() == "E0"].copy()
-        fx["date"] = _parse_dates(fx["Date"])
-        fx = fx[fx["date"] > cutoff]
-        if len(fx):
-            rows = []
-            for _, row in fx.iterrows():
-                odds = _fixture_odds(row)
-                time_value = row.get("Time")
-                time_text = "15:00" if pd.isna(time_value) else str(time_value)
-                rows.append({
-                    "date": row["date"].normalize(),
-                    "time": time_text,
-                    "home_team": normalize_team(row["HomeTeam"]),
-                    "away_team": normalize_team(row["AwayTeam"]),
-                    "source": "football-data fixtures",
-                    "round": None,
-                    **odds,
-                })
-            frames.append(pd.DataFrame(rows))
-    except Exception as exc:
-        log.warning("football-data fixtures unavailable: %s", exc)
-
-    # 2) openfootball published schedule for the next unplayed matchday
-    if not frames:
-        try:
-            acquisition.download_openfootball()
-            payload = json.loads((config.RAW_DIR / "openfootball_2026-27.json")
-                                 .read_text(encoding="utf-8"))
-            open_rows = []
-            for m in payload.get("matches", []):
-                if m.get("score"):
-                    continue
-                date = pd.Timestamp(m.get("date"))
-                if pd.isna(date) or date <= cutoff:
-                    continue
-                open_rows.append({
-                    "date": date.normalize(),
-                    "time": m.get("time") or "15:00",
-                    "home_team": normalize_team(m.get("team1")),
-                    "away_team": normalize_team(m.get("team2")),
-                    "source": "openfootball schedule",
-                    "round": m.get("round"),
-                })
-            if open_rows:
-                odf = pd.DataFrame(open_rows)
-                first_round = odf.sort_values(["date", "time"]).iloc[0]["round"]
-                odf = odf[odf["round"] == first_round]
-                for col in ("mkt_home", "mkt_draw", "mkt_away", "mkt_overround",
-                            "mkt_disp_home", "mkt_disp_draw", "mkt_disp_away",
-                            "mkt_books", "mkt_balance", "mkt_favourite", "mkt_entropy",
-                            "odds_home", "odds_draw", "odds_away"):
-                    odf[col] = np.nan
-                frames.append(odf)
-        except Exception as exc:
-            log.warning("openfootball fixtures unavailable: %s", exc)
-
-    if not frames:
-        empty = pd.DataFrame(columns=["date", "time", "home_team", "away_team", "source", "round"])
-        empty.to_csv(config.FIXTURES_CSV, index=False)
-        return empty
-
-    fixtures = pd.concat(frames, ignore_index=True)
-    fixtures = fixtures.drop_duplicates(subset=["date", "home_team", "away_team"], keep="first")
-    fixtures = fixtures.sort_values(["date", "time", "home_team"], kind="mergesort").reset_index(drop=True)
-    fixtures["matchweek"] = fixtures["round"].astype(str).str.extract(r"(\d+)").astype(float)
-    fixtures["match_id"] = (fixtures["date"].dt.strftime("%Y-%m-%d") + "_"
-                            + fixtures["home_team"] + "_" + fixtures["away_team"])
-    fixtures.to_csv(config.FIXTURES_CSV, index=False)
-    log.info("Resolved %d upcoming fixtures (%s)", len(fixtures), fixtures["source"].iloc[0])
-    return fixtures
+    if refresh or fixture_sync.load_store() is None:
+        fixture_sync.sync_fixtures(fetch=refresh, matches=matches)
+    return fixture_sync.upcoming(matches=matches)
 
 
 def build_standings(matches: pd.DataFrame, season_code: str | None = None) -> pd.DataFrame:

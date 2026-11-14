@@ -93,13 +93,18 @@ def download_openfootball(season: str = "2026-27", force: bool = False) -> Path:
 
 
 def refresh(force: bool = False) -> dict:
-    """Refresh the current + previous season and both fixture sources."""
+    """Refresh the current + previous season and both fixture sources.
+
+    The selected files are always re-downloaded; the cached copy is kept only
+    when the download fails. (Previously ``force=False`` silently returned the
+    cache, so a scheduled run on a warm checkout never saw new data.)
+    """
     started = _now()
     seasons = ["2526", "2627"] if not force else list(config.SEASONS)
     status: dict[str, str] = {}
     for code in seasons:
         try:
-            download_season(code, force=force)
+            download_season(code, force=True)
             status[code] = "downloaded"
         except Exception as exc:  # keep the cache usable
             log.warning("Season %s refresh failed: %s", code, exc)
@@ -107,7 +112,7 @@ def refresh(force: bool = False) -> dict:
 
     fixtures_status = "cached"
     try:
-        download_fixtures(force=force)
+        download_fixtures(force=True)
         fixtures_status = "downloaded"
     except Exception as exc:
         log.warning("Fixtures refresh failed: %s", exc)
@@ -115,7 +120,7 @@ def refresh(force: bool = False) -> dict:
 
     openfootball_status = "cached"
     try:
-        download_openfootball(force=force)
+        download_openfootball(force=True)
         openfootball_status = "downloaded"
     except Exception as exc:
         log.warning("openfootball refresh failed: %s", exc)

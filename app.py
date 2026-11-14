@@ -1,113 +1,68 @@
-"""EPL Intelligence - premium football analytics dashboard.
+"""EPL Intelligence — Streamlit entry point.
 
-Run with:
-    streamlit run app.py
+Routing is real navigation through Streamlit query parameters:
+
+    ?page=overview
+    ?page=week
+    ?page=match&id=<fixture id>
+    ?page=table
+
+The prototype's markup, CSS and JS are served inside one ``st.html``
+call so the document keeps its own layout, scroll container and fixed
+sidebar/drawer. Streamlit supplies routing, the data module and the
+server; everything visual is the approved prototype.
 """
+
 from __future__ import annotations
+
+import json
+from pathlib import Path
 
 import streamlit as st
 
+import render
+from data import DATA
+
+ROOT = Path(__file__).resolve().parent
+
 st.set_page_config(
-    page_title="EPL Intelligence",
-    page_icon="⚽",
+    page_title="EPL Intelligence · Matchweek 11",
     layout="wide",
-    initial_sidebar_state="expanded",
-    menu_items={
-        "About": "EPL Intelligence - leakage-audited Premier League match outcome modelling.",
-    },
+    initial_sidebar_state="collapsed",
 )
 
-from src.dashboard import data, theme  # noqa: E402
-from src.dashboard.pages import (  # noqa: E402
-    data_centre,
-    historical,
-    manual,
-    match_centre,
-    model_performance,
-    overview,
-    predictions,
+
+def _read(name: str) -> str:
+    return (ROOT / "static" / name).read_text(encoding="utf-8")
+
+
+def _one(value):
+    if isinstance(value, list):
+        return value[0] if value else None
+    return value
+
+
+page = _one(st.query_params.get("page", "overview")) or "overview"
+fixture_id = _one(st.query_params.get("id"))
+
+html, title = render.shell(page, fixture_id)
+
+css = _read("style.css")
+shell_css = _read("shell.css")
+
+payload = (
+    "<style>" + css + "</style>"
+    "<style>" + shell_css + "</style>"
+    + html
+    + "<script>window.EPL_DATA="
+    + json.dumps(DATA, ensure_ascii=False, separators=(",", ":"))
+    + ";window.EPL_TITLE="
+    + json.dumps(title, ensure_ascii=False)
+    + ";</script>"
+    # Served by Streamlit's static file server (see .streamlit/config.toml).
+    # An external file keeps the JS out of st.html's sanitiser, which drops
+    # inline scripts that contain literal HTML tags.
+    + '<script src="app/static/app.js"></script>'
 )
 
-PAGES = {
-    "Overview": ("◈", overview.render),
-    "Predictions": ("◎", predictions.render),
-    "Match Centre": ("⬢", match_centre.render),
-    "Manual Prediction": ("✧", manual.render),
-    "Historical Analysis": ("◷", historical.render),
-    "Model Performance": ("▲", model_performance.render),
-    "Data Centre": ("⛁", data_centre.render),
-}
-
-
-def sidebar() -> str:
-    with st.sidebar:
-        st.markdown(
-            '<div class="side-brand">'
-            '<div class="side-mark">EPL</div>'
-            '<div><div class="side-title">EPL Intelligence</div>'
-            '<div class="side-sub">Match Analytics</div></div>'
-            "</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("<div style='height:.7rem'></div>", unsafe_allow_html=True)
-
-        choice = st.radio(
-            "Navigation",
-            list(PAGES),
-            format_func=lambda name: f"{PAGES[name][0]}   {name}",
-            label_visibility="collapsed",
-        )
-
-        health = data.data_health()
-        status = health.get("status")
-        dot = {"ok": "", "stale": "stale"}.get(status, "bad")
-        label = {"ok": "Live data current", "stale": "Snapshot stale"}.get(status, "Needs attention")
-        accuracy = health.get("test_accuracy")
-        st.markdown(
-            '<div class="side-meta">'
-            f'<div><span class="dot {dot}"></span>{label}</div>'
-            f'<div style="margin-top:.4rem">Matches <b>{health.get("n_matches", 0):,}</b></div>'
-            f'<div>Fixtures <b>{health.get("n_fixtures", 0)}</b></div>'
-            f'<div>Test accuracy <b>{f"{accuracy:.1%}" if accuracy else "—"}</b></div>'
-            f'<div style="margin-top:.4rem;font-size:.66rem;opacity:.8">'
-            f'Cutoff {health.get("last_result_date") or "—"}</div>'
-            f'<div style="font-size:.66rem;opacity:.8">'
-            f'Model {health.get("model_version") or "—"}</div>'
-            "</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("<div style='height:.6rem'></div>", unsafe_allow_html=True)
-        st.caption(
-            "Probabilities are model estimates, not guarantees. Historical figures are "
-            "out-of-sample unless labelled otherwise."
-        )
-    return choice
-
-
-def main() -> None:
-    theme.inject(st)
-    page = sidebar()
-    renderer = PAGES[page][1]
-    try:
-        renderer()
-    except Exception as exc:  # never expose a raw traceback to the user
-        st.error(f"Something went wrong while rendering **{page}**: {type(exc).__name__}: {exc}")
-        st.caption("The rest of the dashboard remains available. Check the Data Centre for "
-                   "pipeline status, then rerun the affected stage.")
-        with st.expander("Technical detail"):
-            import traceback
-            st.code(traceback.format_exc()[-3000:])
-
-    st.markdown(
-        '<div style="margin-top:3rem;padding-top:1rem;border-top:1px solid #1F2C4A;'
-        'display:flex;justify-content:space-between;color:#8C99B4;font-size:.7rem;'
-        'flex-wrap:wrap;gap:.5rem">'
-        "<span>EPL Intelligence · three-outcome match modelling</span>"
-        "<span>Data: football-data.co.uk · openfootball</span>"
-        "<span>Chronological validation · no random splits</span>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
-
-
-main()
+st.html(payload, unsafe_allow_javascript=True)

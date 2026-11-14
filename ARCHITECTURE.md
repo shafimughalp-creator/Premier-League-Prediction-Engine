@@ -43,9 +43,10 @@
 ├── docs/                         long-form documentation
 ├── src/
 │   ├── config.py                 paths, seasons, class order, aliases
-│   ├── pipeline.py               refresh → validate → train → predict
+│   ├── pipeline.py               refresh → validate → fixtures → train → predict
 │   ├── data/
 │   │   ├── acquisition.py        download + cache raw payloads
+│   │   ├── fixture_sync.py       provider parsing, stable IDs, fixture store
 │   │   ├── processing.py         clean matches, derive odds features, fixtures
 │   │   └── validation.py         integrity checks + leakage proofs
 │   ├── features/builder.py       chronological feature state machine
@@ -111,6 +112,21 @@
   - identity: `match_id`, `date`, `time`, `season_code`, `season`, teams
   - target: `home_goals`, `away_goals`, `result`
   - pre-match context used by features: historical stats and market fields
+
+### 2b. Fixture synchronisation (`src/data/fixture_sync.py`)
+
+- Parses the football-data fixture feed and the openfootball schedule, then
+  merges them into `data/fixtures/upcoming.csv`.
+- Fixtures are keyed by `fixture_id = "{season_code}:{home}:{away}"`, which is
+  stable across kickoff changes; `match_id` is still derived from the current
+  date so the prediction engine contract is unchanged.
+- Statuses: `scheduled`, `rescheduled`, `postponed`, `cancelled`, `completed`.
+  Only scheduled/rescheduled rows enter the upcoming view.
+- The merge is idempotent, never deletes a fixture merely because a provider
+  response omits it, and never resurrects a match that already exists in
+  `matches.csv`. Provider failures preserve the existing store.
+- `processing.load_fixtures()` delegates to this module; the pipeline exposes a
+  `fixtures` stage and the scheduled workflow runs the CLI directly.
 
 ### 3. Feature engineering (`src/features/builder.py`)
 
@@ -196,9 +212,9 @@ reports for transparency but never enter a gate.
 
 ### 5. Prediction (`src/prediction/engine.py`)
 
-- **Upcoming**: fixtures resolved from the fixture feed or openfootball, scored
-  with the full builder state. If no prices exist, the `no_odds` artifact is
-  used rather than imputing market columns.
+- **Upcoming**: the next matchweek is read from the synchronised fixture store,
+  then scored with the full builder state. If no prices exist, the `no_odds`
+  artifact is used rather than imputing market columns.
 - **Manual**: any two known teams and a date. The builder is rebuilt from
   matches strictly before that date. Dates inside the training window are
   labelled `retrospective` with `context["in_sample"] = True`.
@@ -232,6 +248,7 @@ Additional safeguards:
 refresh (network, degrade to cache)
   → process
   → validate integrity
+  → sync fixtures (cached payloads; never deletes history)
   → retrain?  (only if ≥10 new matches; skip if cutoff unchanged)
       → backup model.pkl
       → train

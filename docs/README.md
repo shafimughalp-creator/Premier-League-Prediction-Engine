@@ -11,6 +11,7 @@ clone. This folder is an index for readers who start in `docs/`.
 | [`../PROJECT_STATUS.md`](../PROJECT_STATUS.md) | Verified vs prepared functionality, next actions |
 | [`../EXPERIMENT_LOG.md`](../EXPERIMENT_LOG.md) | Chronological modelling decisions and metrics |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Implementation history and bug fixes |
+| [`fixture_automation_audit.md`](fixture_automation_audit.md) | Fixture data-flow audit and sync design |
 | [`../reports/evaluation/FINAL_REPORT.md`](../reports/evaluation/FINAL_REPORT.md) | Full evaluation and requirements assessment |
 
 ## Reading order
@@ -25,6 +26,7 @@ clone. This folder is an index for readers who start in `docs/`.
 
 ```bash
 pip install -r requirements.txt
+python -m src.data.fixture_sync --fetch   # refresh the upcoming fixture store
 python -m src.pipeline --retrain always
 python -m src.data.validation
 python -m pytest -o addopts="-q"

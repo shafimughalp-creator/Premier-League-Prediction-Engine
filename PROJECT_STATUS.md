@@ -29,11 +29,12 @@ Nothing is marked verified unless it was executed in this environment.
 | Walk-forward evaluation | 7 chronological origins, `reports/research/walk_forward.json` |
 | Challenger experiments | Dixon-Coles + core feature set, `reports/research/challengers.json` |
 | Promotion decisions | `reports/research/promotion_decisions.json` |
-| Prediction engine | upcoming 10 fixtures, manual, retrospective — all exercised |
+| Prediction engine | upcoming 10 fixtures, manual, retrospective - all exercised |
+| Fixture synchronisation | 280 stored fixtures, 10-fixture MW11 view; repeat run `new=0 updated=0`, byte-identical store |
 | Dashboard | all 7 pages render headlessly through Streamlit `AppTest` |
 | Pipeline | `python -m src.pipeline --offline --predict-only` exits 0 in ~20 s |
-| Failure handling | refresh failure falls back to cache; training failure restores incumbent |
-| Full suite | `python -m pytest -o addopts="-q"` → **127 passed** (includes slow audit) |
+| Failure handling | refresh failure falls back to cache; training failure restores incumbent; sync failure preserves the store |
+| Full suite | `python -m pytest -o addopts="-q"` → **158 passed** (includes slow audit) |
 | GitHub workflows | files written and syntactically complete (not yet run on GitHub) |
 | Local version control | git repository; baseline commits `c6e77f5`, `8aff5dc`; no remote |
 
@@ -109,7 +110,8 @@ are reported for completeness only.
 | Item | Status | What is needed |
 |---|---|---|
 | GitHub Actions | Workflows committed locally | Push to a GitHub repository and observe one green run |
-| Daily automation | `update.yml` scheduled 06:15 UTC | Repository secrets/permissions; first scheduled execution |
+| Daily automation | `update.yml` at 06:15 UTC, `sync-fixtures.yml` at 05:45 UTC | Repository permissions; first scheduled execution |
+| Fixture workflow | Locally tested CLI + mocked tests | A real GitHub run with `contents: write` and branch protection allowing the bot push |
 | Live fixture prices | Full variant ready | football-data must publish prices for the next round |
 | Auto-retrain guard | Implemented and integration-tested | A real ≥10-match data increment to trigger promotion |
 | Prospective evaluation | 2026/27 fixtures available | Let the season complete without re-tuning, then score once |
@@ -137,11 +139,15 @@ are reported for completeness only.
 9. **Bookmaker prices** are a pre-match snapshot without explicit publication
    timestamps; they are treated as closing consensus.
 10. **GitHub automation** is written but unverified on a live repository.
+11. **Fixture provider gaps.** A provider can omit a fixture temporarily; the
+    sync retains it rather than deleting it, so a stale fixture may linger until
+    the provider republishes or a result appears in `matches.csv`.
 
 ## Next actions
 
 1. Push the repository and let `test.yml` run end to end.
-2. Enable the daily `update.yml` schedule and confirm one committed refresh.
+2. Enable the daily `update.yml` and `sync-fixtures.yml` schedules and confirm
+   one committed refresh each.
 3. Accumulate genuinely future matches (2026/27 onward) and score them once
    with the frozen production model as a prospective test.
 4. Only revisit new data sources if a timestamped, leakage-free historical

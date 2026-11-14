@@ -76,14 +76,41 @@ approximation, not a verified publication time.
 | Format | JSON |
 | Cached as | `data/raw/openfootball_2026-27.json` |
 | Role | Supplies the complete 2026/27 schedule and round numbers when the football-data fixture feed has no future EPL rows |
+| Update cadence | The project auto-updates the latest season daily at ~05:00 UTC from its Football.TXT sources |
+| Licence | Public domain (no restrictions); no API key required |
 
-The fixture resolution order in `src/data/processing.load_fixtures` is:
+The two fixture feeds are consumed by `src/data/fixture_sync.py`, which merges
+them into a persistent store instead of rebuilding it on every call:
 
-1. Future rows in `fixtures.csv` whose teams are known and whose date is after
-   the last completed match.
-2. Otherwise, the openfootball schedule for dates after the data cutoff.
-3. Otherwise, an empty frame — the dashboard shows an explicit empty state
-   rather than a fabricated fixture list.
+1. football-data future rows are authoritative for kickoff time and prices;
+   rows already present in `data/processed/matches.csv` are ignored.
+2. openfootball supplies the published schedule, matchday numbers and any
+   fixture the other feed omits.
+3. Fixtures absent from a response are **retained** (a temporary provider gap
+   must not delete a valid fixture). Only an explicit cancellation, an explicit
+   postponement, or a completed result in `matches.csv` removes a fixture from
+   the upcoming view.
+
+The store is `data/fixtures/upcoming.csv` and now carries `fixture_id`
+(`"{season_code}:{home}:{away}"`, stable across reschedules), `status`
+(`scheduled`, `rescheduled`, `postponed`, `cancelled`, `completed`),
+`season_code`, `season`, `timezone` (`Europe/London`), `first_seen_at` and
+`updated_at`. `data/fixtures/sync_state.json` records the sources, counts and
+timestamps of the last 60 runs. The date-derived `match_id` is recomputed on
+every sync so the prediction engine contract is unchanged.
+
+Fixture dates are parsed as ISO first, then day-first, because openfootball
+publishes `YYYY-MM-DD` while football-data uses `DD/MM/YYYY`; parsing both with
+`dayfirst=True` silently swaps month and day for dates such as `2026-10-11`.
+
+```bash
+python -m src.data.fixture_sync            # sync from the cached payloads
+python -m src.data.fixture_sync --fetch    # download both feeds first
+python -m src.data.fixture_sync --json     # full run payload
+```
+
+The command exits `0` for `ok`/`partial` runs and `1` when no provider is
+usable. In that case the existing store is preserved untouched.
 
 ## 3. What is *not* used
 
@@ -101,7 +128,8 @@ The fixture resolution order in `src/data/processing.load_fixtures` is:
 |---|---|---|
 | Raw season CSVs | `data/raw/` | `python -m src.data.acquisition` |
 | Processed match table | `data/processed/matches.csv` | `python -m src.pipeline` |
-| Upcoming fixtures | `data/fixtures/upcoming.csv` | `python -m src.pipeline` |
+| Upcoming fixtures | `data/fixtures/upcoming.csv` | `python -m src.data.fixture_sync` |
+| Fixture sync state | `data/fixtures/sync_state.json` | written by the same command |
 | Update audit log | `data/processed/update_log.json` | appended on every refresh |
 | Quality report | `reports/data_quality/data_quality.json` | `python -m src.pipeline` |
 | Leakage audit | `reports/data_quality/leakage_report.json` | `python -m src.data.validation` |
@@ -109,6 +137,9 @@ The fixture resolution order in `src/data/processing.load_fixtures` is:
 The GitHub Actions workflow `.github/workflows/update.yml` runs the same code
 daily at 06:15 UTC and commits the refreshed tables and predictions, so the
 repository always carries a timestamped record of what the model saw.
+`.github/workflows/sync-fixtures.yml` runs earlier, at 05:45 UTC, and commits
+only the fixture store and its metadata when they changed. Neither workflow has
+been observed running on GitHub yet.
 
 ## 5. Known limitations
 

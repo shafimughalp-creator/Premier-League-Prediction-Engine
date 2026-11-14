@@ -54,6 +54,7 @@ CURRENT_SEASON = "2627"
 
 MATCHES_CSV = PROCESSED_DIR / "matches.csv"
 FIXTURES_CSV = FIXTURES_DIR / "upcoming.csv"
+FIXTURE_SYNC_STATE = FIXTURES_DIR / "sync_state.json"
 STANDINGS_CSV = PROCESSED_DIR / "standings.csv"
 UPDATE_LOG = PROCESSED_DIR / "update_log.json"
 DATA_QUALITY_JSON = QUALITY_DIR / "data_quality.json"

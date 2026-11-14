@@ -90,6 +90,31 @@ def stage_refresh(state: dict, offline: bool = False) -> pd.DataFrame:
     return matches
 
 
+def stage_fixtures(state: dict, matches: pd.DataFrame) -> dict:
+    """Synchronise upcoming fixtures from the cached provider payloads.
+
+    The refresh stage has already downloaded the feeds when the pipeline is
+    online, so this stage never performs its own network call. Predictions are
+    read from the resulting store by the existing engine.
+    """
+    from src.data import fixture_sync
+
+    result = fixture_sync.sync_fixtures(fetch=False, matches=matches)
+    counts = result.get("counts", {})
+    _push_step(
+        state, "fixtures", "ok" if result.get("ok") else "degraded",
+        f"new={counts.get('new', 0)} updated={counts.get('updated', 0)} "
+        f"postponed={counts.get('postponed', 0)} cancelled={counts.get('cancelled', 0)} "
+        f"rejected={counts.get('rejected', 0)} upcoming={result.get('upcoming_rows', 0)}",
+    )
+    state["fixture_sync"] = {
+        key: result.get(key)
+        for key in ("status", "sources", "counts", "store_rows", "upcoming_rows",
+                    "store_changed")
+    }
+    return result
+
+
 def stage_validate(state: dict, matches: pd.DataFrame) -> dict:
     integrity = validation.validate_matches(matches)
     quality = processing.data_quality_report(matches)
@@ -213,6 +238,7 @@ def run(offline: bool = False, retrain: str = "auto", predict_only: bool = False
     try:
         matches = stage_refresh(state, offline=offline)
         stage_validate(state, matches)
+        stage_fixtures(state, matches)
 
         if predict_only:
             _push_step(state, "train", "skipped", "predict-only mode")
