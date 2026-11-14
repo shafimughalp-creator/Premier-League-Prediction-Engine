@@ -1,0 +1,1 @@
+"""Official final-result synchronisation."""
