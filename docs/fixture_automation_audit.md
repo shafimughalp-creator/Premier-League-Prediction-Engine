@@ -3,6 +3,12 @@
 **Date:** 2026-11-13
 **Scope:** how upcoming fixtures are stored, resolved and consumed today.
 
+> **Note (2026-11-15):** this document describes the Stage-1 fixture
+> synchronisation design, which was reused unchanged in the full automation
+> build. For the complete system (prediction snapshots, results sync,
+> evaluation, workflows, dashboard integration), see
+> [`automation.md`](automation.md).
+
 ## Current data flow
 
 ```

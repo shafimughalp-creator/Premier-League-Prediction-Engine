@@ -1,10 +1,17 @@
 # Project Status
 
-**Last verified:** 2026-11-13 (post-audit release)
+**Last verified:** 2026-11-15 (automation integration release)
 **Data cutoff:** 2026-11-08 (Matchweek 10 complete)
 **Production model:** `ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow`
 **Artifact:** `artifacts/models/model.pkl` (237 features; 223-feature no-odds variant)
 **Decision:** **COMPLETE — EXISTING MODEL RETAINED**
+
+> **2026-11-15 update:** the automation system described in
+> [`docs/automation.md`](docs/automation.md) is now implemented: immutable
+> pre-match prediction snapshots, official results synchronisation,
+> evaluation with matchweek/season accuracy, and a live `data.py` loader
+> feeding the approved dashboard (which gained one Results nav entry — no
+> redesign). The dashboard and test-suite rows below reflect that release.
 
 This file distinguishes **verified** behaviour from **prepared** functionality.
 Nothing is marked verified unless it was executed in this environment.
@@ -31,12 +38,16 @@ Nothing is marked verified unless it was executed in this environment.
 | Promotion decisions | `reports/research/promotion_decisions.json` |
 | Prediction engine | upcoming 10 fixtures, manual, retrospective - all exercised |
 | Fixture synchronisation | 280 stored fixtures, 10-fixture MW11 view; repeat run `new=0 updated=0`, byte-identical store |
-| Dashboard | all 7 pages render headlessly through Streamlit `AppTest` |
+| Prediction snapshots | `src/prediction/snapshots.py` + pipeline reconcile: 10 MW11 pre-match snapshots created, second run `unchanged=10` (idempotent); post-kickoff never overwritten |
+| Results synchronisation | `src/results/sync.py`: 100/100 official 2026/27 results synced live from football-data + openfootball; idempotent rerun; matchweeks from provider rounds (6 filled via unambiguous pair fallback) |
+| Evaluation & accuracy | `src/evaluation/evaluate.py`: matchweek + season aggregates, `accuracy = correct/evaluated`; MW1–10 = 100 `missing_prediction` (pre-automation, honest), MW11–38 pending, accuracy `null` |
+| Live dashboard loader | `data.py` builds the prototype DATA shape from the automation stores (44/44 frozen-value parity checks vs the approved prototype); `refresh()` rebuilds in place on store change or 5-min TTL |
+| Dashboard | approved match centre (`?page=overview/week/table/match`) plus new `?page=results[&mw=N]` page — all render headlessly through Streamlit `AppTest` with no exceptions |
 | Pipeline | `python -m src.pipeline --offline --predict-only` exits 0 in ~20 s |
-| Failure handling | refresh failure falls back to cache; training failure restores incumbent; sync failure preserves the store |
-| Full suite | `python -m pytest -o addopts="-q"` → **158 passed** (includes slow audit) |
-| GitHub workflows | files written and syntactically complete (not yet run on GitHub) |
-| Local version control | git repository; baseline commits `c6e77f5`, `8aff5dc`; no remote |
+| Failure handling | refresh failure falls back to cache; training failure restores incumbent; sync failure preserves the store; missing stores degrade to honest empty states |
+| Full suite | `python -m pytest -o addopts="-q"` → **211 passed** (14 snapshot + 15 results + 10 evaluation + 28 new integration tests included) |
+| GitHub workflows | 4 files written, YAML-validated, shared `update` concurrency group (not yet run on GitHub — no remote) |
+| Local version control | git repository; automation commits through `d4397bc`; no remote |
 
 ## Honest performance summary
 
@@ -109,12 +120,14 @@ are reported for completeness only.
 
 | Item | Status | What is needed |
 |---|---|---|
-| GitHub Actions | Workflows committed locally | Push to a GitHub repository and observe one green run |
-| Daily automation | `update.yml` at 06:15 UTC, `sync-fixtures.yml` at 05:45 UTC | Repository permissions; first scheduled execution |
+| GitHub Actions | Workflows committed locally (`sync-fixtures`, `update`, `results`, `test`) | Push to a GitHub repository and observe one green run each |
+| Daily automation | `sync-fixtures.yml` 05:45 UTC, `update.yml` 06:15 UTC, `results.yml` every 6 h at :23 | Repository permissions; first scheduled execution |
 | Fixture workflow | Locally tested CLI + mocked tests | A real GitHub run with `contents: write` and branch protection allowing the bot push |
+| Results & evaluation workflow | Live-provider tested locally (100 results, idempotent) | First real GitHub execution of `results.yml` |
+| Prediction snapshots | Live-tested locally (create + idempotent reconcile) | First real GitHub execution of `update.yml` post-kickoff lock path |
 | Live fixture prices | Full variant ready | football-data must publish prices for the next round |
 | Auto-retrain guard | Implemented and integration-tested | A real ≥10-match data increment to trigger promotion |
-| Prospective evaluation | 2026/27 fixtures available | Let the season complete without re-tuning, then score once |
+| Prospective evaluation | 2026/27 snapshots accumulating | Let the season complete without re-tuning, then score once |
 
 ## Known limitations
 
@@ -142,13 +155,23 @@ are reported for completeness only.
 11. **Fixture provider gaps.** A provider can omit a fixture temporarily; the
     sync retains it rather than deleting it, so a stale fixture may linger until
     the provider republishes or a result appears in `matches.csv`.
+12. **MW1–10 accuracy cannot be computed.** The automation (snapshots) started
+    mid-season, so those 100 completed matches are reported as
+    `missing_prediction`, never as correct or incorrect. Accuracy becomes
+    meaningful from MW11 onward, where eligible snapshots exist.
+13. **Current predictions are no-odds variants** because bookmaker prices for
+    MW11 were not yet published at generation time; the eligible snapshot is
+    frozen and will not be silently replaced if prices appear later.
 
 ## Next actions
 
-1. Push the repository and let `test.yml` run end to end.
-2. Enable the daily `update.yml` and `sync-fixtures.yml` schedules and confirm
-   one committed refresh each.
-3. Accumulate genuinely future matches (2026/27 onward) and score them once
-   with the frozen production model as a prospective test.
-4. Only revisit new data sources if a timestamped, leakage-free historical
+1. Publish the repository (pending user approval): `gh auth login` device flow,
+   then `gh repo create epl-intelligence --public --source . --push`.
+2. Let `test.yml` run end to end; then trigger each data workflow once and
+   verify job summaries and committed store diffs.
+3. Deploy `app.py` on Streamlit Community Cloud and confirm the live app
+   serves the latest committed stores.
+4. Accumulate genuinely future matches and score them once with the frozen
+   production model as a prospective test.
+5. Only revisit new data sources if a timestamped, leakage-free historical
    source becomes available at acceptable cost.

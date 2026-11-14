@@ -388,8 +388,9 @@ def table() -> str:
             f'<td>{t["gf"]}</td><td>{t["ga"]}</td><td>{gd(t["gd"])}</td>'
             f'<td class="pts">{t["points"]}</td><td>{chips(t["form"])}</td></tr>'
         )
+    played = DATA["table"][0]["played"] if DATA["table"] else 0
     return (
-        head(f"{season()} \u00b7 After {DATA['table'][0]['played']} matches", "League table", "Select a club for its season summary.")
+        head(f"{season()} \u00b7 After {played} matches", "League table", "Select a club for its season summary.")
         + '<div class="card"><div class="tw"><table><thead><tr><th class="l">#</th><th class="l">Team</th>'
         + "<th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Last 5</th>"
         + "</tr></thead><tbody>"
