@@ -40,26 +40,31 @@ def word(n: int) -> str:
 
 def short_date() -> str:
     """'Saturday 21 Nov' from the fixture date."""
+    if not DATA["fixtures"]:
+        return "\u2014"
     d = date.fromisoformat(DATA["fixtures"][0]["date"])
     return f"{d.strftime('%A')} {d.day} {d.strftime('%b')}"
 
 
 def cutoff_date() -> str:
     """'8 November 2026' from meta.dataCutoff."""
-    d = date.fromisoformat(DATA["meta"]["dataCutoff"])
+    value = DATA["meta"].get("dataCutoff")
+    if not value:
+        return "\u2014"
+    d = date.fromisoformat(value)
     return f"{d.day} {d.strftime('%B')} {d.year}"
 
 
 def kickoff() -> str:
-    return DATA["fixtures"][0]["time"]
+    return DATA["fixtures"][0]["time"] if DATA["fixtures"] else "\u2014"
 
 
 def season() -> str:
     return DATA["meta"]["season"]
 
 
-def matchweek() -> int:
-    return DATA["meta"]["matchweek"]
+def matchweek():
+    return DATA["meta"].get("matchweek") or "\u2014"
 
 
 def esc(value) -> str:
@@ -180,7 +185,9 @@ def head(eye: str, title: str, sub: str) -> str:
 
 
 def overview() -> str:
-    f0 = next(f for f in DATA["fixtures"] if f["home"] == "Liverpool")
+    f0 = next((f for f in DATA["fixtures"] if f["home"] == "Liverpool"), None)
+    if f0 is None and DATA["fixtures"]:
+        f0 = DATA["fixtures"][0]
     S = DATA["seasonNumbers"]
     top = DATA["table"][:5] + DATA["table"][-3:]
 
@@ -197,21 +204,27 @@ def overview() -> str:
             f'<td>{t["played"]}</td><td><b>{t["points"]}</b></td></tr>'
         )
 
+    hero = ""
+    if f0 is not None:
+        hero = (
+            '<section class="hero"><div class="hx"><div class="vs">'
+            + crest(f0["home"], 84)
+            + '<span class="vsl">v</span>'
+            + crest(f0["away"], 84)
+            + '</div><div><div class="eye">Featured fixture</div>'
+            + f"<h2>{nm(f0['home'])} v {nm(f0['away'])}</h2>"
+            + f'<p class="meta">{DATA["meta"]["dateLong"]} \u00b7 {f0["time"]} kick-off \u00b7 Premier League</p></div></div>'
+            + bar(f0["chances"], True)
+            + f'<a class="btn" href="{match_url(f0)}">See the full read</a></section>'
+        )
+
     return (
         head(
             f"Matchweek {matchweek()} \u00b7 {season()}",
             "Welcome back",
             f"{word(len(DATA['fixtures']))} Premier League fixtures this weekend, with the chances for each result and the form behind them.",
         )
-        + '<section class="hero"><div class="hx"><div class="vs">'
-        + crest("Liverpool", 84)
-        + '<span class="vsl">v</span>'
-        + crest("Man United", 84)
-        + '</div><div><div class="eye">Featured fixture</div>'
-        + f"<h2>{nm(f0['home'])} v {nm(f0['away'])}</h2>"
-        + f'<p class="meta">{DATA["meta"]["dateLong"]} \u00b7 {f0["time"]} kick-off \u00b7 Premier League</p></div></div>'
-        + bar(f0["chances"], True)
-        + f'<a class="btn" href="{match_url(f0)}">See the full read</a></section>'
+        + hero
         + f'<div class="grid"><section><h3 class="t">Matchweek {matchweek()} fixtures <a href="?page=week">View all</a></h3>'
         + "".join(row(f) for f in DATA["fixtures"])
         + "</section>"
@@ -387,6 +400,140 @@ def table() -> str:
 
 
 # --------------------------------------------------------------------------
+# results — prediction accuracy, scored against official final results
+# --------------------------------------------------------------------------
+_PICK = {"H": "home", "D": "draw", "A": "away"}
+
+
+def _when(value) -> str:
+    """'2026-11-14T16:26' -> '2026-11-14 16:26 UTC' (honest, unstylised)."""
+    if not value:
+        return MISS
+    return esc(str(value)[:16].replace("T", " ") + " UTC")
+
+
+def results_page(mw=None) -> str:
+    perf = DATA.get("performance") or {}
+    weeks = {k: v for k, v in (perf.get("matchweeks") or {}).items() if k != "unknown"}
+    season_totals = perf.get("season") or {}
+    keys = sorted(weeks, key=lambda k: int(k))
+    selected = str(mw) if (mw is not None and str(mw) in weeks) else None
+    if selected is None and keys:
+        scored = [k for k in keys if weeks[k].get("evaluated")]
+        completed = [k for k in keys if weeks[k].get("completed")]
+        selected = (scored or completed or keys)[-1]
+
+    def stat(value, label):
+        shown = "\u2014" if value is None else value
+        return f'<div class="stat"><b>{shown}</b><span>{label}</span></div>'
+
+    summary = (
+        '<div class="card"><h3 class="t">Season so far</h3><div class="stats">'
+        + stat(season_totals.get("correct", 0), "Correct")
+        + stat(season_totals.get("incorrect", 0), "Incorrect")
+        + stat(season_totals.get("accuracy"), "Accuracy %")
+        + stat(season_totals.get("evaluated", 0), "Evaluated")
+        + '</div><div class="key"><span><i style="background:var(--green)"></i>'
+        + f'{season_totals.get("correct", 0)} correct / {season_totals.get("evaluated", 0)} evaluated</span>'
+        + f'<span>Pending: {season_totals.get("pending", 0)}</span>'
+        + f'<span>No eligible prediction: {season_totals.get("missing_prediction", 0)}</span>'
+        + "</div></div>"
+    )
+
+    if keys:
+        chips = "".join(
+            f'<a class="chip{" on" if k == selected else ""}" href="?page=results&amp;mw={k}">'
+            f'MW {k}<span>{weeks[k]["correct"]}/{weeks[k]["evaluated"]}</span></a>'
+            for k in keys
+        )
+        chips_html = f'<div class="chips" role="group" aria-label="Matchweek">{chips}</div>'
+    else:
+        chips_html = ""
+
+    if selected is None:
+        week_html = (
+            '<div class="card"><p class="mut">No scored predictions yet \u2014 matches '
+            "appear here automatically once official final results are in.</p></div>"
+        )
+    else:
+        week = weeks[selected]
+        rows_html = []
+        for r in (DATA.get("results") or []):
+            if str(r.get("matchweek")) != selected:
+                continue
+            pick = r.get("predicted")
+            pick_tag = (
+                f'<span class="tag {_PICK[pick]}">{LBL[_PICK[pick]]}</span>'
+                if pick else '<span class="tag draw">No snapshot</span>'
+            )
+            correct = r.get("correct")
+            verdict = (
+                '<span class="tag ok">Correct</span>' if correct
+                else '<span class="tag bad">Incorrect</span>' if correct is not None
+                else MISS
+            )
+            rows_html.append(
+                f'<tr><td class="l mut">{esc(r["date"])}</td>'
+                f'<td class="l"><span class="tm">{crest(r["home"], 22)}{esc(r["home"])}</span></td>'
+                f'<td><b>{r["homeGoals"]}\u2013{r["awayGoals"]}</b></td>'
+                f'<td class="l"><span class="tm">{crest(r["away"], 22)}{esc(r["away"])}</span></td>'
+                f"<td>{pick_tag}</td>"
+                f'<td class="l mut">{LBL[_PICK.get(r["outcome"], r["outcome"])] if r.get("outcome") in _PICK else esc(r.get("outcome") or "\u2014")}</td>'
+                f"<td>{verdict}</td></tr>"
+            )
+        table_html = (
+            '<div class="tw"><table><thead><tr><th class="l">Date</th><th class="l">Home</th>'
+            "<th>Score</th><th class=\"l\">Away</th><th>Prediction</th><th>Outcome</th><th>Verdict</th>"
+            "</tr></thead><tbody>"
+            + ("".join(rows_html) or '<tr><td colspan="7" class="mut">No completed matches this matchweek.</td></tr>')
+            + "</tbody></table></div>"
+        )
+        week_html = (
+            '<div class="card"><h3 class="t">Matchweek ' + esc(selected) + " performance</h3>"
+            + f'<p class="note" style="margin:0 0 14px"><b>{week["correct"]} / {week["evaluated"]}</b> correct'
+            + (f" \u00b7 {week['accuracy']}% accuracy" if week.get("accuracy") is not None else "")
+            + "</p><div class=\"stats\">"
+            + stat(week.get("correct", 0), "Correct")
+            + stat(week.get("incorrect", 0), "Incorrect")
+            + stat(week.get("evaluated", 0), "Evaluated")
+            + stat(week.get("pending", 0), "Pending")
+            + '</div><div class="key">'
+            + f'<span>Pending: {week.get("pending", 0)}</span>'
+            + f'<span>No eligible prediction: {week.get("missing_prediction", 0)}</span>'
+            + f'<span>Coverage: {week.get("coverage") if week.get("coverage") is not None else "\u2014"}%</span>'
+            + "</div></div>"
+            + f'<div class="card"><h3 class="t">Matchweek {esc(selected)} match by match</h3>{table_html}</div>'
+        )
+
+    fresh = DATA.get("freshness") or {}
+
+    def fresh_row(label, value):
+        return f"<span>{label}</span><span class=\"tr\">{value}</span>"
+
+    freshness_html = (
+        '<div class="card"><h3 class="t">Data freshness</h3><div class="fm">'
+        + fresh_row("Last fixture synchronisation", _when((fresh.get("fixtures") or {}).get("last_sync_at")))
+        + fresh_row("Last prediction generation", _when((fresh.get("predictions") or {}).get("last_run")))
+        + fresh_row("Last result synchronisation", _when((fresh.get("results") or {}).get("last_sync_at")))
+        + fresh_row("Last evaluation update", _when((fresh.get("evaluation") or {}).get("last_run")))
+        + "</div><p class=\"note\">All timestamps are UTC. Pending matches are never counted as "
+        "incorrect; completed matches without a saved pre-match prediction are listed separately.</p></div>"
+    )
+
+    return (
+        head(
+            f"{season()} \u00b7 Prediction tracking",
+            "Results",
+            "Pre-match predictions scored against official final results.",
+        )
+        + summary
+        + chips_html
+        + week_html
+        + freshness_html
+    )
+
+
+# --------------------------------------------------------------------------
 # shell
 # --------------------------------------------------------------------------
 
@@ -395,6 +542,7 @@ NAV = [
     ("ov2", "sub", "?page=overview", "Overview"),
     ("week", "sub", "?page=week", f"Matchweek {matchweek()}"),
     ("table", "sub", "?page=table", "Table"),
+    ("results", "sub", "?page=results", "Results"),
 ]
 
 
@@ -403,7 +551,8 @@ def _nav_class(route_key: str, data_r: str) -> str:
     return " on" if on else ""
 
 
-def shell(page: str = "overview", fixture_id: str | None = None, filter_key: str = "all") -> tuple[str, str]:
+def shell(page: str = "overview", fixture_id: str | None = None, filter_key: str = "all",
+          mw=None) -> tuple[str, str]:
     """Return (html, document_title) for the requested route."""
     if page == "match":
         route_key = "week"
@@ -417,6 +566,10 @@ def shell(page: str = "overview", fixture_id: str | None = None, filter_key: str
         route_key = "table"
         title = "Table"
         body = table()
+    elif page == "results":
+        route_key = "results"
+        title = "Results"
+        body = results_page(mw)
     else:
         route_key = "ov2"
         title = "Overview"

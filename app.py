@@ -6,6 +6,7 @@ Routing is real navigation through Streamlit query parameters:
     ?page=week
     ?page=match&id=<fixture id>
     ?page=table
+    ?page=results[&mw=<matchweek>]
 
 The prototype's markup, CSS and JS are served inside one ``st.html``
 call so the document keeps its own layout, scroll container and fixed
@@ -20,8 +21,8 @@ from pathlib import Path
 
 import streamlit as st
 
+import data
 import render
-from data import DATA
 
 ROOT = Path(__file__).resolve().parent
 
@@ -44,8 +45,15 @@ def _one(value):
 
 page = _one(st.query_params.get("page", "overview")) or "overview"
 fixture_id = _one(st.query_params.get("id"))
+mw = _one(st.query_params.get("mw"))
 
-html, title = render.shell(page, fixture_id)
+# Rebuild the live DATA object in place when an automation store changed
+# (mtime fingerprint) or the TTL elapsed, so reruns never serve stale data
+# and never rebuild unnecessarily.
+data.refresh()
+DATA = data.DATA
+
+html, title = render.shell(page, fixture_id, mw=mw)
 
 css = _read("style.css")
 shell_css = _read("shell.css")

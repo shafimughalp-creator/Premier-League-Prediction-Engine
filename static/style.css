@@ -210,3 +210,8 @@ body::before{animation:sway 16s ease-in-out infinite alternate}
 .drawer.open .dg div:nth-child(7){animation-delay:0.40s}
 .drawer.open .dg div:nth-child(8){animation-delay:0.44s}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* Results page (additive; no existing selector is modified) */
+.tag.ok{background:rgba(0,255,133,.14);color:var(--green)}
+.tag.bad{background:rgba(255,77,109,.16);color:#ff4d6d}
+.nav a:nth-child(5){animation-delay:0.4s}
