@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-14T16:43:47+00:00",
+  "at": "2026-11-15T18:58:24+00:00",
   "seasons": {
     "2627": {
       "matchweeks": {
@@ -11,6 +11,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -23,6 +24,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -35,6 +37,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -47,6 +50,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -59,6 +63,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -71,6 +76,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -83,6 +89,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -95,6 +102,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -107,6 +115,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -119,6 +128,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 0,
+          "cancelled": 0,
           "missing_prediction": 10,
           "accuracy": null,
           "coverage": 0.0
@@ -131,6 +141,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -143,6 +154,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -155,6 +167,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -167,6 +180,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -179,6 +193,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -191,6 +206,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -203,6 +219,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -215,6 +232,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -227,6 +245,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -239,6 +258,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -251,6 +271,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -263,6 +284,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -275,6 +297,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -287,6 +310,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -299,6 +323,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -311,6 +336,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -323,6 +349,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -335,6 +362,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -347,6 +375,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -359,6 +388,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -371,6 +401,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -383,6 +414,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -395,6 +427,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -407,6 +440,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -419,6 +453,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -431,6 +466,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -443,6 +479,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -455,6 +492,7 @@
           "correct": 0,
           "incorrect": 0,
           "pending": 10,
+          "cancelled": 0,
           "missing_prediction": 0,
           "accuracy": null,
           "coverage": null
@@ -468,6 +506,7 @@
         "correct": 0,
         "incorrect": 0,
         "pending": 280,
+        "cancelled": 0,
         "missing_prediction": 100,
         "accuracy": null
       }
