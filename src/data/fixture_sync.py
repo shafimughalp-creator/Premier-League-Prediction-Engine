@@ -702,14 +702,18 @@ def upcoming(matches: pd.DataFrame | None = None,
     if len(valid) == 0:
         return _empty_store()
 
-    weeks = pd.to_numeric(valid["matchweek"], errors="coerce").dropna()
-    selected = None
-    if len(weeks):
-        target = weeks.min()
-        same_week = valid[pd.to_numeric(valid["matchweek"], errors="coerce") == target]
-        if len(same_week) >= 5:
-            selected = same_week
-    if selected is None:
+    weeks = pd.to_numeric(valid["matchweek"], errors="coerce")
+    known = weeks.dropna()
+    if len(known):
+        # The authoritative provider matchweek decides the active week — even
+        # when only a few of its fixtures are still outstanding (e.g. one
+        # rescheduled fixture after the rest of the round finished). A
+        # matchweek with outstanding fixtures must not be skipped for being
+        # small, and progression must not be inferred from calendar dates.
+        target = known.min()
+        selected = valid[weeks == target]
+    else:
+        # No provider matchweek information: fall back to a one-week horizon.
         horizon = valid["date"].min() + pd.Timedelta(days=6)
         selected = valid[valid["date"] <= horizon]
     selected = selected.sort_values(["date", "time", "home_team"],

@@ -500,6 +500,7 @@ def results_page(mw=None) -> str:
             + stat(week.get("pending", 0), "Pending")
             + '</div><div class="key">'
             + f'<span>Pending: {week.get("pending", 0)}</span>'
+            + (f'<span>Cancelled: {week["cancelled"]}</span>' if week.get("cancelled") else "")
             + f'<span>No eligible prediction: {week.get("missing_prediction", 0)}</span>'
             + f'<span>Coverage: {week.get("coverage") if week.get("coverage") is not None else "\u2014"}%</span>'
             + "</div></div>"

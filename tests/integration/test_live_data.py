@@ -277,3 +277,62 @@ def test_table_and_season_numbers_use_real_results(stores):
     assert sn["bothScored"] == 1                      # the 1-1 draw
     assert sn["cleanSheets"] == 1                     # Arsenal's clean sheet
     assert fresh["meta"]["dataCutoff"] == "2026-08-22"
+
+
+# --------------------------------------------------------------------------
+# Matchweek progression: active / last completed / next are separate keys,
+# and confirmed cancellations are reported, never folded into pending.
+# --------------------------------------------------------------------------
+def test_meta_reports_last_completed_and_next_matchweek_separately(stores):
+    _write(data_module.PREDICTIONS_JSON, {"fixtures": [
+        _prediction("2627:Arsenal:Chelsea", "Arsenal", "Chelsea", matchweek=11),
+        _prediction("2627:Hull:Everton", "Hull", "Everton", date="2026-11-22",
+                    matchweek=11),
+    ]})
+    _write(data_module.MATCHWEEKS_JSON, {"seasons": {"2627": {
+        "matchweeks": {
+            # MW10 fully completed.
+            "10": {"matchweek": 10, "scheduled": 10, "completed": 10,
+                   "evaluated": 10, "correct": 6, "incorrect": 4, "pending": 0,
+                   "missing_prediction": 0, "accuracy": 60.0, "coverage": 100.0},
+            # MW11 in progress: still outstanding fixtures.
+            "11": {"matchweek": 11, "scheduled": 10, "completed": 2,
+                   "evaluated": 2, "correct": 1, "incorrect": 1, "pending": 8,
+                   "missing_prediction": 0, "accuracy": 50.0, "coverage": 100.0},
+            # MW12 published, not started.
+            "12": {"matchweek": 12, "scheduled": 10, "completed": 0,
+                   "evaluated": 0, "correct": 0, "incorrect": 0, "pending": 10,
+                   "missing_prediction": 0, "accuracy": None, "coverage": None},
+        },
+        "season": {},
+    }}})
+    fresh = _build()
+
+    assert fresh["meta"]["matchweek"] == 11               # active: still to play
+    assert fresh["meta"]["lastCompletedMatchweek"] == 10  # fully completed
+    assert fresh["meta"]["nextMatchweek"] == 12           # next with upcoming
+
+
+def test_results_page_reports_confirmed_cancellations(stores):
+    _write(data_module.PREDICTIONS_JSON, {"fixtures": []})
+    _write(data_module.MATCHWEEKS_JSON, {"seasons": {"2627": {
+        "matchweeks": {
+            "11": {"matchweek": 11, "scheduled": 9, "completed": 9,
+                   "evaluated": 9, "correct": 5, "incorrect": 4, "pending": 0,
+                   "cancelled": 1, "missing_prediction": 0, "accuracy": 55.56,
+                   "coverage": 100.0},
+            "12": {"matchweek": 12, "scheduled": 10, "completed": 0,
+                   "evaluated": 0, "correct": 0, "incorrect": 0, "pending": 10,
+                   "cancelled": 0, "missing_prediction": 0, "accuracy": None,
+                   "coverage": None},
+        },
+        "season": {"cancelled": 1},
+    }}})
+    _build()
+    html, _ = render.shell("results", mw=11)
+    assert "Cancelled: 1" in html
+    assert "Pending: 0" in html
+
+    # A week without cancellations shows no cancelled entry at all.
+    html, _ = render.shell("results", mw=12)
+    assert "Cancelled" not in html

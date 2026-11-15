@@ -384,9 +384,42 @@ def build() -> dict:
         })
 
     first_day = predictions[0]["date"] if predictions else cutoff
+
+    # Matchweek progression context. The active matchweek is the provider-
+    # assigned matchweek of the fixtures still to be played (the prediction
+    # payload's view of the synced fixture store) — never a calendar guess.
+    # The last fully completed and the next upcoming weeks come from the
+    # aggregates, which bucket fixtures by the same authoritative matchweek.
+    # Both keys are additive: the approved pages never read them.
+    def _week_number(key):
+        try:
+            return int(key)
+        except (TypeError, ValueError):
+            return None
+
+    progress: dict[int, dict] = {}
+    for key, week in (season_aggregates.get("matchweeks") or {}).items():
+        number = _week_number(key)
+        if number is None:
+            continue
+        progress[number] = {
+            "scheduled": int(week.get("scheduled") or 0),
+            "completed": int(week.get("completed") or 0),
+            "pending": int(week.get("pending") or 0),
+        }
+    finished = sorted(
+        number for number, counts in progress.items()
+        if counts["scheduled"] and counts["completed"] >= counts["scheduled"])
+    active = min(fixture_weeks) if fixture_weeks else None
+    later_outstanding = sorted(
+        number for number, counts in progress.items()
+        if counts["pending"] > 0 and (active is None or number > active))
+
     meta = {
         "season": SEASON_LABEL,
-        "matchweek": min(fixture_weeks) if fixture_weeks else None,
+        "matchweek": active,
+        "lastCompletedMatchweek": finished[-1] if finished else None,
+        "nextMatchweek": later_outstanding[0] if later_outstanding else None,
         "dataCutoff": cutoff,
         "dateLong": (
             lambda d: f"{d.strftime('%A')}, {d.day} {d.strftime('%B')} {d.year}"

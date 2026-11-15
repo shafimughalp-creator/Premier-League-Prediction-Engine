@@ -281,3 +281,49 @@ def test_eligible_predictions_map(tmp_path):
     eligible = snapshots.eligible_predictions(path=tmp_path / "snapshots.json")
     assert list(eligible) == [FIXTURE_ID]
     assert eligible[FIXTURE_ID]["predicted"] == "H"
+
+
+# --------------------------------------------------------------------------
+# Post-kickoff safety: a prediction created at or after kickoff is never a
+# valid pre-match prediction (acceptance test 1).
+# --------------------------------------------------------------------------
+def test_created_after_kickoff_is_born_locked_and_ineligible(tmp_path):
+    """A delayed workflow after kickoff must not create a valid snapshot."""
+    report = _reconcile(_store_row(), [_prediction(created=AFTER_KICKOFF)],
+                        now=AFTER_KICKOFF, tmp_path=tmp_path)
+    assert report["created"] == 1
+    assert report["post_kickoff"] == 1
+
+    snapshot = _snap(tmp_path)
+    assert snapshot["status"] == "locked"
+    assert snapshot["locked_at_creation"] is True
+    assert snapshot["eligible"] is None          # never a valid pre-match record
+    candidate = snapshot["ineligible_candidates"][0]
+    # The real generated values and the real (honest, non-backdated) timestamp.
+    assert candidate["prob_home"] == pytest.approx(0.50)
+    assert candidate["prediction_created_at"] == AFTER_KICKOFF
+    assert candidate["ineligible_reason"] == "prediction created at or after kickoff"
+    # Evaluation must not count it: no eligible prediction exists.
+    assert snapshots.eligible_predictions(path=tmp_path / "snapshots.json") == {}
+
+
+def test_created_exactly_at_kickoff_is_ineligible(tmp_path):
+    report = _reconcile(_store_row(), [_prediction(created=KICKOFF)],
+                        now=KICKOFF, tmp_path=tmp_path)
+    assert report["post_kickoff"] == 1
+    snapshot = _snap(tmp_path)
+    assert snapshot["status"] == "locked"
+    assert snapshot["eligible"] is None
+
+
+def test_revision_exactly_at_kickoff_is_rejected(tmp_path):
+    _reconcile(_store_row(), [_prediction()], tmp_path=tmp_path)
+    report = _reconcile(
+        _store_row(),
+        [_prediction(created=KICKOFF, prob_home=0.9, prob_draw=0.05, prob_away=0.05)],
+        now=KICKOFF, tmp_path=tmp_path)
+    snapshot = _snap(tmp_path)
+    assert snapshot["status"] == "locked"        # frozen at the kickoff instant
+    assert snapshot["eligible"]["prob_home"] == pytest.approx(0.50)  # pre-match kept
+    assert snapshot["revisions"] == []
+    assert report["revised"] == 0 and report["locked"] == 1

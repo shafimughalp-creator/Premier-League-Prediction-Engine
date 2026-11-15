@@ -10,7 +10,7 @@ on:
       retrain:
         description: "Retraining policy"
         required: false
-        default: auto
+        default: never
         type: choice
         options: [auto, always, never]
 
@@ -23,6 +23,10 @@ concurrency:
 
 jobs:
   refresh:
+    # Safety gate: this job stays skipped until the approved production model
+    # is published as the production-model-v1 release asset and the repository
+    # variable MODEL_RELEASE_READY has been set to "true".
+    if: vars.MODEL_RELEASE_READY == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +40,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Refresh data, retrain if needed, score fixtures
-        run: python -m src.pipeline --retrain ${{ github.event.inputs.retrain || 'auto' }}
+      - name: Download the approved production model
+        env:
+          MODEL_URL: https://github.com/${{ github.repository }}/releases/download/production-model-v1/model.pkl
+          MODEL_SHA256: 6824f537f12b0809a3b5cee176ca704e207546eb930a033102e5c1d343bf0202
+        run: |
+          mkdir -p artifacts/models
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 5 \
+               --output artifacts/models/model.pkl "$MODEL_URL" \
+            || { echo "::error::Could not download model.pkl from the production-model-v1 release (missing release or asset?)"; exit 1; }
+          echo "$MODEL_SHA256  artifacts/models/model.pkl" | sha256sum --check - \
+            || { echo "::error::Downloaded model.pkl FAILED SHA-256 verification (expected $MODEL_SHA256) - refusing to continue."; exit 1; }
+          ls -l artifacts/models/model.pkl
+
+      - name: Predict with the approved production model
+        run: python -m src.pipeline --retrain ${{ github.event.inputs.retrain || 'never' }}
 
       - name: Rebuild the leakage audit
         run: python -m src.data.validation

@@ -226,25 +226,35 @@ def aggregate(
 
     scheduled: dict[tuple[str, int | None], set[str]] = {}
     completed: dict[tuple[str, int | None], set[str]] = {}
+    cancelled: dict[tuple[str, int | None], set[str]] = {}
 
     def bucket(season_code: str, matchweek) -> tuple[str, int | None]:
         return (season_code, None if matchweek is None else int(matchweek))
 
-    # Fixture store: every stored row is scheduled (any status).
+    def is_cancelled(status) -> bool:
+        return str(status or "").strip().lower() == "cancelled"
+
+    # Fixture store: every stored row is scheduled unless the provider
+    # confirmed a cancellation — cancelled fixtures are terminal and are
+    # reported separately, never as pending and never as incorrect.
     if fixture_store is None:
         fixture_store = fixture_sync.load_store()
     if fixture_store is not None and len(fixture_store):
         for _, row in fixture_store.iterrows():
             code = str(row.get("season_code") or "")
             key = bucket(code, row.get("matchweek"))
-            scheduled.setdefault(key, set()).add(str(row["fixture_id"]))
+            if is_cancelled(row.get("status")):
+                cancelled.setdefault(key, set()).add(str(row["fixture_id"]))
+            else:
+                scheduled.setdefault(key, set()).add(str(row["fixture_id"]))
 
     # Snapshots: fixtures predicted but possibly not in the store.
     snap_store = snapshots.load(snapshots_path)["snapshots"]
     for fixture_id, record in snap_store.items():
         code = str(record.get("season_code") or "")
         key = bucket(code, record.get("matchweek"))
-        scheduled.setdefault(key, set()).add(fixture_id)
+        state = cancelled if is_cancelled(record.get("status")) else scheduled
+        state.setdefault(key, set()).add(fixture_id)
 
     # Results: officially completed.
     for fixture_id, result in results.items():
@@ -260,8 +270,12 @@ def aggregate(
         evaluated_by_key.setdefault(key, set()).add(fixture_id)
 
     seasons: dict[str, dict] = {}
-    for (season_code, matchweek) in sorted(scheduled, key=lambda k: (k[0], k[1] is None, k[1] or 0)):
-        fixture_ids = scheduled[(season_code, matchweek)]
+    for (season_code, matchweek) in sorted(set(scheduled) | set(cancelled),
+                                           key=lambda k: (k[0], k[1] is None, k[1] or 0)):
+        cancelled_ids = cancelled.get((season_code, matchweek), set())
+        # Cancelled fixtures are terminal: exclude them from the scheduled /
+        # pending maths entirely and count them in their own bucket.
+        fixture_ids = scheduled.get((season_code, matchweek), set()) - cancelled_ids
         done = completed.get((season_code, matchweek), set())
         evaluated = evaluated_by_key.get((season_code, matchweek), set()) & done
         correct = sum(1 for fid in evaluated if evaluations[fid]["correct"])
@@ -275,6 +289,7 @@ def aggregate(
             "correct": correct,
             "incorrect": incorrect,
             "pending": len(fixture_ids - done),
+            "cancelled": len(cancelled_ids - done),
             "missing_prediction": missing_prediction,
             "accuracy": round(100.0 * correct / len(evaluated), 2) if evaluated else None,
             "coverage": round(100.0 * len(evaluated) / len(done), 2) if done else None,
@@ -293,6 +308,7 @@ def aggregate(
             "correct": sum(entry["correct"] for entry in weeks),
             "incorrect": sum(entry["incorrect"] for entry in weeks),
             "pending": sum(entry["pending"] for entry in weeks),
+            "cancelled": sum(entry["cancelled"] for entry in weeks),
             "missing_prediction": sum(entry["missing_prediction"] for entry in weeks),
             "accuracy": round(100.0 * sum(entry["correct"] for entry in weeks) / total_evaluated, 2)
                         if total_evaluated else None,

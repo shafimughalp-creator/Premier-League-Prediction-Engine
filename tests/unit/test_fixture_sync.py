@@ -342,6 +342,106 @@ def test_upcoming_returns_only_the_next_matchweek(tmp_path):
     assert view["match_id"].str.match(r"2026-11-21_.+_.+").all()
 
 
+# --------------------------------------------------------------------------
+# Matchweek progression: the provider-assigned matchweek decides the active
+# week, however few of its fixtures are still outstanding.
+# --------------------------------------------------------------------------
+def test_single_outstanding_fixture_keeps_its_matchweek_active(tmp_path):
+    """One rescheduled MW11 fixture must not be skipped for MW12.
+
+    Nine MW11 fixtures were played (they no longer exist as upcoming rows);
+    the last one was rescheduled far into the future while MW12 is the next
+    full round. The active matchweek must stay 11.
+    """
+    payload = [_fixture("Arsenal FC", "Manchester City FC", date="2026-11-28",
+                        round_="Matchday 12"),
+               _fixture("Chelsea FC", "Liverpool FC", date="2026-11-28",
+                        round_="Matchday 12"),
+               # The outstanding rescheduled MW11 fixture.
+               _fixture("Hull City AFC", "Tottenham Hotspur FC", date="2027-01-06",
+                        round_="Matchday 11")]
+    _sync(tmp_path, _raw(tmp_path, payload))
+    view = fixture_sync.upcoming(matches=_matches(),
+                                 store_path=tmp_path / "upcoming.csv")
+
+    assert len(view) == 1
+    assert view["matchweek"].eq(11).all()
+    assert view.iloc[0]["fixture_id"] == "2627:Hull:Tottenham"
+
+
+def test_small_outstanding_remainder_of_a_matchweek_is_selected(tmp_path):
+    """A matchweek finishing midweek (2 fixtures left) stays active."""
+    payload = [_fixture("Arsenal FC", "Liverpool FC", date="2026-11-23",
+                        round_="Matchday 11"),
+               _fixture("Chelsea FC", "Manchester City FC", date="2026-11-24",
+                        round_="Matchday 11")]
+    payload += [_fixture(home, away, date="2026-11-28", round_="Matchday 12")
+                for home, away in [("Hull City AFC", "Newcastle United FC"),
+                                   ("Tottenham Hotspur FC", "Everton FC"),
+                                   ("Crystal Palace FC", "Aston Villa FC"),
+                                   ("Nottingham Forest FC", "Sunderland AFC"),
+                                   ("Fulham FC", "Ipswich Town FC"),
+                                   ("Leeds United FC", "Coventry City FC")]]
+    _sync(tmp_path, _raw(tmp_path, payload))
+    view = fixture_sync.upcoming(matches=_matches(),
+                                 store_path=tmp_path / "upcoming.csv")
+
+    assert view["matchweek"].eq(11).all()
+    assert len(view) == 2
+
+
+def test_matchweek_advances_once_its_fixtures_are_resolved(tmp_path):
+    """When every MW11 fixture is resolved the view moves to MW12."""
+    payload = [_fixture(home, away, date="2026-11-07", round_="Matchday 11")
+               for home, away in [("Arsenal FC", "Liverpool FC"),
+                                  ("Chelsea FC", "Manchester City FC")]]
+    payload += [_fixture(home, away, date="2026-11-28", round_="Matchday 12")
+                for home, away in [("Everton FC", "Newcastle United FC"),
+                                   ("Tottenham Hotspur FC", "Aston Villa FC"),
+                                   ("Hull City AFC", "Fulham FC")]]
+    _sync(tmp_path, _raw(tmp_path, payload))
+    # The 2026-11-19 rows are now before the last completed match: resolved.
+    view = fixture_sync.upcoming(matches=_matches(),
+                                 store_path=tmp_path / "upcoming.csv")
+
+    assert view["matchweek"].eq(12).all()
+    assert len(view) == 3
+
+
+def test_cancelled_fixture_does_not_hold_the_matchweek_open(tmp_path):
+    """A confirmed cancellation is terminal: it neither plays nor blocks MW12."""
+    payload = [_fixture("Arsenal FC", "Liverpool FC", date="2026-11-21",
+                        round_="Matchday 11", status="CANCELLED")]
+    payload += [_fixture(home, away, date="2026-11-28", round_="Matchday 12")
+                for home, away in [("Hull City AFC", "Tottenham Hotspur FC"),
+                                   ("Everton FC", "Newcastle United FC"),
+                                   ("Crystal Palace FC", "Aston Villa FC"),
+                                   ("Nottingham Forest FC", "Sunderland AFC"),
+                                   ("Fulham FC", "Ipswich Town FC")]]
+    result = _sync(tmp_path, _raw(tmp_path, payload))
+    view = fixture_sync.upcoming(matches=_matches(),
+                                 store_path=tmp_path / "upcoming.csv")
+
+    assert result["counts"]["cancelled"] == 1
+    assert len(view) == 5
+    assert view["matchweek"].eq(12).all()
+    assert not (view["status"] == "cancelled").any()
+
+
+def test_without_matchweek_numbers_the_horizon_fallback_remains(tmp_path):
+    """Fixtures without provider rounds fall back to the date horizon."""
+    payload = [_fixture("Arsenal FC", "Liverpool FC", date="2026-11-21", round_=""),
+               _fixture("Chelsea FC", "Manchester City FC", date="2026-11-21", round_=""),
+               _fixture("Hull City AFC", "Newcastle United FC", date="2026-12-05", round_="")]
+    _sync(tmp_path, _raw(tmp_path, payload))
+    view = fixture_sync.upcoming(matches=_matches(),
+                                 store_path=tmp_path / "upcoming.csv")
+
+    # Within 6 days of the earliest valid fixture: the two, not the December one.
+    assert len(view) == 2
+    assert view["date"].max() <= pd.Timestamp("2026-11-27")
+
+
 def test_load_fixtures_reads_the_synced_store(tmp_path, monkeypatch):
     from src.data import processing
 

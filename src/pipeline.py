@@ -229,7 +229,7 @@ def stage_predict(state: dict) -> dict:
     state["snapshots"] = {
         key: snapshot_report[key]
         for key in ("created", "revised", "unchanged", "locked", "missing",
-                    "invalid", "status_updates", "total")
+                    "invalid", "post_kickoff", "status_updates", "total")
     }
     _push_step(state, "snapshots", "ok",
                "created={created} revised={revised} unchanged={unchanged} "

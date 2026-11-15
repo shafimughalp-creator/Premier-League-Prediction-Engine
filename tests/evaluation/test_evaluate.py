@@ -64,8 +64,19 @@ def _prediction(fixture_id: str, predicted: str = "H",
 def _snapshot_store(tmp_path, fixtures: list[str], predicted: dict[str, str],
                     store_rows: pd.DataFrame) -> None:
     weeks = dict(zip(store_rows["fixture_id"], store_rows["matchweek"]))
-    predictions = [_prediction(fid, predicted.get(fid, "H"),
-                               matchweek=weeks.get(fid, 11)) for fid in fixtures]
+    dates = dict(zip(store_rows["fixture_id"], store_rows["date"]))
+    predictions = []
+    for fid in fixtures:
+        # Keep the synthetic data internally consistent: a prediction for a
+        # fixture that kicked off before PREDICTED_AT must carry an earlier
+        # (pre-kickoff) creation timestamp.
+        created = PREDICTED_AT
+        row_date = dates.get(fid)
+        if row_date is not None and pd.Timestamp(row_date) < pd.Timestamp(PREDICTED_AT[:10]):
+            created = (f"{pd.Timestamp(row_date) - pd.Timedelta(days=1):%Y-%m-%d}"
+                       "T10:00:00+00:00")
+        predictions.append(_prediction(fid, predicted.get(fid, "H"),
+                                       created=created, matchweek=weeks.get(fid, 11)))
     snapshots.reconcile(store_rows, predictions, now=PREDICTED_AT,
                         path=tmp_path / "snapshots.json")
 
@@ -256,6 +267,7 @@ def test_matchweek_example_ten_scheduled_seven_correct(tmp_path):
 # Aggregation edge cases
 # --------------------------------------------------------------------------
 def test_zero_evaluated_shows_null_accuracy_not_zero(tmp_path):
+
     fixture = "2627:Arsenal:Chelsea"
     rows = _store_rows([{"fixture_id": fixture}])
     _snapshot_store(tmp_path, [fixture], {}, rows)
@@ -353,3 +365,64 @@ def test_freshness_reports_each_source(tmp_path, monkeypatch):
     assert payload["predictions"]["snapshots"] == 1
     assert payload["results"]["completed"] == 1
     assert payload["evaluation"]["evaluated"] == 1
+
+
+# --------------------------------------------------------------------------
+# Cancelled fixtures and born-ineligible (post-kickoff) snapshots
+# --------------------------------------------------------------------------
+def test_cancelled_fixtures_are_separate_never_pending_or_incorrect(tmp_path):
+    fixtures = ["2627:Arsenal:Chelsea", "2627:Hull:Everton", "2627:Leeds:Tottenham"]
+    rows = _store_rows([
+        {"fixture_id": fixtures[0]},
+        {"fixture_id": fixtures[1]},
+        {"fixture_id": fixtures[2], "status": "cancelled"},
+    ])
+    _snapshot_store(tmp_path, fixtures, {fixtures[0]: "H", fixtures[1]: "D"}, rows)
+    _write_results(tmp_path, [_result(fixtures[0], 2, 0), _result(fixtures[1], 1, 1)])
+    _evaluate(tmp_path)
+    week = _weeks(_aggregate(tmp_path, rows))["11"]
+
+    # The cancelled fixture stays in its own bucket: never scheduled-pending,
+    # never evaluated, never incorrect.
+    assert week["scheduled"] == 2
+    assert week["completed"] == 2
+    assert week["evaluated"] == 2
+    assert week["pending"] == 0
+    assert week["cancelled"] == 1
+    assert week["missing_prediction"] == 0
+    assert week["correct"] == 2 and week["incorrect"] == 0
+    assert week["accuracy"] == 100.0
+
+
+def test_cancelled_only_matchweek_still_reports_its_cancellations(tmp_path):
+    fixture = "2627:Arsenal:Chelsea"
+    rows = _store_rows([{"fixture_id": fixture, "status": "cancelled"}])
+    _snapshot_store(tmp_path, [fixture], {fixture: "H"}, rows)
+    week = _weeks(_aggregate(tmp_path, rows))["11"]
+    assert week["scheduled"] == 0
+    assert week["pending"] == 0
+    assert week["cancelled"] == 1
+    assert week["accuracy"] is None
+
+
+def test_born_ineligible_snapshot_is_missing_prediction_never_scored(tmp_path):
+    """A snapshot created after kickoff can never be evaluated (acceptance 1)."""
+    fixture = "2627:Arsenal:Chelsea"
+    rows = _store_rows([{"fixture_id": fixture}])
+    # The workflow ran after kickoff: the record is born locked and ineligible.
+    after_kickoff = "2026-11-21T17:00:00+00:00"
+    snapshots.reconcile(rows, [_prediction(fixture, created=after_kickoff)],
+                        now=after_kickoff, path=tmp_path / "snapshots.json")
+    _write_results(tmp_path, [_result(fixture, 2, 0)])
+
+    report = _evaluate(tmp_path)
+    assert report["evaluated"] == 0
+    assert report["missing_predictions"] == 1
+    assert report["needs_review"] and "eligible pre-match prediction" in report["needs_review"][0]["reason"]
+
+    week = _weeks(_aggregate(tmp_path, rows))["11"]
+    assert week["completed"] == 1
+    assert week["evaluated"] == 0
+    assert week["missing_prediction"] == 1
+    assert week["correct"] == 0 and week["incorrect"] == 0
+    assert week["accuracy"] is None           # honest null, never 0%

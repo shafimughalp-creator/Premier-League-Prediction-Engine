@@ -199,6 +199,7 @@ def reconcile(
         "locked": 0,
         "missing": 0,
         "invalid": 0,
+        "post_kickoff": 0,
         "status_updates": 0,
         "needs_review": [],
     }
@@ -213,12 +214,44 @@ def reconcile(
                 continue  # fixture not predicted yet; nothing to persist
             row = by_fixture[fixture_id]
             try:
-                eligible = _candidate_version(row)
+                candidate = _candidate_version(row)
             except SnapshotError as exc:
                 report["invalid"] += 1
                 report["needs_review"].append({"fixture_id": fixture_id, "reason": str(exc)})
                 continue
             kickoff = kickoff_instant(meta.get("date"), meta.get("time")) if meta is not None else None
+            # A prediction whose ACTUAL creation time is at or after kickoff is
+            # never a valid pre-match prediction (e.g. a delayed workflow or a
+            # fixture row that surfaced late): the record is born locked and
+            # ineligible, the actual candidate is kept for audit with its real
+            # timestamp, and nothing is backdated. Evaluation then reports the
+            # fixture under ``missing_prediction`` instead of scoring it.
+            born_after_kickoff = (
+                kickoff is not None
+                and pd.Timestamp(candidate["prediction_created_at"]) >= pd.Timestamp(kickoff))
+            if born_after_kickoff:
+                snapshots[fixture_id] = {
+                    "fixture_id": fixture_id,
+                    "season_code": str(meta.get("season_code") or "") if meta is not None else "",
+                    "season": str(row.get("season") or ""),
+                    "matchweek": None if row.get("matchweek") is None else int(row["matchweek"]),
+                    "home_team": str(row.get("home_team") or ""),
+                    "away_team": str(row.get("away_team") or ""),
+                    "kickoff_at": kickoff,
+                    "created_at": moment,
+                    "updated_at": moment,
+                    "status": STATUS_LOCKED,
+                    "locked_at_creation": True,
+                    "eligible": None,
+                    "revisions": [],
+                    "ineligible_candidates": [{
+                        **candidate,
+                        "ineligible_reason": "prediction created at or after kickoff",
+                    }],
+                }
+                report["created"] += 1
+                report["post_kickoff"] += 1
+                continue
             snapshots[fixture_id] = {
                 "fixture_id": fixture_id,
                 "season_code": str(meta.get("season_code") or "") if meta is not None else "",
@@ -231,7 +264,7 @@ def reconcile(
                 "updated_at": moment,
                 "status": STATUS_PRE_MATCH if kickoff is not None else STATUS_LOCKED,
                 "locked_at_creation": kickoff is None,
-                "eligible": eligible,
+                "eligible": candidate,
                 "revisions": [],
             }
             report["created"] += 1
@@ -301,9 +334,9 @@ def reconcile(
             continue
 
         created_ts = pd.Timestamp(candidate["prediction_created_at"])
-        if created_ts > kickoff_ts:
-            # The engine generated this after kickoff; it must not replace the
-            # pre-match version. Keep the frozen record untouched.
+        if created_ts >= kickoff_ts:
+            # The engine generated this at or after kickoff; it must not
+            # replace the pre-match version. Keep the frozen record untouched.
             snapshot["status"] = STATUS_LOCKED
             snapshot["updated_at"] = moment
             report["locked"] += 1
