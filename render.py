@@ -277,7 +277,7 @@ def week(filter_key: str = "all") -> str:
 
 
 def match(fixture_id: str) -> str:
-    f = next((x for x in DATA["fixtures"] if x["id"] == fixture_id), None)
+    f = next((x for x in DATA["fixtures"] if x["id"] == fixture_id or x.get("fixtureId") == fixture_id), None)
     if f is None:
         return '<p>Fixture not found. <a href="?page=week" style="text-decoration:underline">Back to fixtures</a></p>'
 

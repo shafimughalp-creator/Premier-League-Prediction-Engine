@@ -28,9 +28,19 @@ def stores(tmp_path, monkeypatch):
         "MATCHWEEKS_JSON": tmp_path / "matchweeks.json",
         "FRESHNESS_JSON": tmp_path / "freshness.json",
         "MATCHES_CSV": tmp_path / "matches.csv",
+        "SYNC_STATE_JSON": tmp_path / "sync_state.json",
+        "PIPELINE_STATE_JSON": tmp_path / "pipeline_state.json",
+        "SNAPSHOTS_JSON": tmp_path / "snapshots.json",
     }
     for name, path in paths.items():
         monkeypatch.setattr(data_module, name, path)
+    # Keep fingerprint scope aligned with loader stores for deterministic refresh.
+    monkeypatch.setattr(data_module, "_STORES", tuple(paths.values()))
+    # Default authoritative stores (empty) so freshness derivation is isolated
+    # and only overrides stored freshness when explicitly provided by a test.
+    paths["SYNC_STATE_JSON"].write_text("{}", encoding="utf-8")
+    paths["PIPELINE_STATE_JSON"].write_text("{}", encoding="utf-8")
+    paths["SNAPSHOTS_JSON"].write_text("{}", encoding="utf-8")
     data_module._last_fingerprint = None
     data_module._last_built_at = 0.0
     data_module.DATA.clear()
@@ -160,8 +170,8 @@ def test_results_page_shows_aggregates_and_verdicts(stores):
         "2627:Arsenal:Chelsea": _result("2627:Arsenal:Chelsea", "Arsenal", "Chelsea", 2, 0),
         "2627:Hull:Everton": _result("2627:Hull:Everton", "Hull", "Everton", 1, 1),
     }})
-    _write(data_module.PREDICTIONS_JSON, {"fixtures": []})
-    _write(data_module.MATCHWEEKS_JSON, {"seasons": {"2627": {
+    _write(data_module.PREDICTIONS_JSON, {"generated_at": "2026-11-14T06:15:00+00:00", "fixtures": []})
+    _write(data_module.MATCHWEEKS_JSON, {"at": "2026-11-22T00:01:00+00:00", "seasons": {"2627": {
         "matchweeks": {"11": {
             "matchweek": 11, "scheduled": 2, "completed": 2, "evaluated": 2,
             "correct": 1, "incorrect": 1, "pending": 0, "missing_prediction": 0,
@@ -176,6 +186,13 @@ def test_results_page_shows_aggregates_and_verdicts(stores):
         "results": {"last_sync_at": "2026-11-22T00:00:00+00:00"},
         "evaluation": {"last_run": "2026-11-22T00:01:00+00:00"},
     })
+    # Authoritative stores aligned with Stage L freshness contract (dashboard
+    # derives event-specific timestamps from authoritative stores).
+    _write(data_module.SYNC_STATE_JSON, {
+        "last_run": {"finished_at": "2026-11-14T05:45:00+00:00", "status": "ok", "ok": True},
+    })
+    _write(data_module.PIPELINE_STATE_JSON, {})
+    _write(data_module.SNAPSHOTS_JSON, {})
     fresh = _build()
     assert fresh["performance"]["season"]["accuracy"] == 50.0
 
@@ -184,8 +201,8 @@ def test_results_page_shows_aggregates_and_verdicts(stores):
     assert "Matchweek 11 performance" in html
     assert "1 / 2" in html and "50.0% accuracy" in html
     assert "Data freshness" in html
-    assert "2026-11-14 05:45 UTC" in html   # fixture sync freshness
-    assert "2026-11-14 06:15 UTC" in html   # prediction freshness, distinct
+    assert "2026-11-14 05:45 UTC" in html   # fixture sync freshness (authoritative sync)
+    assert "2026-11-14 06:15 UTC" in html   # prediction freshness (authoritative generated_at), distinct
     # Pending and missing-prediction are reported, never folded into accuracy.
     assert "Pending: 0" in html and "No eligible prediction: 0" in html
 

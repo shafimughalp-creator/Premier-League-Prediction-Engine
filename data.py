@@ -38,6 +38,9 @@ PREDICTIONS_JSON = ROOT / "data" / "predictions.json"
 MATCHWEEKS_JSON = ROOT / "data" / "evaluation" / "matchweeks.json"
 FRESHNESS_JSON = ROOT / "data" / "evaluation" / "freshness.json"
 MATCHES_CSV = ROOT / "data" / "processed" / "matches.csv"
+SYNC_STATE_JSON = ROOT / "data" / "fixtures" / "sync_state.json"
+PIPELINE_STATE_JSON = ROOT / "data" / "pipeline_state.json"
+SNAPSHOTS_JSON = ROOT / "data" / "predictions" / "snapshots.json"
 
 SEASON_CODE = config.CURRENT_SEASON
 SEASON_LABEL = config.SEASONS[SEASON_CODE]
@@ -110,6 +113,78 @@ def _read_json(path: Path, default):
         return json.loads(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return default
+
+
+def _effective_freshness() -> dict:
+    """Combine freshness.json with authoritative timestamps from event stores.
+
+    Each field uses the most direct, truthful timestamp available for that
+    operation and never fabricates a synchronization time.
+    """
+    stored = _read_json(FRESHNESS_JSON, {})
+    if not isinstance(stored, dict):
+        stored = {}
+
+    sync_state = _read_json(SYNC_STATE_JSON, {})
+    pipeline = _read_json(PIPELINE_STATE_JSON, {})
+    predictions = _read_json(PREDICTIONS_JSON, {})
+    snapshots = _read_json(SNAPSHOTS_JSON, {})
+    results = _read_json(RESULTS_JSON, {})
+    matchweeks = _read_json(MATCHWEEKS_JSON, {})
+
+    def _merge(section: str) -> dict:
+        value = stored.get(section) or {}
+        return dict(value) if isinstance(value, dict) else {}
+
+    fixtures = _merge("fixtures")
+    last_run = (sync_state.get("last_run") or {}) if isinstance(sync_state, dict) else {}
+    sync_ok = last_run.get("status") == "ok" or last_run.get("ok") is True
+    sync_at = last_run.get("finished_at") or last_run.get("started_at")
+    if sync_ok and sync_at:
+        fixtures["last_sync_at"] = sync_at
+
+    preds = _merge("predictions")
+    pred_at = predictions.get("generated_at") if isinstance(predictions, dict) else None
+    if not pred_at and isinstance(pipeline, dict):
+        for step in reversed(pipeline.get("steps") or []):
+            if step.get("step") == "predict" and step.get("status") == "ok" and step.get("at"):
+                pred_at = step.get("at")
+                break
+        if not pred_at and pipeline.get("last_success") and pipeline.get("n_fixtures"):
+            pred_at = pipeline.get("last_success")
+    if pred_at:
+        preds["last_run"] = pred_at
+    snap_at = snapshots.get("updated_at") if isinstance(snapshots, dict) else None
+    if not snap_at and isinstance(pipeline, dict):
+        for step in reversed(pipeline.get("steps") or []):
+            if step.get("step") == "snapshots" and step.get("status") == "ok" and step.get("at"):
+                snap_at = step.get("at")
+                break
+    if snap_at:
+        preds["snapshots_updated_at"] = snap_at
+    if isinstance(snapshots, dict) and isinstance(snapshots.get("snapshots"), dict):
+        preds["snapshots"] = len(snapshots["snapshots"])
+
+    results_block = _merge("results")
+    res_at = results.get("updated_at") if isinstance(results, dict) else None
+    if res_at:
+        results_block["last_sync_at"] = res_at
+    if isinstance(results, dict) and isinstance(results.get("results"), dict):
+        results_block["completed"] = len(results["results"])
+
+    evaluation = _merge("evaluation")
+    eval_at = None
+    if isinstance(matchweeks, dict):
+        eval_at = matchweeks.get("at") or matchweeks.get("updated_at")
+    if eval_at:
+        evaluation["last_run"] = eval_at
+
+    fresh = dict(stored)
+    fresh["fixtures"] = fixtures
+    fresh["predictions"] = preds
+    fresh["results"] = results_block
+    fresh["evaluation"] = evaluation
+    return fresh
 
 
 def _completed() -> list[dict]:
@@ -430,6 +505,8 @@ def build() -> dict:
         "meta": meta,
         "seasonNumbers": season_numbers,
         "full": {"Man United": "Manchester United", "Man City": "Manchester City"},
+        "club": CLUB,
+        "logos": LOGOS,
         "table": table,
         "fixtures": fixtures,
         # Additive keys — the approved pages never read them.
@@ -438,7 +515,7 @@ def build() -> dict:
             "season": season_aggregates.get("season") or {},
         },
         "results": results_list,
-        "freshness": _read_json(FRESHNESS_JSON, {}),
+        "freshness": _effective_freshness(),
     }
 
 
@@ -446,7 +523,7 @@ def build() -> dict:
 # Live refresh (same object identity, so render.py's binding stays valid)
 # --------------------------------------------------------------------------
 _STORES = (RESULTS_JSON, PREDICTIONS_JSON, MATCHWEEKS_JSON, FRESHNESS_JSON,
-           MATCHES_CSV)
+           MATCHES_CSV, SYNC_STATE_JSON, PIPELINE_STATE_JSON, SNAPSHOTS_JSON)
 _last_fingerprint: tuple | None = None
 _last_built_at: float = 0.0
 TTL_SECONDS = 300.0
