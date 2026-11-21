@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T15:23:07+00:00",
+  "generated_at": "2026-11-21T14:36:20+00:00",
   "model_version": "epl-20261113-1478e7d5",
   "model_type": "ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow",
   "mode": "upcoming",
@@ -43,7 +43,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.6857770610574881,
@@ -107,7 +107,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.5348228277645541,
@@ -171,7 +171,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.4872263864575034,
@@ -235,7 +235,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.5042163789886983,
@@ -299,7 +299,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.3862700596564847,
@@ -363,7 +363,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.6171391256824907,
@@ -412,11 +412,11 @@
       "away_display": "Arsenal",
       "home_short": "NEW",
       "away_short": "ARS",
-      "prob_home": 0.1458843474497643,
+      "prob_home": 0.14588434744976433,
       "prob_draw": 0.2086693294592777,
       "prob_away": 0.645446323090958,
       "probabilities": {
-        "home": 0.1458843474497643,
+        "home": 0.14588434744976433,
         "draw": 0.2086693294592777,
         "away": 0.645446323090958
       },
@@ -427,7 +427,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.16956974280368517,
@@ -491,7 +491,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.14851705487283998,
@@ -555,7 +555,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.5473276350767046,
@@ -605,11 +605,11 @@
       "home_short": "BRE",
       "away_short": "EVE",
       "prob_home": 0.4604583218050607,
-      "prob_draw": 0.254415679688983,
+      "prob_draw": 0.25441567968898304,
       "prob_away": 0.2851259985059562,
       "probabilities": {
         "home": 0.4604583218050607,
-        "draw": 0.254415679688983,
+        "draw": 0.25441567968898304,
         "away": 0.2851259985059562
       },
       "predicted": "H",
@@ -619,7 +619,7 @@
       "mode": "upcoming",
       "model_version": "epl-20261113-1478e7d5",
       "model_variant": "full",
-      "predicted_at": "2026-11-20T15:23:07+00:00",
+      "predicted_at": "2026-11-21T14:36:20+00:00",
       "has_odds": true,
       "market": {
         "home": 0.4460665877591589,
