@@ -322,9 +322,18 @@ def test_status_mapping_and_missing_kickoff(monkeypatch, tmp_path):
     assert n["utc_valid"] is False
     assert n["local_date"] is None
     assert mod._status_from_football_data_org("FINISHED") == "completed"
-    assert mod._status_from_football_data_org("IN_PLAY") == "completed"
+    assert mod._status_from_football_data_org("AWARDED") == "completed"
+    assert mod._status_from_football_data_org("IN_PLAY") == "live"
+    assert mod._status_from_football_data_org("PAUSED") == "paused"
+    assert mod._status_from_football_data_org("SUSPENDED") == "suspended"
+    assert mod._status_from_football_data_org("POSTPONED") == "postponed"
     assert mod._status_from_football_data_org("CANCELLED") == "cancelled"
+    assert mod._status_from_football_data_org("CANCELED") == "cancelled"
     assert mod._status_from_football_data_org("SCHEDULED") == "scheduled"
+    assert mod._status_from_football_data_org("TIMED") == "scheduled"
+    # explicit: never classify IN_PLAY/PAUSED as completed
+    assert mod._status_from_football_data_org("IN_PLAY") != "completed"
+    assert mod._status_from_football_data_org("PAUSED") != "completed"
 
 
 def test_malformed_team_objects(monkeypatch, tmp_path):
@@ -365,8 +374,17 @@ def test_parity_with_fixture_providers_when_available():
         pytest.skip("src.data.fixture_providers unavailable on remote baseline")
     mod = load_module()
     assert mod._extract_team_name({"name": "Arsenal FC", "shortName": "ARS"}) == fp._extract_team_name({"name": "Arsenal FC", "shortName": "ARS"})
-    for st in ["SCHEDULED", "TIMED", "FINISHED", "POSTPONED", "CANCELLED", "IN_PLAY", "PAUSED"]:
+    # Parity for statuses where semantics agree. IN_PLAY/PAUSED/SUSPENDED were
+    # intentionally corrected in verification script; production helper may differ.
+    for st in ["SCHEDULED", "TIMED", "FINISHED", "POSTPONED", "CANCELLED"]:
         assert mod._status_from_football_data_org(st) == fp._status_from_football_data_org(st)
+    # Document discrepancy if production helper still classifies live/paused as completed.
+    if fp._status_from_football_data_org("IN_PLAY") == "completed":
+        assert mod._status_from_football_data_org("IN_PLAY") == "live"
+    if fp._status_from_football_data_org("PAUSED") == "completed":
+        assert mod._status_from_football_data_org("PAUSED") == "paused"
+    if fp._status_from_football_data_org("SUSPENDED") == "postponed":
+        assert mod._status_from_football_data_org("SUSPENDED") == "suspended"
     for val in ["2026-11-21T12:30:00Z", "2026-08-15T14:00:00Z", "2026-11-21", None]:
         a = mod._parse_provider_datetime(val)
         b = fp._parse_provider_datetime(val)
@@ -374,3 +392,72 @@ def test_parity_with_fixture_providers_when_available():
         b_date = str(b[0].date()) if b[0] is not None and str(b[0]) != "NaT" else None
         assert a_date == b_date
         assert a[1] == b[1]
+
+
+def test_coverage_matchday_with_9_fixtures(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # remove one fixture from matchday 5 (not MW11)
+    removed = False
+    for i, m in enumerate(matches):
+        if m.get("matchday") == 5:
+            matches.pop(i)
+            removed = True
+            break
+    assert removed
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=reference_file(tmp_path))
+    assert "PRIMARY PROVIDER AUTHENTICATES — COVERAGE INCOMPLETE" in summary
+    assert "matchday_fixture_counts" in summary.lower() or "Matchday fixture-count violations" in summary
+
+
+def test_coverage_matchday_with_11_fixtures(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # add extra expected-season fixture to matchday 5
+    extra = v4_match(99999, "Arsenal FC", "Chelsea FC", "2027-01-05T15:00:00Z", matchday=5)
+    matches.append(extra)
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=reference_file(tmp_path))
+    assert "PRIMARY PROVIDER AUTHENTICATES — COVERAGE INCOMPLETE" in summary
+
+
+def test_coverage_missing_matchday(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = [m for m in full_season_matches() if m.get("matchday") != 5]
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=reference_file(tmp_path))
+    assert "PRIMARY PROVIDER AUTHENTICATES — COVERAGE INCOMPLETE" in summary
+    assert "Missing expected matchdays" in summary
+
+
+def test_other_season_records_do_not_affect_expected_season(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # add other-season records that would look odd if counted
+    for i in range(20):
+        matches.append(v4_match(80000 + i, "Arsenal FC", "Chelsea FC", "2025-08-16T15:00:00Z", matchday=1, season_start="2025-08-01"))
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=reference_file(tmp_path))
+    assert "2026/27 season matches: **380**" in summary
+    assert "Matchday fixture-count violations (expected season): **None**" in summary
+    assert "Duplicate fixture identities: **0**" in summary
+
+
+def test_380_records_with_duplicate_and_absent_identity(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # create duplicate identity while keeping count 380 by replacing another fixture
+    # duplicate Man City vs Fulham identity in MW11
+    dup = v4_match(90001, "Manchester City FC", "Fulham FC", "2026-11-21T15:00:00Z", matchday=11)
+    # replace a non-MW11 fixture
+    for i, m in enumerate(matches):
+        if m.get("matchday") == 12:
+            matches[i] = dup
+            break
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    analysis = mod.analyze(http.payload)
+    assert analysis["season_2026_27_matches"] == 380
+    assert len(analysis["duplicate_identities"]) >= 1
+    assert analysis["unique_identities"] < 380
+    assert analysis["coverage_complete"] is False

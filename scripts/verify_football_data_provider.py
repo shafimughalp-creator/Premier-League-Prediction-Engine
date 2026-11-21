@@ -156,18 +156,30 @@ def _normalize_team_name(name: Any) -> str | None:
 
 
 def _status_from_football_data_org(status: object) -> str | None:
+    """Map football-data.org v4 match status to diagnostic categories.
+
+    v4 semantics (distinct categories preserved for verification reporting):
+    - SCHEDULED, TIMED -> scheduled
+    - FINISHED, AWARDED -> completed
+    - IN_PLAY -> live (never completed)
+    - PAUSED -> paused (live/interrupted, never completed)
+    - POSTPONED -> postponed
+    - SUSPENDED -> suspended (not automatically postponed)
+    - CANCELLED, CANCELED -> cancelled
+    Unknown -> None (caller records as other).
+    """
     raw = str(status or "").strip().upper()
     mapping = {
         "SCHEDULED": "scheduled",
         "TIMED": "scheduled",
         "POSTPONED": "postponed",
-        "SUSPENDED": "postponed",
+        "SUSPENDED": "suspended",
         "CANCELLED": "cancelled",
         "CANCELED": "cancelled",
         "AWARDED": "completed",
         "FINISHED": "completed",
-        "IN_PLAY": "completed",
-        "PAUSED": "completed",
+        "IN_PLAY": "live",
+        "PAUSED": "paused",
     }
     return mapping.get(raw)
 
@@ -315,10 +327,21 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         "malformed_records": 0,
         "missing_team_names": 0,
         "missing_or_invalid_kickoff": 0,
-        "matchday_distribution": {},
+        "matchday_distribution": {},  # expected season only
+        "matchday_fixture_counts": {},  # expected season only, matchday -> count
         "distinct_matchdays": 0,
         "missing_expected_matchdays": [],
-        "status_counts": {"scheduled": 0, "postponed": 0, "cancelled": 0, "completed": 0, "other": 0},
+        "matchday_count_violations": [],
+        "status_counts": {
+            "scheduled": 0,
+            "live": 0,
+            "paused": 0,
+            "postponed": 0,
+            "suspended": 0,
+            "cancelled": 0,
+            "completed": 0,
+            "other": 0,
+        },
         "unknown_status_raw": [],
         "season_labels": {},
         "normalized_matches": [],
@@ -337,7 +360,8 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         result["normalized_matches"].append(m)
         lbl = m.get("season_label") or "UNKNOWN"
         result["season_labels"][lbl] = result["season_labels"].get(lbl, 0) + 1
-        if m.get("season_label") == EXPECTED_SEASON:
+        in_expected_season = m.get("season_label") == EXPECTED_SEASON
+        if in_expected_season:
             result["season_2026_27_matches"] += 1
         if not m.get("home") or not m.get("away"):
             result["missing_team_names"] += 1
@@ -351,24 +375,32 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
             if m.get("status_raw"):
                 result["unknown_status_raw"].append(str(m.get("status_raw")))
         md = m.get("matchday")
-        if md is not None:
+        if md is not None and in_expected_season:
             key = str(md)
             result["matchday_distribution"][key] = result["matchday_distribution"].get(key, 0) + 1
         ident = identity(m)
-        if ident:
+        if ident and in_expected_season:
             seen[ident] = seen.get(ident, 0) + 1
 
     result["duplicate_identities"] = sorted([k for k, v in seen.items() if v > 1])
     result["unique_identities"] = len(seen)
     mds = []
-    for k in result["matchday_distribution"].keys():
+    for k, count in result["matchday_distribution"].items():
         try:
-            mds.append(int(k))
+            md_int = int(k)
         except Exception:
-            pass
+            continue
+        mds.append(md_int)
+        result["matchday_fixture_counts"][str(md_int)] = int(count)
     result["distinct_matchdays"] = len(set(mds))
     expected = set(range(1, EXPECTED_MATCHDAYS + 1))
     result["missing_expected_matchdays"] = sorted(list(expected - set(mds)))
+    violations = []
+    for md in sorted(expected):
+        count = int(result["matchday_distribution"].get(str(md), result["matchday_distribution"].get(md, 0)) or 0)
+        if count != 10:
+            violations.append({"matchday": md, "count": count, "expected": 10})
+    result["matchday_count_violations"] = violations
 
     # Conservative completeness assessment
     complete = (
@@ -380,6 +412,7 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         and result["missing_or_invalid_kickoff"] == 0
         and result["distinct_matchdays"] == EXPECTED_MATCHDAYS
         and len(result["missing_expected_matchdays"]) == 0
+        and len(result["matchday_count_violations"]) == 0
     )
     # Do not blindly declare complete just because count == 380; all conditions above required.
     result["coverage_complete"] = bool(complete)
@@ -553,6 +586,7 @@ def render_summary(report: dict[str, Any]) -> str:
     lines.append(f"- Missing/invalid kickoff timestamps: **{a.get('missing_or_invalid_kickoff')}**")
     lines.append(f"- Distinct matchdays represented: **{a.get('distinct_matchdays')}** / {EXPECTED_MATCHDAYS}")
     lines.append(f"- Missing expected matchdays: **{a.get('missing_expected_matchdays') or 'None'}**")
+    lines.append(f"- Matchday fixture-count violations (expected season): **{a.get('matchday_count_violations') or 'None'}**")
     lines.append(f"- Status counts (mapped): **{a.get('status_counts')}**")
     lines.append(f"- Coverage status: **{a.get('coverage_status')}**")
     lines.append(f"- Coverage complete (conservative): **{a.get('coverage_complete')}**")
@@ -570,6 +604,7 @@ def render_summary(report: dict[str, Any]) -> str:
     lines.append("## E. Timezone conversion checks")
     lines.append("- Conversion uses `pandas.to_datetime(utcDate, utc=True).tz_convert('Europe/London')`, consistent with existing provider parser behavior.")
     lines.append("- `TZ` column reports Europe/London zone abbreviation (GMT/BST) at kickoff instant.")
+    lines.append("- Provider status categories are reported distinctly: scheduled/live/paused/postponed/suspended/cancelled/completed/other; raw provider status is shown in MW11 rows.")
     lines.append("")
     lines.append("## F. OpenFootball comparison")
     lines.append("- Not included in this initial isolated verification run (read-only optional comparison not enabled).")
@@ -590,7 +625,8 @@ def build_report(*, token_present: bool, request_attempted: bool, http: HttpResu
         "response_valid": False, "total_matches": 0, "season_2026_27_matches": 0, "unique_identities": 0,
         "duplicate_identities": [], "malformed_records": 0, "missing_team_names": 0, "missing_or_invalid_kickoff": 0,
         "matchday_distribution": {}, "distinct_matchdays": 0, "missing_expected_matchdays": list(range(1, 39)),
-        "status_counts": {"scheduled": 0, "postponed": 0, "cancelled": 0, "completed": 0, "other": 0},
+        "matchday_fixture_counts": {}, "matchday_count_violations": [{"matchday": md, "count": 0, "expected": 10} for md in range(1, 39)],
+        "status_counts": {"scheduled": 0, "live": 0, "paused": 0, "postponed": 0, "suspended": 0, "cancelled": 0, "completed": 0, "other": 0},
         "unknown_status_raw": [], "season_labels": {}, "normalized_matches": [], "coverage_complete": False,
         "coverage_status": "COVERAGE UNVERIFIED / INCOMPLETE",
     }
