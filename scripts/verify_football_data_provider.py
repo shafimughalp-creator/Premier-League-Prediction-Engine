@@ -420,42 +420,107 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _expected_mw11_identities() -> set[str]:
+    return {f"{EXPECTED_SEASON_CODE}:{h}:{a}" for h, a in MW11_TARGETS}
+
+
 def load_official_reference(path: Path | None) -> dict[str, Any]:
+    """Load and strictly validate official MW11 reference.
+
+    Any malformed/invalid/out-of-scope reference is unavailable (UNVERIFIED),
+    never an exception and never a verified result.
+    """
     if path is None or not path.exists():
         return {"available": False, "reason": "missing"}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return {"available": False, "reason": "invalid_json"}
+    if not isinstance(data, dict):
+        return {"available": False, "reason": "invalid_root"}
     fixtures = data.get("fixtures")
     if not isinstance(fixtures, list) or not fixtures:
         return {"available": False, "reason": "invalid_structure"}
+    if len(fixtures) != 10:
+        return {"available": False, "reason": "invalid_fixture_count"}
+
     required = {
         "season", "matchday", "home_team", "away_team", "official_fixture_id",
         "utc_kickoff", "local_date", "local_time", "local_tz", "source_url", "verified_at",
     }
+    expected_ids = _expected_mw11_identities()
+    seen_ids: set[str] = set()
+    seen_official_ids: set[str] = set()
     for f in fixtures:
         if not isinstance(f, dict) or not required.issubset(f.keys()):
             return {"available": False, "reason": "invalid_fixture_record"}
-        # basic sanity: no empty source
+        if str(f.get("season") or "").strip() != EXPECTED_SEASON:
+            return {"available": False, "reason": "invalid_season"}
+        try:
+            md = int(str(f.get("matchday")).strip())
+        except Exception:
+            return {"available": False, "reason": "invalid_matchday"}
+        if md != MW11_MATCHDAY:
+            return {"available": False, "reason": "invalid_matchday"}
+        home = str(f.get("home_team") or "").strip()
+        away = str(f.get("away_team") or "").strip()
+        ident = f"{EXPECTED_SEASON_CODE}:{home}:{away}"
+        if ident not in expected_ids:
+            return {"available": False, "reason": "unexpected_fixture_identity"}
+        if ident in seen_ids:
+            return {"available": False, "reason": "duplicate_fixture_identity"}
+        seen_ids.add(ident)
+        official_id = str(f.get("official_fixture_id") or "").strip()
+        if not official_id:
+            return {"available": False, "reason": "missing_official_fixture_id"}
+        if official_id in seen_official_ids:
+            return {"available": False, "reason": "duplicate_official_fixture_id"}
+        seen_official_ids.add(official_id)
         if not str(f.get("source_url") or "").strip() or not str(f.get("verified_at") or "").strip():
             return {"available": False, "reason": "missing_source_metadata"}
+        # UTC kickoff must be valid/parseable
+        try:
+            import pandas as pd
+            ts = pd.to_datetime(f.get("utc_kickoff"), utc=True, errors="coerce")
+            if pd.isna(ts):
+                return {"available": False, "reason": "invalid_utc_kickoff"}
+        except Exception:
+            return {"available": False, "reason": "invalid_utc_kickoff"}
+
+    if seen_ids != expected_ids:
+        return {"available": False, "reason": "missing_expected_fixtures"}
     return {"available": True, "data": data, "fixtures": fixtures}
+
+
+def _is_mw11_provider_record(m: dict[str, Any]) -> bool:
+    """Accept only provider records explicitly in matchday 11; malformed/missing => False."""
+    md = m.get("matchday")
+    try:
+        if md is None:
+            return False
+        if isinstance(md, float) and md != md:  # NaN
+            return False
+        md_int = int(str(md).strip())
+    except Exception:
+        return False
+    return md_int == MW11_MATCHDAY
 
 
 def compare_mw11(normalized_matches: list[dict[str, Any]], ref: dict[str, Any]) -> dict[str, Any]:
     rows = []
     by_id: dict[str, dict[str, Any]] = {}
     for m in normalized_matches:
+        if not _is_mw11_provider_record(m):
+            continue
         ident = identity(m)
-        if ident:
+        if ident and ident in _expected_mw11_identities() and ident not in by_id:
             by_id[ident] = m
 
     ref_by_id = {}
     if ref.get("available"):
         for f in ref.get("fixtures", []):
-            home = f.get("home_team")
-            away = f.get("away_team")
+            home = str(f.get("home_team") or "").strip()
+            away = str(f.get("away_team") or "").strip()
             key = f"{EXPECTED_SEASON_CODE}:{home}:{away}"
             ref_by_id[key] = f
 
@@ -541,17 +606,23 @@ def decide(auth_ok: bool, response_valid: bool, analysis: dict[str, Any], mw11: 
         return CLASSIFICATION_BLOCKED
     # Coverage completeness must be verified; if not complete, do not award verified schedule match.
     if not analysis.get("coverage_complete"):
-        # Still report disagreements if they are verified? Classification 3 takes precedence when coverage not established.
-        # But rule 2 says "requires successful authentication and verified official comparison..." rule 3 says coverage incomplete/cannot be established sufficiently.
-        # Use coverage incomplete as blocking for full verification.
         return CLASSIFICATION_INCOMPLETE
     if not mw11.get("all_found"):
         return CLASSIFICATION_INCOMPLETE
-    if mw11.get("any_unverified") or not mw11.get("reference_available"):
+    # Strongest classification requires valid, correctly scoped official reference and no unresolved comparison.
+    if not mw11.get("reference_available") or mw11.get("any_unverified"):
         return CLASSIFICATION_BLOCKED
-    if mw11.get("any_disagreement"):
+    # Explicit safeguard: exactly 10 expected MW11 rows all matched with no unresolved comparison.
+    rows = mw11.get("rows") or []
+    if len(rows) != 10 or any(not r.get("found") for r in rows):
+        return CLASSIFICATION_INCOMPLETE
+    if any(r.get("official_comparison") not in {"MATCH", "DISAGREEMENT"} for r in rows):
+        return CLASSIFICATION_BLOCKED
+    if mw11.get("any_disagreement") or any(r.get("official_comparison") == "DISAGREEMENT" for r in rows):
         return CLASSIFICATION_DISAGREEMENTS
-    return CLASSIFICATION_VERIFIED
+    if all(r.get("official_comparison") == "MATCH" for r in rows):
+        return CLASSIFICATION_VERIFIED
+    return CLASSIFICATION_BLOCKED
 
 
 def render_summary(report: dict[str, Any]) -> str:

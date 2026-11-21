@@ -461,3 +461,164 @@ def test_380_records_with_duplicate_and_absent_identity(monkeypatch, tmp_path):
     assert len(analysis["duplicate_identities"]) >= 1
     assert analysis["unique_identities"] < 380
     assert analysis["coverage_complete"] is False
+
+
+def reference_file_valid_matching(tmp_path):
+    """Official reference that exactly matches full_season_matches() MW11 UTC/local times."""
+    fixtures = []
+    pairs = [
+        ("Man City", "Fulham"), ("Bournemouth", "Nott'm Forest"), ("Aston Villa", "Sunderland"),
+        ("Chelsea", "Leeds"), ("Coventry", "Crystal Palace"), ("Tottenham", "Ipswich"),
+        ("Newcastle", "Arsenal"), ("Hull", "Brighton"), ("Liverpool", "Man United"), ("Brentford", "Everton"),
+    ]
+    for h, a in pairs:
+        fixtures.append({
+            "season": "2026/27", "matchday": 11, "home_team": h, "away_team": a,
+            "official_fixture_id": f"PL-2627-MW11-{h}-{a}",
+            "utc_kickoff": "2026-11-21T15:00:00Z", "local_date": "2026-11-21", "local_time": "15:00", "local_tz": "GMT",
+            "source_url": "https://www.premierleague.com/fixtures", "verified_at": "2026-11-22",
+        })
+    pth = tmp_path / "ref_valid.json"
+    pth.write_text(json.dumps({"fixtures": fixtures}), encoding="utf-8")
+    return pth
+
+
+def test_reference_root_list_is_unverified(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = tmp_path / "ref.json"
+    ref.write_text(json.dumps([]), encoding="utf-8")
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "VERIFICATION BLOCKED" in summary
+    assert "reference_available" not in summary.lower() or "Official reference available: **False**" in summary
+
+
+def test_reference_9_fixtures_unverified(monkeypatch, tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"] = base["fixtures"][:9]
+    ref = tmp_path / "ref9.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    res = mod.load_official_reference(ref)
+    assert res["available"] is False
+
+
+def test_reference_11_fixtures_unverified(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    extra = dict(base["fixtures"][0])
+    extra["home_team"] = "Arsenal"
+    extra["away_team"] = "Chelsea"
+    extra["official_fixture_id"] = "EXTRA"
+    base["fixtures"].append(extra)
+    ref = tmp_path / "ref11.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_wrong_season_unverified(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["season"] = "2025/26"
+    ref = tmp_path / "ref_bad_season.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_wrong_matchday_unverified(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["matchday"] = 10
+    ref = tmp_path / "ref_bad_md.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_duplicate_identity_unverified(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][1] = dict(base["fixtures"][0])
+    base["fixtures"][1]["official_fixture_id"] = "DUP-ID"
+    ref = tmp_path / "ref_dup.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_duplicate_official_id_unverified(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][1]["official_fixture_id"] = base["fixtures"][0]["official_fixture_id"]
+    ref = tmp_path / "ref_dup_official.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_invalid_utc_unverified(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "not-a-date"
+    ref = tmp_path / "ref_bad_utc.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_provider_matchday_10_not_counted_as_mw11(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # move Man City vs Fulham to matchday 10 (keep same teams/date)
+    for m in matches:
+        if m.get("matchday") == 11 and m["homeTeam"]["name"] == "Manchester City FC":
+            m["matchday"] = 10
+            break
+    ref = reference_file_valid_matching(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "| Man City | Fulham | False |" in summary
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+
+
+def test_provider_matchday_12_not_counted_as_mw11(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    for m in matches:
+        if m.get("matchday") == 11 and m["homeTeam"]["name"] == "Manchester City FC":
+            m["matchday"] = 12
+            break
+    ref = reference_file_valid_matching(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "| Man City | Fulham | False |" in summary
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+
+
+def test_provider_missing_or_malformed_matchday_not_counted(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    for m in matches:
+        if m.get("matchday") == 11 and m["homeTeam"]["name"] == "Manchester City FC":
+            m["matchday"] = "TBD"
+            break
+    ref = reference_file_valid_matching(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "| Man City | Fulham | False |" in summary
+
+
+def test_malformed_reference_never_produces_verified(monkeypatch, tmp_path):
+    mod = load_module()
+    # malformed root
+    ref = tmp_path / "bad.json"
+    ref.write_text(json.dumps([{"fixtures": []}]), encoding="utf-8")
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+    assert "VERIFICATION BLOCKED" in summary or "UNVERIFIED" in summary
+
+
+def test_valid_reference_and_matching_mw11_can_verify(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = reference_file_valid_matching(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert rc == 0
+    assert "PRIMARY PROVIDER VERIFIED — SCHEDULE MATCHES OFFICIAL RECORD" in summary
