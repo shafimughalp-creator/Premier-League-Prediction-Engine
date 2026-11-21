@@ -114,16 +114,16 @@ def payload(matches):
 def reference_file(tmp_path, disagree=False, missing=False):
     fixtures = []
     pairs = [
-        ("Man City", "Fulham", "2026-11-21T12:30:00Z", "2026-11-21", "12:30", "GMT"),
-        ("Bournemouth", "Nott'm Forest", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Aston Villa", "Sunderland", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Chelsea", "Leeds", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Coventry", "Crystal Palace", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Tottenham", "Ipswich", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Newcastle", "Arsenal", "2026-11-21T17:30:00Z", "2026-11-21", "17:30", "GMT"),
-        ("Hull", "Brighton", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Liverpool", "Man United", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
-        ("Brentford", "Everton", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Man City", "Fulham", "2026-11-21T12:30:00Z", "2026-11-21", "12:30", "Europe/London"),
+        ("Bournemouth", "Nott'm Forest", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Aston Villa", "Sunderland", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Chelsea", "Leeds", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Coventry", "Crystal Palace", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Tottenham", "Ipswich", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Newcastle", "Arsenal", "2026-11-21T17:30:00Z", "2026-11-21", "17:30", "Europe/London"),
+        ("Hull", "Brighton", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Liverpool", "Man United", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
+        ("Brentford", "Everton", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "Europe/London"),
     ]
     for h, a, utc, d, t, tz in pairs:
         if missing and (h == "Man City"):
@@ -134,11 +134,11 @@ def reference_file(tmp_path, disagree=False, missing=False):
             "season": "2026/27", "matchday": 11, "home_team": h, "away_team": a,
             "official_fixture_id": f"PL-2627-MW11-{h}-{a}",
             "utc_kickoff": utc, "local_date": d, "local_time": t, "local_tz": tz,
-            "source_url": "https://www.premierleague.com/fixtures", "verified_at": "2026-11-21",
+            "source_url": "https://www.premierleague.com/fixtures", "verified_at": "2026-11-21T00:00:00Z",
         })
-    p = tmp_path / "ref.json"
-    p.write_text(json.dumps({"fixtures": fixtures}), encoding="utf-8")
-    return p
+    pth = tmp_path / "ref.json"
+    pth.write_text(json.dumps({"fixtures": fixtures}), encoding="utf-8")
+    return pth
 
 
 def run_main(mod, monkeypatch, tmp_path, *, token="tok", http_result=None, ref_path=None, extra_args=None):
@@ -475,8 +475,8 @@ def reference_file_valid_matching(tmp_path):
         fixtures.append({
             "season": "2026/27", "matchday": 11, "home_team": h, "away_team": a,
             "official_fixture_id": f"PL-2627-MW11-{h}-{a}",
-            "utc_kickoff": "2026-11-21T15:00:00Z", "local_date": "2026-11-21", "local_time": "15:00", "local_tz": "GMT",
-            "source_url": "https://www.premierleague.com/fixtures", "verified_at": "2026-11-22",
+            "utc_kickoff": "2026-11-21T15:00:00Z", "local_date": "2026-11-21", "local_time": "15:00", "local_tz": "Europe/London",
+            "source_url": "https://www.premierleague.com/fixtures", "verified_at": "2026-11-22T00:00:00Z",
         })
     pth = tmp_path / "ref_valid.json"
     pth.write_text(json.dumps({"fixtures": fixtures}), encoding="utf-8")
@@ -759,3 +759,154 @@ def test_malformed_mw11_values_excluded_from_mw11_comparison(tmp_path):
     mw11 = mod.compare_mw11(analysis["normalized_matches"], mod.load_official_reference(ref))
     row = next(r for r in mw11["rows"] if r["home"] == "Man City" and r["away"] == "Fulham")
     assert row["found"] is False
+
+
+def test_reference_source_https_premierleague_accepted(tmp_path):
+    mod = load_module()
+    ref = reference_file_valid_matching(tmp_path)
+    res = mod.load_official_reference(ref)
+    assert res["available"] is True
+
+
+def test_reference_unapproved_domain_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["source_url"] = "https://example.com/fixtures"
+    ref = tmp_path / "ref_bad_domain.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_lookalike_hostname_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["source_url"] = "https://premierleague.com.evil.example/fixtures"
+    ref = tmp_path / "ref_lookalike.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_misleading_subdomain_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["source_url"] = "https://evil.premierleague.com/fixtures"
+    ref = tmp_path / "ref_subdomain.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_http_url_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["source_url"] = "http://www.premierleague.com/fixtures"
+    ref = tmp_path / "ref_http.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_malformed_url_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["source_url"] = "https:///bad url"
+    ref = tmp_path / "ref_bad_url.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_valid_tzaware_verified_at_accepted(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["verified_at"] = "2026-11-22T12:00:00+01:00"
+    ref = tmp_path / "ref_tzaware.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is True
+
+
+def test_reference_invalid_verified_at_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["verified_at"] = "not-a-timestamp"
+    ref = tmp_path / "ref_bad_verified.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_naive_verified_at_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["verified_at"] = "2026-11-22T12:00:00"
+    ref = tmp_path / "ref_naive_verified.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_invalid_iana_timezone_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["local_tz"] = "Mars/Olympus"
+    ref = tmp_path / "ref_bad_tz.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_correct_utc_local_metadata_accepted(tmp_path):
+    mod = load_module()
+    ref = reference_file_valid_matching(tmp_path)
+    res = mod.load_official_reference(ref)
+    assert res["available"] is True
+
+
+def test_reference_incorrect_local_date_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["local_date"] = "2026-11-20"
+    ref = tmp_path / "ref_bad_date.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_incorrect_local_time_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["local_time"] = "12:30"
+    ref = tmp_path / "ref_bad_time.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_reference_gmt_bst_transition_handled(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    # BST example: 2026-08-15T14:00:00Z in Europe/London is 15:00 BST
+    base["fixtures"][0]["utc_kickoff"] = "2026-08-15T14:00:00Z"
+    base["fixtures"][0]["local_date"] = "2026-08-15"
+    base["fixtures"][0]["local_time"] = "15:00"
+    base["fixtures"][0]["local_tz"] = "Europe/London"
+    ref = tmp_path / "ref_bst.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is True
+    # wrong local time for same UTC instant should be rejected
+    base["fixtures"][0]["local_time"] = "14:00"
+    ref2 = tmp_path / "ref_bst_bad.json"
+    ref2.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref2)["available"] is False
+
+
+def test_invalid_reference_cannot_contribute_to_verified(monkeypatch, tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["source_url"] = "https://evil.example/fixtures"
+    ref = tmp_path / "ref_evil.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+    assert "VERIFICATION BLOCKED" in summary or "UNVERIFIED" in summary
+
+
+def test_missing_reference_still_unverified(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=tmp_path / "missing.json")
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+    assert "UNVERIFIED" in summary or "VERIFICATION BLOCKED" in summary

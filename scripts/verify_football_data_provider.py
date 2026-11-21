@@ -19,11 +19,13 @@ import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 # Prevent import-time project directory creation side effects.
 os.environ.setdefault("EPL_INTELLIGENCE_TEST_ISOLATED", "1")
@@ -430,11 +432,59 @@ def _expected_mw11_identities() -> set[str]:
     return {f"{EXPECTED_SEASON_CODE}:{h}:{a}" for h, a in MW11_TARGETS}
 
 
+# Narrow, explicit allowlist of approved official Premier League source hostnames.
+# Basis: premierleague.com is the official Premier League website domain; www is its
+# canonical public hostname. No other hostnames/subdomains are approved.
+OFFICIAL_REFERENCE_ALLOWED_HOSTS = {"premierleague.com", "www.premierleague.com"}
+
+
+def _is_approved_official_source_url(url: Any) -> bool:
+    raw = str(url or "").strip()
+    if not raw or any(ch.isspace() for ch in raw):
+        return False
+    try:
+        parsed = urllib.parse.urlparse(raw)
+    except Exception:
+        return False
+    if parsed.scheme.lower() != "https":
+        return False
+    if not parsed.netloc or parsed.params or parsed.username or parsed.password:
+        return False
+    hostname = (parsed.hostname or "").lower().strip(".")
+    if hostname not in OFFICIAL_REFERENCE_ALLOWED_HOSTS:
+        return False
+    # Disallow ports and any netloc tricks; require exact approved hostname.
+    if parsed.port is not None:
+        return False
+    if parsed.netloc.lower().strip(".") != hostname:
+        return False
+    return True
+
+
+def _parse_verified_at(value: Any) -> datetime | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        # Accept ISO-8601 with explicit timezone/offset. Reject naive timestamps.
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except Exception:
+        return None
+    if dt.tzinfo is None or dt.utcoffset() is None:
+        return None
+    # basic sanity: impossible/invalid handled by fromisoformat; ensure convertible
+    try:
+        dt.astimezone(timezone.utc)
+    except Exception:
+        return None
+    return dt
+
+
 def load_official_reference(path: Path | None) -> dict[str, Any]:
     """Load and strictly validate official MW11 reference.
 
-    Any malformed/invalid/out-of-scope reference is unavailable (UNVERIFIED),
-    never an exception and never a verified result.
+    Any malformed/invalid/out-of-scope/provenance-invalid reference is unavailable
+    (UNVERIFIED), never an exception and never a verified result.
     """
     if path is None or not path.exists():
         return {"available": False, "reason": "missing"}
@@ -480,16 +530,45 @@ def load_official_reference(path: Path | None) -> dict[str, Any]:
         if official_id in seen_official_ids:
             return {"available": False, "reason": "duplicate_official_fixture_id"}
         seen_official_ids.add(official_id)
-        if not str(f.get("source_url") or "").strip() or not str(f.get("verified_at") or "").strip():
-            return {"available": False, "reason": "missing_source_metadata"}
-        # UTC kickoff must be valid/parseable
+
+        # Official source URL provenance
+        if not _is_approved_official_source_url(f.get("source_url")):
+            return {"available": False, "reason": "invalid_source_url"}
+
+        # Verification timestamp: valid, parseable, explicit tz/offset, not naive
+        verified_at = _parse_verified_at(f.get("verified_at"))
+        if verified_at is None:
+            return {"available": False, "reason": "invalid_verified_at"}
+
+        # UTC kickoff must be valid/parseable timezone-aware timestamp
         try:
             import pandas as pd
-            ts = pd.to_datetime(f.get("utc_kickoff"), utc=True, errors="coerce")
-            if pd.isna(ts):
+            utc_ts = pd.to_datetime(f.get("utc_kickoff"), utc=True, errors="coerce")
+            if pd.isna(utc_ts):
                 return {"available": False, "reason": "invalid_utc_kickoff"}
         except Exception:
             return {"available": False, "reason": "invalid_utc_kickoff"}
+
+        # local_tz must be valid IANA timezone
+        local_tz_name = str(f.get("local_tz") or "").strip()
+        try:
+            tz = ZoneInfo(local_tz_name)
+        except Exception:
+            return {"available": False, "reason": "invalid_local_tz"}
+
+        # UTC->local conversion must exactly match local_date/local_time
+        try:
+            local_ts = utc_ts.tz_convert(tz)
+            expected_date = local_ts.strftime("%Y-%m-%d")
+            expected_time = local_ts.strftime("%H:%M")
+            ref_date = str(f.get("local_date") or "").strip()
+            ref_time = str(f.get("local_time") or "").strip()
+            if ref_date != expected_date:
+                return {"available": False, "reason": "local_date_mismatch"}
+            if ref_time != expected_time:
+                return {"available": False, "reason": "local_time_mismatch"}
+        except Exception:
+            return {"available": False, "reason": "local_time_mismatch"}
 
     if seen_ids != expected_ids:
         return {"available": False, "reason": "missing_expected_fixtures"}
