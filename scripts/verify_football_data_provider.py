@@ -540,12 +540,28 @@ def load_official_reference(path: Path | None) -> dict[str, Any]:
         if verified_at is None:
             return {"available": False, "reason": "invalid_verified_at"}
 
-        # UTC kickoff must be valid/parseable timezone-aware timestamp
+        # UTC kickoff must be valid/parseable and explicitly timezone-aware.
+        # Reject naive timestamps - no implicit UTC assumption. Normalize to UTC only after awareness check.
         try:
             import pandas as pd
-            utc_ts = pd.to_datetime(f.get("utc_kickoff"), utc=True, errors="coerce")
-            if pd.isna(utc_ts):
+            raw_kickoff = f.get("utc_kickoff")
+            if not isinstance(raw_kickoff, str):
                 return {"available": False, "reason": "invalid_utc_kickoff"}
+            raw_kickoff = raw_kickoff.strip()
+            if not raw_kickoff:
+                return {"available": False, "reason": "invalid_utc_kickoff"}
+            ts = pd.to_datetime(raw_kickoff, errors="coerce")
+            if pd.isna(ts):
+                return {"available": False, "reason": "invalid_utc_kickoff"}
+            tzinfo = getattr(ts, "tzinfo", None)
+            if tzinfo is None:
+                return {"available": False, "reason": "invalid_utc_kickoff"}
+            try:
+                if ts.utcoffset() is None:
+                    return {"available": False, "reason": "invalid_utc_kickoff"}
+            except Exception:
+                return {"available": False, "reason": "invalid_utc_kickoff"}
+            utc_ts = ts.tz_convert("UTC")
         except Exception:
             return {"available": False, "reason": "invalid_utc_kickoff"}
 

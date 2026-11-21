@@ -910,3 +910,97 @@ def test_missing_reference_still_unverified(monkeypatch, tmp_path):
     rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=tmp_path / "missing.json")
     assert "PRIMARY PROVIDER VERIFIED" not in summary
     assert "UNVERIFIED" in summary or "VERIFICATION BLOCKED" in summary
+
+
+def test_reference_naive_utc_kickoff_t_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-22T14:00:00"
+    ref = tmp_path / "ref_naive_t.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    res = mod.load_official_reference(ref)
+    assert res["available"] is False
+    assert res["reason"] == "invalid_utc_kickoff"
+
+
+def test_reference_naive_utc_kickoff_space_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-22 14:00:00"
+    ref = tmp_path / "ref_naive_space.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    res = mod.load_official_reference(ref)
+    assert res["available"] is False
+    assert res["reason"] == "invalid_utc_kickoff"
+
+
+def test_reference_empty_utc_kickoff_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = ""
+    ref = tmp_path / "ref_empty_kickoff.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    res = mod.load_official_reference(ref)
+    assert res["available"] is False
+    assert res["reason"] == "invalid_utc_kickoff"
+
+
+def test_reference_malformed_utc_kickoff_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-22T99:99:99Z"
+    ref = tmp_path / "ref_malformed_kickoff.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    res = mod.load_official_reference(ref)
+    assert res["available"] is False
+    assert res["reason"] == "invalid_utc_kickoff"
+
+
+def test_reference_tzaware_utc_kickoff_z_accepted(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-21T15:00:00Z"
+    base["fixtures"][0]["local_date"] = "2026-11-21"
+    base["fixtures"][0]["local_time"] = "15:00"
+    base["fixtures"][0]["local_tz"] = "Europe/London"
+    ref = tmp_path / "ref_z.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is True
+
+
+def test_reference_tzaware_utc_kickoff_offset0_accepted(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-21T15:00:00+00:00"
+    base["fixtures"][0]["local_date"] = "2026-11-21"
+    base["fixtures"][0]["local_time"] = "15:00"
+    base["fixtures"][0]["local_tz"] = "Europe/London"
+    ref = tmp_path / "ref_offset0.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is True
+
+
+def test_reference_tzaware_utc_kickoff_offset1_normalized_and_accepted(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    # 16:00+01:00 is same instant as 15:00Z
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-21T16:00:00+01:00"
+    base["fixtures"][0]["local_date"] = "2026-11-21"
+    base["fixtures"][0]["local_time"] = "15:00"
+    base["fixtures"][0]["local_tz"] = "Europe/London"
+    ref = tmp_path / "ref_offset1.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    res = mod.load_official_reference(ref)
+    assert res["available"] is True
+
+
+def test_naive_utc_kickoff_cannot_produce_verified(monkeypatch, tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["utc_kickoff"] = "2026-11-21T15:00:00"  # naive, but same local clock values
+    ref = tmp_path / "ref_naive_verified.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+    assert "VERIFICATION BLOCKED" in summary or "UNVERIFIED" in summary
