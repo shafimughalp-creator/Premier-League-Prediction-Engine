@@ -327,11 +327,12 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         "malformed_records": 0,
         "missing_team_names": 0,
         "missing_or_invalid_kickoff": 0,
-        "matchday_distribution": {},  # expected season only
+        "matchday_distribution": {},  # expected season only, strict int matchdays
         "matchday_fixture_counts": {},  # expected season only, matchday -> count
         "distinct_matchdays": 0,
         "missing_expected_matchdays": [],
         "matchday_count_violations": [],
+        "invalid_matchday_records": 0,
         "status_counts": {
             "scheduled": 0,
             "live": 0,
@@ -375,9 +376,13 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
             if m.get("status_raw"):
                 result["unknown_status_raw"].append(str(m.get("status_raw")))
         md = m.get("matchday")
-        if md is not None and in_expected_season:
-            key = str(md)
-            result["matchday_distribution"][key] = result["matchday_distribution"].get(key, 0) + 1
+        if in_expected_season:
+            # Strict: only actual Python int (bool rejected; bool is subclass of int).
+            if type(md) is int:
+                key = str(md)
+                result["matchday_distribution"][key] = result["matchday_distribution"].get(key, 0) + 1
+            else:
+                result["invalid_matchday_records"] += 1
         ident = identity(m)
         if ident and in_expected_season:
             seen[ident] = seen.get(ident, 0) + 1
@@ -413,6 +418,7 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         and result["distinct_matchdays"] == EXPECTED_MATCHDAYS
         and len(result["missing_expected_matchdays"]) == 0
         and len(result["matchday_count_violations"]) == 0
+        and int(result.get("invalid_matchday_records") or 0) == 0
     )
     # Do not blindly declare complete just because count == 380; all conditions above required.
     result["coverage_complete"] = bool(complete)
@@ -651,6 +657,7 @@ def render_summary(report: dict[str, Any]) -> str:
     lines.append(f"- Distinct matchdays represented: **{a.get('distinct_matchdays')}** / {EXPECTED_MATCHDAYS}")
     lines.append(f"- Missing expected matchdays: **{a.get('missing_expected_matchdays') or 'None'}**")
     lines.append(f"- Matchday fixture-count violations (expected season): **{a.get('matchday_count_violations') or 'None'}**")
+    lines.append(f"- Invalid matchday records (expected season): **{a.get('invalid_matchday_records', 0)}**")
     lines.append(f"- Status counts (mapped): **{a.get('status_counts')}**")
     lines.append(f"- Coverage status: **{a.get('coverage_status')}**")
     lines.append(f"- Coverage complete (conservative): **{a.get('coverage_complete')}**")
@@ -690,6 +697,7 @@ def build_report(*, token_present: bool, request_attempted: bool, http: HttpResu
         "duplicate_identities": [], "malformed_records": 0, "missing_team_names": 0, "missing_or_invalid_kickoff": 0,
         "matchday_distribution": {}, "distinct_matchdays": 0, "missing_expected_matchdays": list(range(1, 39)),
         "matchday_fixture_counts": {}, "matchday_count_violations": [{"matchday": md, "count": 0, "expected": 10} for md in range(1, 39)],
+        "invalid_matchday_records": 0,
         "status_counts": {"scheduled": 0, "live": 0, "paused": 0, "postponed": 0, "suspended": 0, "cancelled": 0, "completed": 0, "other": 0},
         "unknown_status_raw": [], "season_labels": {}, "normalized_matches": [], "coverage_complete": False,
         "coverage_status": "COVERAGE UNVERIFIED / INCOMPLETE",

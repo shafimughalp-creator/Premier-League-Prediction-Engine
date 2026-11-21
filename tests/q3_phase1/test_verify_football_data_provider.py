@@ -678,3 +678,84 @@ def test_official_reference_matchday_int_11_accepted(tmp_path):
     res = mod.load_official_reference(ref)
     assert res["available"] is True
     assert all(f["matchday"] == 11 and type(f["matchday"]) is int for f in res["fixtures"])
+
+
+def test_coverage_complete_season_with_integer_matchdays_passes(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = reference_file_valid_matching(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "2026/27 season matches: **380**" in summary
+    assert "Invalid matchday records (expected season): **0**" in summary
+    assert "Coverage complete (conservative): **True**" in summary
+
+
+def test_coverage_rejects_string_matchdays(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    for m in matches:
+        m["matchday"] = str(m["matchday"])
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    analysis = mod.analyze(http.payload)
+    assert analysis["season_2026_27_matches"] == 380
+    assert analysis["invalid_matchday_records"] == 380
+    assert analysis["coverage_complete"] is False
+    assert all(v["count"] == 0 for v in analysis["matchday_count_violations"])
+
+
+def test_coverage_rejects_float_matchdays(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    for m in matches:
+        m["matchday"] = float(m["matchday"])
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    analysis = mod.analyze(http.payload)
+    assert analysis["invalid_matchday_records"] == 380
+    assert analysis["coverage_complete"] is False
+
+
+def test_coverage_rejects_boolean_matchdays(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    for i, m in enumerate(matches):
+        m["matchday"] = True if i % 2 == 0 else False
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    analysis = mod.analyze(http.payload)
+    assert analysis["invalid_matchday_records"] == 380
+    assert analysis["coverage_complete"] is False
+
+
+def test_coverage_missing_and_null_matchdays_do_not_contribute(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # set some matchdays missing/null
+    matches[0].pop("matchday", None)
+    matches[1]["matchday"] = None
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    analysis = mod.analyze(http.payload)
+    assert analysis["invalid_matchday_records"] >= 2
+    assert analysis["coverage_complete"] is False
+    # those records must not be counted as valid fixtures for their intended matchday
+    assert sum(analysis["matchday_fixture_counts"].values()) <= 378
+
+
+def test_mw11_integer_matching_still_works(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = reference_file_valid_matching(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "PRIMARY PROVIDER VERIFIED — SCHEDULE MATCHES OFFICIAL RECORD" in summary
+
+
+def test_malformed_mw11_values_excluded_from_mw11_comparison(tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    for m in matches:
+        if m.get("matchday") == 11 and m["homeTeam"]["name"] == "Manchester City FC":
+            m["matchday"] = "11"  # malformed for strict coverage/mw11
+            break
+    ref = reference_file_valid_matching(tmp_path)
+    analysis = mod.analyze({"matches": matches})
+    mw11 = mod.compare_mw11(analysis["normalized_matches"], mod.load_official_reference(ref))
+    row = next(r for r in mw11["rows"] if r["home"] == "Man City" and r["away"] == "Fulham")
+    assert row["found"] is False
