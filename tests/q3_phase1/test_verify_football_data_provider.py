@@ -622,3 +622,59 @@ def test_valid_reference_and_matching_mw11_can_verify(monkeypatch, tmp_path):
     rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
     assert rc == 0
     assert "PRIMARY PROVIDER VERIFIED — SCHEDULE MATCHES OFFICIAL RECORD" in summary
+
+
+def test_provider_matchday_int_11_accepted():
+    mod = load_module()
+    m = {"matchday": 11}
+    assert mod._is_mw11_provider_record(m) is True
+
+
+def test_provider_matchday_string_11_rejected():
+    mod = load_module()
+    assert mod._is_mw11_provider_record({"matchday": "11"}) is False
+
+
+def test_provider_matchday_float_11_rejected():
+    mod = load_module()
+    assert mod._is_mw11_provider_record({"matchday": 11.0}) is False
+
+
+def test_provider_matchday_bool_true_rejected():
+    mod = load_module()
+    assert mod._is_mw11_provider_record({"matchday": True}) is False
+
+
+def test_official_reference_matchday_string_11_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["matchday"] = "11"
+    ref = tmp_path / "ref_md_str.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_official_reference_matchday_float_11_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["matchday"] = 11.0
+    ref = tmp_path / "ref_md_float.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_official_reference_matchday_bool_true_rejected(tmp_path):
+    mod = load_module()
+    base = json.loads(reference_file_valid_matching(tmp_path).read_text(encoding="utf-8"))
+    base["fixtures"][0]["matchday"] = True
+    ref = tmp_path / "ref_md_bool.json"
+    ref.write_text(json.dumps(base), encoding="utf-8")
+    assert mod.load_official_reference(ref)["available"] is False
+
+
+def test_official_reference_matchday_int_11_accepted(tmp_path):
+    mod = load_module()
+    ref = reference_file_valid_matching(tmp_path)
+    res = mod.load_official_reference(ref)
+    assert res["available"] is True
+    assert all(f["matchday"] == 11 and type(f["matchday"]) is int for f in res["fixtures"])

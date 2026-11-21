@@ -456,11 +456,9 @@ def load_official_reference(path: Path | None) -> dict[str, Any]:
             return {"available": False, "reason": "invalid_fixture_record"}
         if str(f.get("season") or "").strip() != EXPECTED_SEASON:
             return {"available": False, "reason": "invalid_season"}
-        try:
-            md = int(str(f.get("matchday")).strip())
-        except Exception:
-            return {"available": False, "reason": "invalid_matchday"}
-        if md != MW11_MATCHDAY:
+        md = f.get("matchday")
+        # Strict: actual int only (bool is subclass of int, so reject bool explicitly).
+        if type(md) is not int or md != MW11_MATCHDAY:
             return {"available": False, "reason": "invalid_matchday"}
         home = str(f.get("home_team") or "").strip()
         away = str(f.get("away_team") or "").strip()
@@ -495,15 +493,10 @@ def load_official_reference(path: Path | None) -> dict[str, Any]:
 def _is_mw11_provider_record(m: dict[str, Any]) -> bool:
     """Accept only provider records explicitly in matchday 11; malformed/missing => False."""
     md = m.get("matchday")
-    try:
-        if md is None:
-            return False
-        if isinstance(md, float) and md != md:  # NaN
-            return False
-        md_int = int(str(md).strip())
-    except Exception:
+    # Strict: actual int only (bool is subclass of int, so reject bool explicitly).
+    if type(md) is not int:
         return False
-    return md_int == MW11_MATCHDAY
+    return md == MW11_MATCHDAY
 
 
 def compare_mw11(normalized_matches: list[dict[str, Any]], ref: dict[str, Any]) -> dict[str, Any]:
