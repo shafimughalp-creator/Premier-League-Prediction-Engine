@@ -1,0 +1,376 @@
+import json
+import os
+import sys
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_PATH = REPO_ROOT / "scripts" / "verify_football_data_provider.py"
+
+
+def load_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("verify_football_data_provider", SCRIPT_PATH)
+    mod = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def v4_match(match_id, home, away, utc, matchday=11, status="SCHEDULED", season_start="2026-08-01"):
+    return {
+        "id": match_id,
+        "utcDate": utc,
+        "status": status,
+        "matchday": matchday,
+        "homeTeam": {"name": home},
+        "awayTeam": {"name": away},
+        "season": {"startDate": season_start},
+    }
+
+
+def full_season_matches():
+    """380 unique fixtures: 20-team double round robin, MW11 has target fixtures."""
+    teams = [
+        "Arsenal FC", "Aston Villa FC", "AFC Bournemouth", "Brentford FC", "Brighton & Hove Albion FC",
+        "Chelsea FC", "Coventry City FC", "Crystal Palace FC", "Everton FC", "Fulham FC",
+        "Hull City AFC", "Ipswich Town FC", "Leeds United FC", "Liverpool FC", "Manchester City FC",
+        "Manchester United FC", "Newcastle United FC", "Nottingham Forest FC", "Sunderland AFC", "Tottenham Hotspur FC",
+    ]
+    mw11_pairs = [
+        ("Manchester City FC", "Fulham FC"),
+        ("AFC Bournemouth", "Nottingham Forest FC"),
+        ("Aston Villa FC", "Sunderland AFC"),
+        ("Chelsea FC", "Leeds United FC"),
+        ("Coventry City FC", "Crystal Palace FC"),
+        ("Tottenham Hotspur FC", "Ipswich Town FC"),
+        ("Newcastle United FC", "Arsenal FC"),
+        ("Hull City AFC", "Brighton & Hove Albion FC"),
+        ("Liverpool FC", "Manchester United FC"),
+        ("Brentford FC", "Everton FC"),
+    ]
+
+    # Circle method double round robin
+    n = len(teams)
+    arr = list(teams)
+    rounds = []
+    for _ in range(n - 1):
+        pairs = []
+        for i in range(n // 2):
+            pairs.append((arr[i], arr[n - 1 - i]))
+        rounds.append(pairs)
+        arr = [arr[0]] + [arr[-1]] + arr[1:-1]
+    rounds += [[(a, h) for h, a in r] for r in rounds]  # 38 rounds
+    assert len(rounds) == 38 and all(len(r) == 10 for r in rounds)
+
+    # Force MW11 (index 10) to be target pairs by swapping with locations where they appear.
+    target_set = set(mw11_pairs)
+    for md in range(38):
+        if md == 10:
+            continue
+        for i, pair in enumerate(rounds[md]):
+            if pair in target_set:
+                rounds[md][i] = None
+    old_md11 = rounds[10]
+    rounds[10] = list(mw11_pairs)
+    displaced = [p for p in old_md11 if p not in target_set]
+    di = 0
+    for md in range(38):
+        if md == 10:
+            continue
+        for i, pair in enumerate(rounds[md]):
+            if pair is None:
+                rounds[md][i] = displaced[di]
+                di += 1
+    assert di == len(displaced)
+
+    all_pairs = [p for r in rounds for p in r]
+    assert len(all_pairs) == 380
+    assert len(set(all_pairs)) == 380
+
+    matches = []
+    mid = 1
+    for md_idx, pairs in enumerate(rounds, start=1):
+        for h, a in pairs:
+            if md_idx == 11:
+                utc = "2026-11-21T15:00:00Z"
+            else:
+                day = 1 + ((md_idx * 7 + mid) % 28)
+                month = 8 + ((md_idx - 1) // 4)
+                month = month if month <= 12 else month - 12
+                year = 2026 if month >= 8 else 2027
+                utc = f"{year:04d}-{month:02d}-{day:02d}T15:00:00Z"
+            matches.append(v4_match(mid, h, a, utc, matchday=md_idx))
+            mid += 1
+    return matches
+
+def payload(matches):
+    return {"matches": matches}
+
+
+def reference_file(tmp_path, disagree=False, missing=False):
+    fixtures = []
+    pairs = [
+        ("Man City", "Fulham", "2026-11-21T12:30:00Z", "2026-11-21", "12:30", "GMT"),
+        ("Bournemouth", "Nott'm Forest", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Aston Villa", "Sunderland", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Chelsea", "Leeds", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Coventry", "Crystal Palace", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Tottenham", "Ipswich", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Newcastle", "Arsenal", "2026-11-21T17:30:00Z", "2026-11-21", "17:30", "GMT"),
+        ("Hull", "Brighton", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Liverpool", "Man United", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+        ("Brentford", "Everton", "2026-11-21T15:00:00Z", "2026-11-21", "15:00", "GMT"),
+    ]
+    for h, a, utc, d, t, tz in pairs:
+        if missing and (h == "Man City"):
+            continue
+        if disagree and h == "Man City":
+            utc, t = "2026-11-21T15:00:00Z", "15:00"
+        fixtures.append({
+            "season": "2026/27", "matchday": 11, "home_team": h, "away_team": a,
+            "official_fixture_id": f"PL-2627-MW11-{h}-{a}",
+            "utc_kickoff": utc, "local_date": d, "local_time": t, "local_tz": tz,
+            "source_url": "https://www.premierleague.com/fixtures", "verified_at": "2026-11-21",
+        })
+    p = tmp_path / "ref.json"
+    p.write_text(json.dumps({"fixtures": fixtures}), encoding="utf-8")
+    return p
+
+
+def run_main(mod, monkeypatch, tmp_path, *, token="tok", http_result=None, ref_path=None, extra_args=None):
+    summary = tmp_path / "summary.md"
+    if token is None:
+        monkeypatch.delenv("FOOTBALL_DATA_ORG_TOKEN", raising=False)
+    else:
+        monkeypatch.setenv("FOOTBALL_DATA_ORG_TOKEN", token)
+    if http_result is not None:
+        monkeypatch.setattr(mod, "http_get_json", lambda *a, **k: http_result)
+    args = ["--summary-out", str(summary), "--official-reference", str(ref_path or (tmp_path / "missing.json"))]
+    if extra_args:
+        args.extend(extra_args)
+    rc = mod.main(args)
+    return rc, summary.read_text(encoding="utf-8") if summary.exists() else ""
+
+
+def test_missing_token_prevents_http_request(monkeypatch, tmp_path):
+    mod = load_module()
+    called = {"n": 0}
+
+    def fake(*a, **k):
+        called["n"] += 1
+        return mod.HttpResult(True, 200, payload={"matches": []})
+
+    monkeypatch.setattr(mod, "http_get_json", fake)
+    rc, summary = run_main(mod, monkeypatch, tmp_path, token=None)
+    assert rc == 1
+    assert called["n"] == 0
+    assert "VERIFICATION BLOCKED" in summary
+    assert "Token present: **False**" in summary
+
+
+def test_successful_auth_valid_response(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = reference_file(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, token="secret", http_result=http, ref_path=ref)
+    assert rc == 0
+    assert "PRIMARY PROVIDER AUTHENTICATES — SCHEDULE DISAGREEMENTS FOUND" in summary
+    assert "secret" not in summary
+
+
+@pytest.mark.parametrize("status,expected", [(401, "PRIMARY PROVIDER AUTHENTICATION FAILED"), (403, "PRIMARY PROVIDER AUTHENTICATION FAILED")])
+def test_auth_failures(monkeypatch, tmp_path, status, expected):
+    mod = load_module()
+    http = mod.HttpResult(False, status, error=f"HTTP {status}")
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert rc == 1
+    assert expected in summary
+
+
+def test_http_429(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(False, 429, error="HTTP 429")
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert rc == 1
+    assert "VERIFICATION BLOCKED" in summary
+
+
+def test_timeout(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(False, None, error="TimeoutError")
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert rc == 1
+    assert "VERIFICATION BLOCKED" in summary
+
+
+def test_invalid_json(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(False, 200, error="Invalid JSON")
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert rc == 1
+    assert "VERIFICATION BLOCKED" in summary
+
+
+def test_missing_matches_structure(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(True, 200, payload={"not_matches": []})
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert "Response valid (dict with matches list): **False**" in summary
+
+
+def test_malformed_duplicate_season_matchday(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    matches.append("bad-record")
+    matches.append(v4_match(9999, "Manchester City FC", "Fulham FC", "2026-11-21T15:00:00Z", matchday=11))  # duplicate identity
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert "Malformed records: **1**" in summary
+    assert "Duplicate fixture identities: **1**" in summary
+
+
+def test_missing_mw11_fixture(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = [m for m in full_season_matches() if not (m.get("matchday") == 11 and m.get("homeTeam", {}).get("name") == "Manchester City FC")]
+    ref = reference_file(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "PRIMARY PROVIDER AUTHENTICATES — COVERAGE INCOMPLETE" in summary
+    assert "| Man City | Fulham | False |" in summary
+
+
+def test_utc_to_europe_london_gmt_bst(monkeypatch, tmp_path):
+    mod = load_module()
+    # BST example: 2026-08-15T14:00:00Z -> 15:00 BST
+    m_bst = v4_match(1, "Arsenal FC", "Chelsea FC", "2026-08-15T14:00:00Z", matchday=1)
+    # GMT example: 2026-11-21T15:00:00Z -> 15:00 GMT
+    m_gmt = v4_match(2, "Liverpool FC", "Everton FC", "2026-11-21T15:00:00Z", matchday=11)
+    n1 = mod.normalize_match(m_bst)
+    n2 = mod.normalize_match(m_gmt)
+    assert n1["local_time"] == "15:00"
+    assert n1["tz_name"] == "BST"
+    assert n2["local_time"] == "15:00"
+    assert n2["tz_name"] == "GMT"
+
+
+def test_official_reference_missing_marks_unverified(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=tmp_path / "nope.json")
+    assert rc == 1
+    assert "VERIFICATION BLOCKED" in summary
+    assert "UNVERIFIED" in summary
+    assert "PRIMARY PROVIDER VERIFIED" not in summary
+
+
+def test_schedule_disagreement_detection(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = reference_file(tmp_path, disagree=True)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert "PRIMARY PROVIDER AUTHENTICATES — SCHEDULE DISAGREEMENTS FOUND" in summary
+    assert "DISAGREEMENT" in summary
+
+
+def test_no_token_leakage(monkeypatch, tmp_path):
+    mod = load_module()
+    secret = "SUPER_SECRET_TOKEN_123"
+    http = mod.HttpResult(False, 401, error=f"HTTP 401 for token {secret}")
+    rc, summary = run_main(mod, monkeypatch, tmp_path, token=secret, http_result=http)
+    assert secret not in summary
+
+
+def test_no_production_writes(monkeypatch, tmp_path):
+    mod = load_module()
+    ref = reference_file(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    # run in tmp cwd; should not create data files
+    monkeypatch.chdir(tmp_path)
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=ref)
+    assert not (tmp_path / "data").exists()
+    assert "secret" not in summary
+
+
+def test_full_season_completeness_not_blind(monkeypatch, tmp_path):
+    mod = load_module()
+    matches = full_season_matches()
+    # break completeness by duplicating one identity and removing another to keep count 380
+    matches[0] = v4_match(1, "Manchester City FC", "Fulham FC", "2026-11-21T15:00:00Z", matchday=11)
+    matches[1] = v4_match(2, "Manchester City FC", "Fulham FC", "2026-11-22T15:00:00Z", matchday=11)
+    http = mod.HttpResult(True, 200, payload=payload(matches))
+    analysis = mod.analyze(http.payload)
+    assert analysis["season_2026_27_matches"] == 380
+    assert analysis["coverage_complete"] is False
+
+
+def test_coverage_incomplete_when_not_full(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()[:100]))
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http, ref_path=reference_file(tmp_path))
+    assert "PRIMARY PROVIDER AUTHENTICATES — COVERAGE INCOMPLETE" in summary
+
+
+def test_status_mapping_and_missing_kickoff(monkeypatch, tmp_path):
+    mod = load_module()
+    m = v4_match(1, "Arsenal FC", "Chelsea FC", None, matchday=1, status="POSTPONED")
+    n = mod.normalize_match(m)
+    assert n["status_mapped"] == "postponed"
+    assert n["utc_valid"] is False
+    assert n["local_date"] is None
+    assert mod._status_from_football_data_org("FINISHED") == "completed"
+    assert mod._status_from_football_data_org("IN_PLAY") == "completed"
+    assert mod._status_from_football_data_org("CANCELLED") == "cancelled"
+    assert mod._status_from_football_data_org("SCHEDULED") == "scheduled"
+
+
+def test_malformed_team_objects(monkeypatch, tmp_path):
+    mod = load_module()
+    raw = {"id": 1, "utcDate": "2026-11-21T15:00:00Z", "status": "SCHEDULED", "matchday": 11,
+           "homeTeam": {"name": "Liverpool FC"}, "awayTeam": {"shortName": "MUN"}, "season": {"startDate": "2026-08-01"}}
+    n = mod.normalize_match(raw)
+    assert n["home"] in {"Liverpool", "Liverpool FC"} or n["home"] is not None
+    assert "away_raw" in n
+
+
+def test_http_500_server_error(monkeypatch, tmp_path):
+    mod = load_module()
+    http = mod.HttpResult(False, 500, error="HTTP 500")
+    rc, summary = run_main(mod, monkeypatch, tmp_path, http_result=http)
+    assert rc == 1
+    assert "VERIFICATION BLOCKED" in summary
+
+
+def test_no_filesystem_writes_outside_summary(tmp_path, monkeypatch):
+    mod = load_module()
+    ref = reference_file(tmp_path)
+    http = mod.HttpResult(True, 200, payload=payload(full_season_matches()))
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    monkeypatch.chdir(cwd)
+    rc, summary = run_main(mod, monkeypatch, tmp_path, token="secret", http_result=http, ref_path=ref)
+    assert rc == 0
+    created = [p for p in cwd.rglob("*") if p.is_file()]
+    assert created == []
+
+
+def test_parity_with_fixture_providers_when_available():
+    """Guarded parity: skip when untracked production module is unavailable (remote main)."""
+    try:
+        from src.data import fixture_providers as fp
+    except Exception:
+        pytest.skip("src.data.fixture_providers unavailable on remote baseline")
+    mod = load_module()
+    assert mod._extract_team_name({"name": "Arsenal FC", "shortName": "ARS"}) == fp._extract_team_name({"name": "Arsenal FC", "shortName": "ARS"})
+    for st in ["SCHEDULED", "TIMED", "FINISHED", "POSTPONED", "CANCELLED", "IN_PLAY", "PAUSED"]:
+        assert mod._status_from_football_data_org(st) == fp._status_from_football_data_org(st)
+    for val in ["2026-11-21T12:30:00Z", "2026-08-15T14:00:00Z", "2026-11-21", None]:
+        a = mod._parse_provider_datetime(val)
+        b = fp._parse_provider_datetime(val)
+        a_date = str(a[0].date()) if a[0] is not None and str(a[0]) != "NaT" else None
+        b_date = str(b[0].date()) if b[0] is not None and str(b[0]) != "NaT" else None
+        assert a_date == b_date
+        assert a[1] == b[1]
