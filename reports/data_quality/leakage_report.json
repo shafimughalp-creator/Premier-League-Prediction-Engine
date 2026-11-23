@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22T14:30:32+00:00",
+  "generated_at": "2026-11-23T17:59:11+00:00",
   "integrity": {
     "ok": true,
     "checks": {
@@ -14,10 +14,10 @@
       "team_names_canonical": true
     },
     "issues": [],
-    "n_matches": 4660,
+    "n_matches": 4669,
     "n_teams": 36,
     "first_date": "2014-08-16",
-    "last_date": "2026-11-08"
+    "last_date": "2026-11-22"
   },
   "own_result": {
     "test": "own_result_independence",
@@ -30,14 +30,14 @@
         "identical": true
       },
       {
-        "match_id": "2020-10-24_Fulham_Crystal Palace",
-        "date": "2020-10-24",
+        "match_id": "2020-10-25_Wolves_Newcastle",
+        "date": "2020-10-25",
         "n_features": 237,
         "identical": true
       },
       {
-        "match_id": "2026-11-08_Man United_Aston Villa",
-        "date": "2026-11-08",
+        "match_id": "2026-11-22_Liverpool_Man United",
+        "date": "2026-11-22",
         "n_features": 237,
         "identical": true
       }

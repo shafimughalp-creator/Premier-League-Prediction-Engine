@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-22T14:30:31+00:00",
+  "updated_at": "2026-11-23T17:59:10+00:00",
   "snapshots": {
     "2627:Aston Villa:Sunderland": {
       "fixture_id": "2627:Aston Villa:Sunderland",
@@ -86,18 +86,18 @@
       "away_team": "Everton",
       "kickoff_at": "2026-11-23T20:00:00+00:00",
       "created_at": "2026-11-14T16:26:18+00:00",
-      "updated_at": "2026-11-20T15:23:07+00:00",
+      "updated_at": "2026-11-23T17:59:10+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.4604583218050607,
-        "prob_draw": 0.254415679688983,
-        "prob_away": 0.2851259985059562,
+        "prob_home": 0.4604814099129389,
+        "prob_draw": 0.25443385767145776,
+        "prob_away": 0.2850847324156032,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
         "model_variant": "full",
         "has_odds": true,
-        "prediction_created_at": "2026-11-20T15:23:07+00:00",
+        "prediction_created_at": "2026-11-23T17:59:09+00:00",
         "prediction_status": "pre_match"
       },
       "revisions": [
@@ -112,6 +112,18 @@
           "prediction_created_at": "2026-11-14T16:26:17+00:00",
           "prediction_status": "pre_match",
           "superseded_at": "2026-11-20T15:23:07+00:00"
+        },
+        {
+          "prob_home": 0.4604583218050607,
+          "prob_draw": 0.254415679688983,
+          "prob_away": 0.2851259985059562,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "full",
+          "has_odds": true,
+          "prediction_created_at": "2026-11-20T15:23:07+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-23T17:59:10+00:00"
         }
       ]
     },
@@ -238,8 +250,8 @@
       "away_team": "Man United",
       "kickoff_at": "2026-11-22T16:30:00+00:00",
       "created_at": "2026-11-14T16:26:18+00:00",
-      "updated_at": "2026-11-20T15:23:07+00:00",
-      "status": "pre_match",
+      "updated_at": "2026-11-23T17:59:10+00:00",
+      "status": "locked",
       "locked_at_creation": false,
       "eligible": {
         "prob_home": 0.5817719276010872,
