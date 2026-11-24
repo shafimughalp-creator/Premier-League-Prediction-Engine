@@ -1,20 +1,20 @@
 {
-  "updated_at": "2026-11-23T07:54:21+00:00",
+  "updated_at": "2026-11-24T00:04:41+00:00",
   "fixtures": {
-    "last_sync_at": "2026-11-22T14:30:22+00:00",
+    "last_sync_at": "2026-11-23T17:58:58+00:00",
     "status": "ok"
   },
   "predictions": {
-    "last_run": "2026-11-22T14:30:32+00:00",
-    "snapshots_updated_at": "2026-11-22T14:30:31+00:00",
+    "last_run": "2026-11-23T17:59:10+00:00",
+    "snapshots_updated_at": "2026-11-24T00:04:41+00:00",
     "snapshots": 10
   },
   "results": {
-    "last_sync_at": "2026-11-14T16:37:18+00:00",
-    "completed": 100
+    "last_sync_at": "2026-11-24T00:04:41+00:00",
+    "completed": 110
   },
   "evaluation": {
-    "last_run": null,
-    "evaluated": 0
+    "last_run": "2026-11-24T00:04:41+00:00",
+    "evaluated": 10
   }
 }

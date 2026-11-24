@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-15T18:58:24+00:00",
+  "at": "2026-11-24T00:04:41+00:00",
   "seasons": {
     "2627": {
       "matchweeks": {
@@ -136,15 +136,15 @@
         "11": {
           "matchweek": 11,
           "scheduled": 10,
-          "completed": 0,
-          "evaluated": 0,
-          "correct": 0,
-          "incorrect": 0,
-          "pending": 10,
+          "completed": 10,
+          "evaluated": 10,
+          "correct": 5,
+          "incorrect": 5,
+          "pending": 0,
           "cancelled": 0,
           "missing_prediction": 0,
-          "accuracy": null,
-          "coverage": null
+          "accuracy": 50.0,
+          "coverage": 100.0
         },
         "12": {
           "matchweek": 12,
@@ -501,14 +501,14 @@
       "season": {
         "matchweeks": 38,
         "scheduled": 380,
-        "completed": 100,
-        "evaluated": 0,
-        "correct": 0,
-        "incorrect": 0,
-        "pending": 280,
+        "completed": 110,
+        "evaluated": 10,
+        "correct": 5,
+        "incorrect": 5,
+        "pending": 270,
         "cancelled": 0,
         "missing_prediction": 100,
-        "accuracy": null
+        "accuracy": 50.0
       }
     }
   }
