@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-23T17:59:11+00:00",
+  "generated_at": "2026-11-24T17:37:34+00:00",
   "integrity": {
     "ok": true,
     "checks": {
@@ -14,10 +14,10 @@
       "team_names_canonical": true
     },
     "issues": [],
-    "n_matches": 4669,
+    "n_matches": 4670,
     "n_teams": 36,
     "first_date": "2014-08-16",
-    "last_date": "2026-11-22"
+    "last_date": "2026-11-23"
   },
   "own_result": {
     "test": "own_result_independence",
@@ -30,14 +30,14 @@
         "identical": true
       },
       {
-        "match_id": "2020-10-25_Wolves_Newcastle",
+        "match_id": "2020-10-25_Arsenal_Leicester",
         "date": "2020-10-25",
         "n_features": 237,
         "identical": true
       },
       {
-        "match_id": "2026-11-22_Liverpool_Man United",
-        "date": "2026-11-22",
+        "match_id": "2026-11-23_Brentford_Everton",
+        "date": "2026-11-23",
         "n_features": 237,
         "identical": true
       }
