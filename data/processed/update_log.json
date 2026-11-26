@@ -119,5 +119,15 @@
     },
     "fixtures": "downloaded",
     "openfootball": "downloaded"
+  },
+  {
+    "started_at": "2026-11-26T16:48:37+00:00",
+    "finished_at": "2026-11-26T16:48:40+00:00",
+    "seasons": {
+      "2526": "downloaded",
+      "2627": "downloaded"
+    },
+    "fixtures": "downloaded",
+    "openfootball": "downloaded"
   }
 ]
