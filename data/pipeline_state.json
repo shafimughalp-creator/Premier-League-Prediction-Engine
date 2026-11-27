@@ -1,48 +1,48 @@
 {
-  "last_run": "2026-11-26T16:48:37+00:00",
+  "last_run": "2026-11-27T16:34:25+00:00",
   "status": "ok",
   "steps": [
     {
-      "at": "2026-11-26T16:48:40+00:00",
+      "at": "2026-11-27T16:34:28+00:00",
       "step": "refresh",
       "status": "ok",
       "detail": "seasons={'2526': 'downloaded', '2627': 'downloaded'} fixtures=downloaded"
     },
     {
-      "at": "2026-11-26T16:48:54+00:00",
+      "at": "2026-11-27T16:34:41+00:00",
       "step": "process",
       "status": "ok",
       "detail": "4670 matches"
     },
     {
-      "at": "2026-11-26T16:48:54+00:00",
+      "at": "2026-11-27T16:34:41+00:00",
       "step": "validate",
       "status": "ok",
       "detail": "odds=100% shots=100%"
     },
     {
-      "at": "2026-11-26T16:48:54+00:00",
+      "at": "2026-11-27T16:34:42+00:00",
       "step": "fixtures",
       "status": "ok",
       "detail": "new=0 updated=0 postponed=0 cancelled=0 rejected=0 upcoming=10"
     },
     {
-      "at": "2026-11-26T16:48:54+00:00",
+      "at": "2026-11-27T16:34:42+00:00",
       "step": "train",
       "status": "skipped",
       "detail": "retraining disabled"
     },
     {
-      "at": "2026-11-26T16:49:01+00:00",
+      "at": "2026-11-27T16:34:48+00:00",
       "step": "predict",
       "status": "ok",
       "detail": "10 fixtures, model epl-20261113-1478e7d5"
     },
     {
-      "at": "2026-11-26T16:49:01+00:00",
+      "at": "2026-11-27T16:34:48+00:00",
       "step": "snapshots",
       "status": "ok",
-      "detail": "created=0 revised=0 unchanged=10 locked=0 missing=0 invalid=0"
+      "detail": "created=0 revised=10 unchanged=0 locked=0 missing=0 invalid=0"
     }
   ],
   "data_quality": {
@@ -64,7 +64,7 @@
   },
   "error": null,
   "traceback": null,
-  "last_success": "2026-11-26T16:49:01+00:00",
+  "last_success": "2026-11-27T16:34:49+00:00",
   "n_matches": 4670,
   "data_cutoff": "2026-11-23",
   "n_fixtures": 10,
@@ -72,13 +72,13 @@
   "model_type": "ensemble:random_forest+lgbm_regularised+lgbm_deep+lgbm_shallow",
   "test_accuracy": 0.5184210526315789,
   "retrained": false,
-  "duration_seconds": 24.4,
+  "duration_seconds": 23.8,
   "fixture_sync": {
     "status": "ok",
     "sources": {
       "football-data": {
         "status": "cached",
-        "rows": 0,
+        "rows": 10,
         "url": "https://www.football-data.co.uk/fixtures.csv"
       },
       "openfootball": {
@@ -95,7 +95,7 @@
       "cancelled": 0,
       "completed": 0,
       "retained": 0,
-      "duplicates": 0,
+      "duplicates": 10,
       "rejected": 0
     },
     "store_rows": 270,
@@ -104,14 +104,14 @@
   },
   "snapshots": {
     "created": 0,
-    "revised": 0,
-    "unchanged": 10,
+    "revised": 10,
+    "unchanged": 0,
     "locked": 0,
     "missing": 0,
     "invalid": 0,
     "post_kickoff": 0,
-    "status_updates": 0,
+    "status_updates": 8,
     "total": 20
   },
-  "last_data_refresh": "2026-11-26T16:48:40+00:00"
+  "last_data_refresh": "2026-11-27T16:34:28+00:00"
 }

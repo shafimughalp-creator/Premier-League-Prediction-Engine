@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T16:49:01+00:00",
+  "updated_at": "2026-11-27T16:34:48+00:00",
   "snapshots": {
     "2627:Aston Villa:Sunderland": {
       "fixture_id": "2627:Aston Villa:Sunderland",
@@ -400,23 +400,36 @@
       "matchweek": 12,
       "home_team": "Arsenal",
       "away_team": "Man City",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-29T16:30:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.5124113683312003,
-        "prob_draw": 0.24443819524101912,
-        "prob_away": 0.24315043642778056,
+        "prob_home": 0.5057801534171094,
+        "prob_draw": 0.24239140313053573,
+        "prob_away": 0.2518284434523549,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.5124113683312003,
+          "prob_draw": 0.24443819524101912,
+          "prob_away": 0.24315043642778056,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Brighton:Newcastle": {
       "fixture_id": "2627:Brighton:Newcastle",
@@ -425,23 +438,36 @@
       "matchweek": 12,
       "home_team": "Brighton",
       "away_team": "Newcastle",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-29T14:05:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.7079989659245035,
-        "prob_draw": 0.16859292608578416,
-        "prob_away": 0.12340810798971229,
+        "prob_home": 0.654254189042879,
+        "prob_draw": 0.19073953258937126,
+        "prob_away": 0.15500627836774966,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.7079989659245035,
+          "prob_draw": 0.16859292608578416,
+          "prob_away": 0.12340810798971229,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Crystal Palace:Hull": {
       "fixture_id": "2627:Crystal Palace:Hull",
@@ -450,23 +476,36 @@
       "matchweek": 12,
       "home_team": "Crystal Palace",
       "away_team": "Hull",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-29T14:05:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.4422349642600174,
-        "prob_draw": 0.27941599889905006,
-        "prob_away": 0.2783490368409326,
+        "prob_home": 0.5392722555584707,
+        "prob_draw": 0.23952136702764368,
+        "prob_away": 0.22120637741388566,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.4422349642600174,
+          "prob_draw": 0.27941599889905006,
+          "prob_away": 0.2783490368409326,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Everton:Liverpool": {
       "fixture_id": "2627:Everton:Liverpool",
@@ -475,23 +514,36 @@
       "matchweek": 12,
       "home_team": "Everton",
       "away_team": "Liverpool",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-29T12:00:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.2588738415580597,
-        "prob_draw": 0.26157786559668145,
-        "prob_away": 0.47954829284525885,
+        "prob_home": 0.1970264013284683,
+        "prob_draw": 0.23424838957432145,
+        "prob_away": 0.5687252090972102,
         "predicted": "A",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.2588738415580597,
+          "prob_draw": 0.26157786559668145,
+          "prob_away": 0.47954829284525885,
+          "predicted": "A",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Fulham:Bournemouth": {
       "fixture_id": "2627:Fulham:Bournemouth",
@@ -500,23 +552,36 @@
       "matchweek": 12,
       "home_team": "Fulham",
       "away_team": "Bournemouth",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-29T14:05:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.3431365521215641,
-        "prob_draw": 0.2688058606600046,
-        "prob_away": 0.38805758721843125,
+        "prob_home": 0.34482843508597705,
+        "prob_draw": 0.26738079213774085,
+        "prob_away": 0.38779077277628216,
         "predicted": "A",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.3431365521215641,
+          "prob_draw": 0.2688058606600046,
+          "prob_away": 0.38805758721843125,
+          "predicted": "A",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Ipswich:Aston Villa": {
       "fixture_id": "2627:Ipswich:Aston Villa",
@@ -525,23 +590,36 @@
       "matchweek": 12,
       "home_team": "Ipswich",
       "away_team": "Aston Villa",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-28T17:30:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.21986364146230702,
-        "prob_draw": 0.241235775355759,
-        "prob_away": 0.538900583181934,
+        "prob_home": 0.24843547679994693,
+        "prob_draw": 0.23324199539312548,
+        "prob_away": 0.5183225278069277,
         "predicted": "A",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.21986364146230702,
+          "prob_draw": 0.241235775355759,
+          "prob_away": 0.538900583181934,
+          "predicted": "A",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Leeds:Coventry": {
       "fixture_id": "2627:Leeds:Coventry",
@@ -552,21 +630,34 @@
       "away_team": "Coventry",
       "kickoff_at": "2026-11-28T15:00:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.6282845180535525,
-        "prob_draw": 0.2207811024645065,
-        "prob_away": 0.15093437948194102,
+        "prob_home": 0.6922041570877235,
+        "prob_draw": 0.1888058602322227,
+        "prob_away": 0.11898998268005372,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.6282845180535525,
+          "prob_draw": 0.2207811024645065,
+          "prob_away": 0.15093437948194102,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Man United:Brentford": {
       "fixture_id": "2627:Man United:Brentford",
@@ -577,21 +668,34 @@
       "away_team": "Brentford",
       "kickoff_at": "2026-11-28T15:00:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.4501108490954995,
-        "prob_draw": 0.2995320098794039,
-        "prob_away": 0.25035714102509665,
+        "prob_home": 0.47166073549676485,
+        "prob_draw": 0.24323552634293807,
+        "prob_away": 0.28510373816029716,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.4501108490954995,
+          "prob_draw": 0.2995320098794039,
+          "prob_away": 0.25035714102509665,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Nott'm Forest:Chelsea": {
       "fixture_id": "2627:Nott'm Forest:Chelsea",
@@ -600,23 +704,36 @@
       "matchweek": 12,
       "home_team": "Nott'm Forest",
       "away_team": "Chelsea",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-27T20:00:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.4159313206424572,
-        "prob_draw": 0.2313215344447382,
-        "prob_away": 0.3527471449128046,
+        "prob_home": 0.39988464445705374,
+        "prob_draw": 0.27436870334560387,
+        "prob_away": 0.3257466521973424,
         "predicted": "H",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.4159313206424572,
+          "prob_draw": 0.2313215344447382,
+          "prob_away": 0.3527471449128046,
+          "predicted": "H",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     },
     "2627:Sunderland:Tottenham": {
       "fixture_id": "2627:Sunderland:Tottenham",
@@ -625,23 +742,36 @@
       "matchweek": 12,
       "home_team": "Sunderland",
       "away_team": "Tottenham",
-      "kickoff_at": "2026-11-28T15:00:00+00:00",
+      "kickoff_at": "2026-11-29T14:05:00+00:00",
       "created_at": "2026-11-24T17:37:32+00:00",
-      "updated_at": "2026-11-24T17:37:32+00:00",
+      "updated_at": "2026-11-27T16:34:48+00:00",
       "status": "pre_match",
       "locked_at_creation": false,
       "eligible": {
-        "prob_home": 0.2920003932013618,
-        "prob_draw": 0.29317198308767956,
-        "prob_away": 0.4148276237109587,
+        "prob_home": 0.250411470233288,
+        "prob_draw": 0.265484651018168,
+        "prob_away": 0.484103878748544,
         "predicted": "A",
         "model_id": "epl-20261113-1478e7d5",
-        "model_variant": "no_odds",
-        "has_odds": false,
-        "prediction_created_at": "2026-11-24T17:37:32+00:00",
+        "model_variant": "full",
+        "has_odds": true,
+        "prediction_created_at": "2026-11-27T16:34:48+00:00",
         "prediction_status": "pre_match"
       },
-      "revisions": []
+      "revisions": [
+        {
+          "prob_home": 0.2920003932013618,
+          "prob_draw": 0.29317198308767956,
+          "prob_away": 0.4148276237109587,
+          "predicted": "A",
+          "model_id": "epl-20261113-1478e7d5",
+          "model_variant": "no_odds",
+          "has_odds": false,
+          "prediction_created_at": "2026-11-24T17:37:32+00:00",
+          "prediction_status": "pre_match",
+          "superseded_at": "2026-11-27T16:34:48+00:00"
+        }
+      ]
     }
   }
 }
