@@ -1,36 +1,36 @@
 {
   "last_run": {
-    "started_at": "2026-11-26T16:48:54+00:00",
-    "finished_at": "2026-11-26T16:48:54+00:00",
+    "started_at": "2026-11-27T15:38:38+00:00",
+    "finished_at": "2026-11-27T15:38:40+00:00",
     "ok": true,
     "status": "ok",
     "sources": {
       "football-data": {
-        "status": "cached",
-        "rows": 0,
+        "status": "downloaded",
+        "rows": 10,
         "url": "https://www.football-data.co.uk/fixtures.csv"
       },
       "openfootball": {
-        "status": "cached",
+        "status": "downloaded",
         "rows": 270,
         "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
       }
     },
     "counts": {
       "new": 0,
-      "updated": 0,
-      "unchanged": 270,
+      "updated": 10,
+      "unchanged": 260,
       "postponed": 0,
       "cancelled": 0,
       "completed": 0,
       "retained": 0,
-      "duplicates": 0,
+      "duplicates": 10,
       "rejected": 0
     },
     "historical_skipped": 110,
     "store_rows": 270,
     "upcoming_rows": 10,
-    "store_changed": false,
+    "store_changed": true,
     "rejected": []
   },
   "history": [
@@ -1120,6 +1120,40 @@
       "store_rows": 270,
       "upcoming_rows": 10,
       "store_changed": false,
+      "rejected": []
+    },
+    {
+      "started_at": "2026-11-27T15:38:38+00:00",
+      "finished_at": "2026-11-27T15:38:40+00:00",
+      "ok": true,
+      "status": "ok",
+      "sources": {
+        "football-data": {
+          "status": "downloaded",
+          "rows": 10,
+          "url": "https://www.football-data.co.uk/fixtures.csv"
+        },
+        "openfootball": {
+          "status": "downloaded",
+          "rows": 270,
+          "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2026-27/en.1.json"
+        }
+      },
+      "counts": {
+        "new": 0,
+        "updated": 10,
+        "unchanged": 260,
+        "postponed": 0,
+        "cancelled": 0,
+        "completed": 0,
+        "retained": 0,
+        "duplicates": 10,
+        "rejected": 0
+      },
+      "historical_skipped": 110,
+      "store_rows": 270,
+      "upcoming_rows": 10,
+      "store_changed": true,
       "rejected": []
     }
   ]
